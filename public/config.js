@@ -1,0 +1,6 @@
+window.__APP_CONFIG__ = {
+  APP_NAME: "SHM Client",
+  TELEGRAM_BOT_NAME: "",
+  TELEGRAM_BOT_AUTH_ENABLE: "false",
+  SUPPORT_LINK: ""
+};

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Card, Text, Stack, Button, TextInput, PasswordInput, Divider, Title, Center } from '@mantine/core';
-import { IconLogin, IconUserPlus, IconFingerprint } from '@tabler/icons-react';
+import { Card, Text, Stack, Button, TextInput, PasswordInput, Divider, Title, Center, Modal, Group } from '@mantine/core';
+import { IconLogin, IconUserPlus, IconFingerprint, IconShieldLock } from '@tabler/icons-react';
 import { notifications } from '@mantine/notifications';
 import { useTranslation } from 'react-i18next';
 import { auth, passkeyApi } from '../api/client';
@@ -66,6 +66,8 @@ export default function Login() {
   const [passkeyLoading, setPasskeyLoading] = useState(false);
   const [formData, setFormData] = useState({ login: '', password: '', confirmPassword: '' });
   const [isInsideTelegramWebApp, setIsInsideTelegramWebApp] = useState(false);
+  const [showOtp, setShowOtp] = useState(false);
+  const [otpToken, setOtpToken] = useState('');
   const { setUser, setTelegramPhoto } = useStore();
   const { t } = useTranslation();
   const isWebAuthnSupported = !!window.PublicKeyCredential;
@@ -92,7 +94,7 @@ export default function Login() {
   // Виджет показываем только если НЕ внутри WebApp
   const hasTelegramWidget = !isInsideTelegramWebApp && !!config.TELEGRAM_BOT_NAME && config.TELEGRAM_BOT_AUTH_ENABLE === 'true';
 
-  const handleLogin = async () => {
+  const handleLogin = async (otpTokenParam?: string) => {
     if (!formData.login || !formData.password) {
       notifications.show({ title: t('common.error'), message: t('auth.fillAllFields'), color: 'red' });
       return;
@@ -100,17 +102,40 @@ export default function Login() {
 
     setLoading(true);
     try {
-      await auth.login(formData.login, formData.password);
+      const result = await auth.login(formData.login, formData.password, otpTokenParam);
+
+      if (result.otpRequired) {
+        setShowOtp(true);
+        setLoading(false);
+        return;
+      }
+
       const userResponse = await auth.getCurrentUser();
       const responseData = userResponse.data.data;
       const userData = Array.isArray(responseData) ? responseData[0] : responseData;
       setUser(userData);
+      setShowOtp(false);
+      setOtpToken('');
       notifications.show({ title: t('common.success'), message: t('auth.loginSuccess'), color: 'green' });
-    } catch {
-      notifications.show({ title: t('common.error'), message: t('auth.loginError'), color: 'red' });
+    } catch (error: unknown) {
+      const axiosError = error as { response?: { status?: number; data?: { error?: string } } };
+      if (axiosError.response?.status === 403 && axiosError.response?.data?.error?.includes('Password authentication is disabled')) {
+        notifications.show({ title: t('common.error'), message: t('auth.passwordAuthDisabled'), color: 'red' });
+      } else {
+        notifications.show({ title: t('common.error'), message: t('auth.loginError'), color: 'red' });
+      }
+      setOtpToken('');
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleOtpSubmit = async () => {
+    if (!otpToken) {
+      notifications.show({ title: t('common.error'), message: t('otp.enterValidCode'), color: 'red' });
+      return;
+    }
+    await handleLogin(otpToken);
   };
 
   const handleRegister = async () => {
@@ -137,12 +162,12 @@ export default function Login() {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (mode === 'login') {
-      handleLogin();
+      await handleLogin();
     } else {
-      handleRegister();
+      await handleRegister();
     }
   };
 
@@ -318,6 +343,49 @@ export default function Login() {
           </Text>
         </Stack>
       </Card>
+
+      {/* OTP Modal */}
+      <Modal
+        opened={showOtp}
+        onClose={() => {
+          setShowOtp(false);
+          setOtpToken('');
+        }}
+        title={
+          <Group gap="xs">
+            <IconShieldLock size={20} />
+            <Text fw={500}>{t('otp.title')}</Text>
+          </Group>
+        }
+        centered
+      >
+        <Stack gap="md">
+          <Text size="sm" c="dimmed">{t('otp.verifyDescription')}</Text>
+          <TextInput
+            label={t('otp.enterCode')}
+            placeholder="000000"
+            value={otpToken}
+            onChange={(e) => setOtpToken(e.target.value.replace(/\D/g, '').slice(0, 8))}
+            maxLength={8}
+            autoFocus
+          />
+          <Group justify="flex-end" gap="sm">
+            <Button variant="default" onClick={() => {
+              setShowOtp(false);
+              setOtpToken('');
+            }}>
+              {t('common.cancel')}
+            </Button>
+            <Button 
+              onClick={handleOtpSubmit} 
+              loading={loading}
+              disabled={!otpToken}
+            >
+              {t('otp.verify')}
+            </Button>
+          </Group>
+        </Stack>
+      </Modal>
     </Center>
   );
 }

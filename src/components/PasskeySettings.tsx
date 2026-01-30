@@ -100,7 +100,7 @@ export default function PasskeySettings() {
         })),
         timeout: options.timeout,
         attestation: options.attestation as AttestationConveyancePreference,
-        excludeCredentials: options.excludeCredentials.map((c: { id: string; type: string }) => ({
+        excludeCredentials: (options.excludeCredentials || []).map((c: { id: string; type: string }) => ({
           id: base64UrlToArrayBuffer(c.id),
           type: c.type as PublicKeyCredentialType,
         })),
@@ -142,14 +142,14 @@ export default function PasskeySettings() {
       loadCredentials();
     } catch (error: any) {
       console.error('Passkey registration error:', error);
-      
+
       let errorMessage = t('passkey.registerError');
       if (error?.name === 'InvalidStateError') {
         errorMessage = t('passkey.alreadyRegistered');
       } else if (error?.name === 'NotAllowedError') {
         errorMessage = t('passkey.cancelled');
       }
-      
+
       notifications.show({
         title: t('common.error'),
         message: errorMessage,

@@ -44,7 +44,8 @@
     "telegramAuth": "Telegram authorization",
     "telegramAuthError": "Failed to authorize via Telegram",
     "fillAllFields": "Fill in all fields",
-    "passwordsMismatch": "Passwords do not match"
+    "passwordsMismatch": "Passwords do not match",
+    "passwordAuthDisabled": "Password login is disabled. Use Passkey."
   },
   "nav": {
     "home": "Home",
@@ -204,6 +205,37 @@
     "endDate": "End date",
     "total": "Total"
   },
+  "otp": {
+    "title": "Two-Factor Authentication",
+    "description": "Protect your account with one-time codes from an authenticator app (Google Authenticator, Authy, etc.)",
+    "enabled": "Enabled",
+    "enable": "Enable 2FA",
+    "disable": "Disable 2FA",
+    "setupTitle": "Set up Two-Factor Authentication",
+    "setupInstructions": "Scan the QR code with your authenticator app or enter the secret key manually",
+    "showQrCode": "Show QR Code",
+    "scanQrCode": "Scan QR Code",
+    "orEnterManually": "or enter the key manually:",
+    "enterCode": "Enter code from app",
+    "confirmEnable": "Confirm and Enable",
+    "enableSuccess": "Two-factor authentication enabled",
+    "enabledSuccessfully": "2FA successfully enabled!",
+    "disableSuccess": "Two-factor authentication disabled",
+    "disableTitle": "Disable 2FA",
+    "disableConfirm": "To disable two-factor authentication, enter the code from the app or one of the backup codes",
+    "enterCodeOrBackup": "Code from app or backup code",
+    "codePlaceholder": "Enter code",
+    "enterValidCode": "Enter a 6-digit code",
+    "invalidCode": "Invalid code",
+    "setupError": "Failed to start 2FA setup",
+    "backupCodesDescription": "Save these backup codes in a safe place. Each code can only be used once to sign in if you don't have access to your authenticator app.",
+    "copyBackupCodes": "Copy codes",
+    "backupCodesWarning": "Warning: these codes won't be shown again!",
+    "verifyTitle": "Verify Login",
+    "verifyDescription": "Enter the code from your authenticator app to confirm login",
+    "verify": "Verify",
+    "verifyError": "Failed to verify code"
+  },
   "passkey": {
     "title": "Passkey",
     "description": "Passkey allows you to sign in using fingerprint, Face ID, or device PIN",
@@ -277,5 +309,20 @@
       "payment": "Payment / Balance",
       "other": "Other"
     }
+  },
+  "passwordAuth": {
+    "title": "Password Login",
+    "description": "Disable password login to use only Passkey for authentication. This increases your account security.",
+    "enabled": "Enabled",
+    "disabled": "Disabled",
+    "enable": "Enable password login",
+    "disable": "Disable password login",
+    "enableSuccess": "Password login enabled",
+    "enableError": "Failed to enable password login",
+    "disableSuccess": "Password login disabled",
+    "disableError": "Failed to disable password login",
+    "disableTitle": "Disable Password Login",
+    "disableConfirm": "After disabling, you will only be able to log in using Passkey. Make sure you have Passkey set up on this and other devices.",
+    "disabledInfo": "Password login is disabled. You can only log in using Passkey."
   }
 }

@@ -73,3 +73,16 @@ export function parseAndSavePartnerId(): void {
     window.history.replaceState({}, '', newUrl);
   }
 }
+
+export function parseAndSaveSessionId(): void {
+  const urlParams = new URLSearchParams(window.location.search);
+  const sessionId = urlParams.get('session_id');
+  if (sessionId) {
+    setCookie(sessionId);
+    // Remove session_id from URL
+    urlParams.delete('session_id');
+    const newSearch = urlParams.toString();
+    const newUrl = window.location.pathname + (newSearch ? '?' + newSearch : '') + window.location.hash;
+    window.history.replaceState({}, '', newUrl);
+  }
+}

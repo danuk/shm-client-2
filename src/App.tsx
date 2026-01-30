@@ -9,11 +9,13 @@ import { IconSun, IconMoon, IconLogout, IconHeadset } from '@tabler/icons-react'
 import { useTranslation } from 'react-i18next';
 import { useStore } from './store/useStore';
 import { NAV_ITEMS } from './constants/navigation';
-import { auth } from './api/client';
-import { getCookie, removeCookie, parseAndSavePartnerId } from './api/cookie';
+import { auth, otpApi } from './api/client';
+import { getCookie, removeCookie, parseAndSavePartnerId, parseAndSaveSessionId } from './api/cookie';
 import { config } from './config';
 import LanguageSwitcher from './components/LanguageSwitcher';
+import OtpVerifyModal from './components/OtpVerifyModal';
 
+parseAndSaveSessionId();
 parseAndSavePartnerId();
 
 import Services from './pages/Services';
@@ -196,6 +198,7 @@ function AppContent() {
   const navigate = useNavigate();
   const { user, isAuthenticated, isLoading, setUser, setIsLoading, logout } = useStore();
   const [isTelegramWebApp] = useState(isInsideTelegramWebApp);
+  const [otpRequired, setOtpRequired] = useState(false);
   const { t } = useTranslation();
 
   const handleSupportLink = () => {
@@ -262,6 +265,18 @@ function AppContent() {
         const responseData = response.data.data;
         const userData = Array.isArray(responseData) ? responseData[0] : responseData;
         setUser(userData);
+
+        // Проверяем статус OTP
+        try {
+          const otpResponse = await otpApi.status();
+          const otpData = otpResponse.data.data;
+          const otpStatus = Array.isArray(otpData) ? otpData[0] : otpData;
+          if (otpStatus?.required) {
+            setOtpRequired(true);
+          }
+        } catch {
+          // OTP не настроен или ошибка - продолжаем без проверки
+        }
       } catch {
         removeCookie();
       } finally {
@@ -286,13 +301,29 @@ function AppContent() {
     return <Login />;
   }
 
+  // Handle OTP verification
+  const handleOtpVerified = () => {
+    setOtpRequired(false);
+  };
+
+  const handleOtpCancel = () => {
+    logout();
+    setOtpRequired(false);
+  };
+
   // WebApp layout - без боковой панели, с нижней навигацией
   if (isTelegramWebApp) {
     return (
-      <Box style={{ minHeight: '100vh', paddingBottom: 100 }}>
-        <WebAppHeader />
-        <Box px="md">
-          <Routes>
+      <>
+        <OtpVerifyModal
+          opened={otpRequired}
+          onClose={handleOtpCancel}
+          onVerified={handleOtpVerified}
+        />
+        <Box style={{ minHeight: '100vh', paddingBottom: 100 }}>
+          <WebAppHeader />
+          <Box px="md">
+            <Routes>
             <Route path="/services" element={<Services />} />
             <Route path="/tickets" element={<Tickets />} />
             <Route path="/payments" element={<Payments />} />
@@ -302,6 +333,7 @@ function AppContent() {
         </Box>
         <BottomNavigation />
       </Box>
+      </>
     );
   }
 
@@ -395,6 +427,12 @@ function AppContent() {
           <Route path="*" element={<Profile />} />
         </Routes>
       </AppShell.Main>
+
+      <OtpVerifyModal
+        opened={otpRequired}
+        onClose={handleOtpCancel}
+        onVerified={handleOtpVerified}
+      />
     </AppShell>
   );
 }

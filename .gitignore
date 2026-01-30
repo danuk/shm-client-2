@@ -33,3 +33,5 @@ coverage/
 
 # GitHub Actions
 .github/*
+
+vite.config-s.ts

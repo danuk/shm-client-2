@@ -38,14 +38,26 @@ api.interceptors.response.use(
 );
 
 export const auth = {
-  login: async (username: string, password: string) => {
-    const response = await api.post('/user/auth', { login: username, password });
+  login: async (username: string, password: string, otpToken?: string) => {
+    const response = await api.post('/user/auth', {
+      login: username,
+      password,
+      ...(otpToken ? { otp_token: otpToken } : {})
+    });
+
+    // Проверяем, требуется ли OTP
+    if (response.data?.otp_required) {
+      return { otpRequired: true };
+    }
+
     const sessionId = response.data?.session_id || response.data?.id;
     if (sessionId) {
       setCookie(sessionId);
     }
-    return api.get('/user');
+    return { otpRequired: false };
   },
+
+  getCurrentUser: () => api.get('/user'),
 
   logout: () => {
     removeCookie();
@@ -91,8 +103,6 @@ export const auth = {
     }
     return response;
   },
-
-  getCurrentUser: () => api.get('/user'),
 };
 
 // User API
@@ -217,4 +227,39 @@ export const ticketApi = {
       data: string
     }>) => api.post(`/user/ticket/${ticketId}`, { message, media }),
   close: (ticketId: number) => api.delete(`/user/ticket/${ticketId}`),
+};
+
+// OTP (2FA) API
+export interface OtpStatus {
+  enabled: boolean;
+  verified: boolean;
+  required: boolean;
+  last_verified?: string;
+}
+
+export interface OtpSetupResponse {
+  qr_url: string;
+  secret: string;
+  backup_codes: string[];
+}
+
+export const otpApi = {
+  status: () => api.get<{ data: OtpStatus }>('/user/otp'),
+  setup: () => api.post<{ data: OtpSetupResponse }>('/user/otp/setup'),
+  enable: (token: string) => api.put('/user/otp', { token }),
+  disable: (token: string) => api.delete('/user/otp', { params: { token } }),
+  verify: (token: string) => api.post('/user/otp', { token }),
+};
+
+// Password Auth API
+export interface PasswordAuthStatus {
+  password_auth_disabled: number;
+  passkey_enabled: number;
+  otp_enabled: number;
+}
+
+export const passwordAuthApi = {
+  status: () => api.get<{ data: PasswordAuthStatus }>('/user/password-auth'),
+  disable: () => api.delete('/user/password-auth'),
+  enable: () => api.post('/user/password-auth'),
 };

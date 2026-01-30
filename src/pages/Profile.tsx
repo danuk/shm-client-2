@@ -8,6 +8,8 @@ import PayModal from '../components/PayModal';
 import PromoModal from '../components/PromoModal';
 import ConfirmModal from '../components/ConfirmModal';
 import PasskeySettings from '../components/PasskeySettings';
+import OtpSettings from '../components/OtpSettings';
+import PasswordAuthSettings from '../components/PasswordAuthSettings';
 import { useStore } from '../store/useStore';
 
 interface UserProfile {
@@ -461,6 +463,10 @@ export default function Profile() {
       </Card>
 
       <PasskeySettings />
+
+      <OtpSettings />
+
+      <PasswordAuthSettings />
 
       <Card withBorder radius="md" p="lg">
         <Text fw={500} mb="md">{t('profile.security')}</Text>
