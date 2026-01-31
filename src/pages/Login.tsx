@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Card, Text, Stack, Button, TextInput, PasswordInput, Divider, Title, Center, Modal, Group } from '@mantine/core';
-import { IconLogin, IconUserPlus, IconFingerprint, IconShieldLock } from '@tabler/icons-react';
+import { IconLogin, IconUserPlus, IconFingerprint, IconShieldLock, IconBrandTelegram } from '@tabler/icons-react';
 import { notifications } from '@mantine/notifications';
 import { useTranslation } from 'react-i18next';
 import { auth, passkeyApi } from '../api/client';
@@ -93,6 +93,7 @@ export default function Login() {
 
   // Виджет показываем только если НЕ внутри WebApp
   const hasTelegramWidget = !isInsideTelegramWebApp && !!config.TELEGRAM_BOT_NAME && config.TELEGRAM_BOT_AUTH_ENABLE === 'true';
+  const hasTelegramWebAppAuth = isInsideTelegramWebApp && config.TELEGRAM_WEBAPP_AUTH_ENABLE === 'true';
 
   const handleLogin = async (otpTokenParam?: string) => {
     if (!formData.login || !formData.password) {
@@ -185,6 +186,35 @@ export default function Login() {
       // Сохраняем фото из данных Telegram виджета
       if (telegramUser.photo_url) {
         setTelegramPhoto(telegramUser.photo_url);
+      }
+
+      notifications.show({ title: t('common.success'), message: t('auth.telegramAuth'), color: 'green' });
+    } catch {
+      notifications.show({ title: t('common.error'), message: t('auth.telegramAuthError'), color: 'red' });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleTelegramWebAppAuth = async () => {
+    const tgWebApp = window.Telegram?.WebApp;
+    if (!tgWebApp?.initData) {
+      notifications.show({ title: t('common.error'), message: t('auth.telegramAuthError'), color: 'red' });
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const profile = config.TELEGRAM_WEBAPP_PROFILE || '';
+      await auth.telegramWebAppAuth(tgWebApp.initData, profile);
+
+      const userResponse = await auth.getCurrentUser();
+      const responseData = userResponse.data.data;
+      const userData = Array.isArray(responseData) ? responseData[0] : responseData;
+      setUser(userData);
+
+      if (tgWebApp.initDataUnsafe?.user?.photo_url) {
+        setTelegramPhoto(tgWebApp.initDataUnsafe.user.photo_url);
       }
 
       notifications.show({ title: t('common.success'), message: t('auth.telegramAuth'), color: 'green' });
@@ -341,6 +371,21 @@ export default function Login() {
               </>
             )}
           </Text>
+
+          {hasTelegramWebAppAuth && (
+            <>
+              <Divider />
+              <Button
+                variant="outline"
+                color="blue"
+                leftSection={<IconBrandTelegram size={18} />}
+                onClick={handleTelegramWebAppAuth}
+                fullWidth
+              >
+                {t('auth.loginWithTelegram')}
+              </Button>
+            </>
+          )}
         </Stack>
       </Card>
 

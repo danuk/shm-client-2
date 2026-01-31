@@ -43,6 +43,7 @@
     "registerError": "Не удалось зарегистрироваться",
     "telegramAuth": "Авторизация через Telegram",
     "telegramAuthError": "Не удалось авторизоваться через Telegram",
+    "loginWithTelegram": "Войти через Telegram",
     "fillAllFields": "Заполните все поля",
     "passwordsMismatch": "Пароли не совпадают",
     "passwordAuthDisabled": "Вход по паролю отключён. Используйте Passkey."

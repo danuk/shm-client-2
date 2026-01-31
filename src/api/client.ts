@@ -103,6 +103,24 @@ export const auth = {
     }
     return response;
   },
+
+  telegramWebAppAuth: async (initData: string, profile: string) => {
+    const partnerId = getPartnerCookie();
+    const params = new URLSearchParams({
+      initData,
+      profile,
+      ...(partnerId && { partner_id: partnerId }),
+    });
+    const response = await api.get(`/telegram/webapp/auth?${params.toString()}`);
+    const sessionId = response.data?.session_id || response.data?.id;
+    if (sessionId) {
+      setCookie(sessionId);
+      if (partnerId) {
+        removePartnerCookie();
+      }
+    }
+    return response;
+  },
 };
 
 // User API

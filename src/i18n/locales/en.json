@@ -43,6 +43,7 @@
     "registerError": "Failed to register",
     "telegramAuth": "Telegram authorization",
     "telegramAuthError": "Failed to authorize via Telegram",
+    "loginWithTelegram": "Login with Telegram",
     "fillAllFields": "Fill in all fields",
     "passwordsMismatch": "Passwords do not match",
     "passwordAuthDisabled": "Password login is disabled. Use Passkey."
