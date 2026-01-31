@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
+import i18n from '../i18n';
 
 const STORAGE_KEY = 'isInsideTelegramWebApp';
+const SUPPORTED_LANGUAGES = ['ru', 'en'];
+const DEFAULT_LANGUAGE = 'ru';
 
-// Telegram Web App integration
 declare global {
   interface Window {
     Telegram?: {
@@ -15,6 +17,7 @@ declare global {
             last_name?: string;
             username?: string;
             photo_url?: string;
+            language_code?: string;
           };
         };
         ready: () => void;
@@ -59,6 +62,19 @@ function setStoredValue(value: boolean): void {
   }
 }
 
+function setLanguageFromTelegram(): void {
+  const tgWebApp = window.Telegram?.WebApp;
+  const languageCode = tgWebApp?.initDataUnsafe?.user?.language_code;
+
+  if (languageCode) {
+    const lang = SUPPORTED_LANGUAGES.includes(languageCode) ? languageCode : DEFAULT_LANGUAGE;
+
+    if (i18n.language !== lang) {
+      i18n.changeLanguage(lang);
+    }
+  }
+}
+
 export function useTelegramWebApp() {
   const [isInsideTelegramWebApp, setIsInsideTelegramWebApp] = useState<boolean>(() => {
     const cached = getStoredValue();
@@ -73,6 +89,10 @@ export function useTelegramWebApp() {
       const isInside = checkIsInsideTelegramWebApp();
       setIsInsideTelegramWebApp(isInside);
       setStoredValue(isInside);
+
+      if (isInside) {
+        setLanguageFromTelegram();
+      }
     };
     checkAndStore();
     const timer = setTimeout(checkAndStore, 100);

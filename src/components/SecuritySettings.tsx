@@ -60,14 +60,15 @@ export default function SecuritySettings() {
           <OtpSettings embedded />
 
           {hasTelegramWidget && (
+            <>
+              <Divider />
 
-            <Divider />
+              <PasskeySettings embedded />
 
-            <PasskeySettings embedded />
+              <Divider />
 
-            <Divider />
-
-            <PasswordAuthSettings embedded />
+              <PasswordAuthSettings embedded />
+            </>
           )}
 
           {/* Изменение пароля */}
