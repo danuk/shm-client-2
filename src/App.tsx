@@ -1,6 +1,6 @@
 import '@mantine/core/styles.css';
 import '@mantine/notifications/styles.css';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { MantineProvider, createTheme, AppShell, Group, Burger, Text, NavLink, ActionIcon, useMantineColorScheme, useComputedColorScheme, Center, Loader, Box } from '@mantine/core';
 import { Notifications } from '@mantine/notifications';
 import { useDisclosure, useMediaQuery } from '@mantine/hooks';
@@ -13,7 +13,7 @@ import { auth } from './api/client';
 import { getCookie, removeCookie, parseAndSavePartnerId, parseAndSaveSessionId } from './api/cookie';
 import { config } from './config';
 import LanguageSwitcher from './components/LanguageSwitcher';
-import { useTelegramWebApp } from './hooks/useTelegramWebApp';
+import { hasTelegramWebAppAutoAuth, isTelegramWebApp } from './constants/webapp';
 
 parseAndSaveSessionId();
 parseAndSavePartnerId();
@@ -70,10 +70,6 @@ function WebAppHeader() {
   const handleThemeToggle = () => {
     setColorScheme(computedColorScheme === 'light' ? 'dark' : 'light');
   };
-
-  const { isInsideTelegramWebApp } = useTelegramWebApp();
-  const hasTelegramWebAppAuth = isInsideTelegramWebApp && config.TELEGRAM_WEBAPP_AUTH_ENABLE === 'true';
-  const hasTelegramWebAppAutoAuth = hasTelegramWebAppAuth && config.TELEGRAM_WEBAPP_AUTO_AUTH_ENABLE === 'true';
 
   const handleSupportLink = () => {
     if (config.SUPPORT_LINK) {
@@ -197,12 +193,8 @@ function AppContent() {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, isAuthenticated, isLoading, setUser, setIsLoading, logout } = useStore();
-  const { isInsideTelegramWebApp } = useTelegramWebApp();
-  const [isTelegramWebApp] = useState(isInsideTelegramWebApp);
   const isMobile = useMediaQuery('(max-width: 768px)');
   const { t } = useTranslation();
-  const hasTelegramWebAppAuth = isInsideTelegramWebApp && config.TELEGRAM_WEBAPP_AUTH_ENABLE === 'true';
-  const hasTelegramWebAppAutoAuth = hasTelegramWebAppAuth && config.TELEGRAM_WEBAPP_AUTO_AUTH_ENABLE === 'true';
 
   const handleSupportLink = () => {
     if (config.SUPPORT_LINK) {

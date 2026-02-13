@@ -9,6 +9,7 @@ import { useStore } from '../store/useStore';
 import TelegramLoginButton, { TelegramUser } from '../components/TelegramLoginButton';
 import { config } from '../config';
 import { useTelegramWebApp } from '../hooks/useTelegramWebApp';
+import { hasTelegramWebAppAutoAuth, hasTelegramWidget, hasTelegramWebAppAuth } from '../constants/webapp';
 
 function base64UrlToArrayBuffer(base64url: string): ArrayBuffer {
   const base64 = base64url.replace(/-/g, '+').replace(/_/g, '/');
@@ -41,14 +42,10 @@ export default function Login() {
   const { setUser, setTelegramPhoto } = useStore();
   const { t } = useTranslation();
   const isWebAuthnSupported = !!window.PublicKeyCredential;
-  const { isInsideTelegramWebApp, telegramWebApp } = useTelegramWebApp();
+  const { telegramWebApp } = useTelegramWebApp();
   const autoAuthTriggeredRef = useRef(false);
   const autoAuthAttemptKey = 'tg_webapp_auto_auth_attempted';
   const autoAuthCooldownMs = 60 * 1000;
-
-  const hasTelegramWidget = !isInsideTelegramWebApp && !!config.TELEGRAM_BOT_NAME && config.TELEGRAM_BOT_AUTH_ENABLE === 'true';
-  const hasTelegramWebAppAuth = isInsideTelegramWebApp && config.TELEGRAM_WEBAPP_AUTH_ENABLE === 'true';
-  const hasTelegramWebAppAutoAuth = hasTelegramWebAppAuth && config.TELEGRAM_WEBAPP_AUTO_AUTH_ENABLE === 'true';
 
   useEffect(() => {
     if (!hasTelegramWebAppAutoAuth || autoAuthTriggeredRef.current || !telegramWebApp?.initData) {
