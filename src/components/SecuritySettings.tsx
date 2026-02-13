@@ -7,7 +7,6 @@ import { userApi } from '../api/client';
 import PasskeySettings from './PasskeySettings';
 import OtpSettings from './OtpSettings';
 import PasswordAuthSettings from './PasswordAuthSettings';
-import { config } from '../config';
 import { useTelegramWebApp } from '../hooks/useTelegramWebApp';
 
 export default function SecuritySettings() {
