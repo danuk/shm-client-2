@@ -8,6 +8,7 @@ services:
     environment:
       - SHM_URL=http://api
       # Optional: custom base path (e.g., /client)
+      # - APP_NAME='SHM Client'
       # - SHM_BASE_PATH=/
       # - TELEGRAM_BOT_NAME=your_bot
       # - TELEGRAM_BOT_AUTH_ENABLE=true
@@ -15,6 +16,8 @@ services:
       # - TELEGRAM_WEBAPP_AUTH_ENABLE=true
       # - TELEGRAM_WEBAPP_AUTO_AUTH_ENABLE=true
       # - TELEGRAM_WEBAPP_PROFILE=telegram_bot
+      # - OTP_ENABLE=true
+      # - PASSKEY_ENABLE=true
     depends_on:
       - api
     restart: unless-stopped

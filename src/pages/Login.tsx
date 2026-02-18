@@ -9,6 +9,7 @@ import { useStore } from '../store/useStore';
 import TelegramLoginButton, { TelegramUser } from '../components/TelegramLoginButton';
 import { config } from '../config';
 import { useTelegramWebApp } from '../hooks/useTelegramWebApp';
+import LanguageSwitcher from '../components/LanguageSwitcher';
 import { hasTelegramWebAppAutoAuth, hasTelegramWidget, hasTelegramWebAppAuth } from '../constants/webapp';
 
 function base64UrlToArrayBuffer(base64url: string): ArrayBuffer {
@@ -287,15 +288,19 @@ export default function Login() {
   };
 
   return (
-    <Center h="80vh">
+    <Center h="80vh" style={{ position: 'relative' }}>
       <Card withBorder radius="md" p="xl" w={400}>
         <Stack gap="lg">
-          <div>
-            <Title order={2} ta="center">{config.APP_NAME}</Title>
-            <Text size="sm" c="dimmed" ta="center">
+          <Group justify="space-between" align="center">
+            <div style={{ flex: 1 }} />
+            <Title order={2} ta="center" style={{ flex: 'auto' }}>{config.APP_NAME}</Title>
+            <div style={{ flex: 1, display: 'flex', justifyContent: 'flex-end' }}>
+              <LanguageSwitcher />
+            </div>
+          </Group>
+          <Text size="sm" c="dimmed" ta="center">
               {mode === 'login' ? t('auth.loginTitle') : t('auth.registerTitle')}
-            </Text>
-          </div>
+          </Text>
 
           {hasTelegramWebAppAuth && !showLoginForm && (
             <>

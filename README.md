@@ -33,6 +33,8 @@ services:
       - TELEGRAM_WEBAPP_AUTH_ENABLE=true
       - TELEGRAM_WEBAPP_PROFILE='telegram_bot'
       - SUPPORT_LINK=https://t.me/your_support_bot
+      - OTP_ENABLE=true
+      - PASSKEY_ENABLE=true
     depends_on:
       - api
 #   mysql:
@@ -47,12 +49,14 @@ services:
 | `SHM_HOST` | Альтернатива SHM_URL | - |
 | `SHM_BASE_PATH` | Базовый путь (например `/cabinet`) | `/` |
 | `APP_NAME` | Название приложения | `SHM Client` |
-| `TELEGRAM_BOT_NAME` | Username Telegram бота (без @) | - |
+| `TELEGRAM_BOT_NAME` | Username Telegram бота (без @) s| - |
 | `TELEGRAM_BOT_AUTH_ENABLE` | Включить авторизацию через Telegram виджет | `false` |
 | `TELEGRAM_WEBAPP_AUTH_ENABLE` | Авторизация через телеграмм вебапп | `false` |
 | `TELEGRAM_WEBAPP_PROFILE` | Название бота (профиля) в SHM | - |
 | `SUPPORT_LINK` | Ссылка на поддержку | - |
 | `RESOLVER` | DNS резолвер для nginx | `127.0.0.11` |
+| `OTP_ENABLE` | Показать настройки OTP | `true` |
+| `PASSKEY_ENABLE` | Показать настройки Passkey | `true` |
 
 ### Telegram Widget
 Для работы с авторизацией через Telegram Widget нужно в астройках бота  который указан в `TELGRAM_BOT_NAME` указать домен на котором расположена ваше приложение `shm-client`
