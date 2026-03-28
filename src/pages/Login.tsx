@@ -450,8 +450,19 @@ export default function Login() {
   };
 
   return (
-    <Center h="80vh" style={{ position: 'relative' }}>
-      <Card withBorder radius="md" p="xl" w={400}>
+    <Center
+      mih="100dvh"
+      px={{ base: 'md', sm: 0 }}
+      py={{ base: 'xl', sm: 0 }}
+      style={{ alignItems: 'center', position: 'relative' }}
+    >
+      <Card
+        withBorder
+        radius="md"
+        p={{ base: 'md', sm: 'xl' }}
+        w={{ base: '100%', sm: 400 }}
+        maw={400}
+      >
         <Stack gap="lg">
           <Group justify="space-between" align="center">
             <div style={{ flex: 1, display: 'flex', justifyContent: 'flex-start' }}>
