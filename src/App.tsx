@@ -502,6 +502,13 @@ function AppContent() {
                     </Button>
                   );
                 }
+                if (item.path === '/bonuses') {
+                  return (
+                    <Button key={item.path} leftSection={<Icon size={16} />} variant="subtle" size="xs" radius="md" onClick={() => setBonusHistoryOpen(true)}>
+                      {t(item.labelKey)}
+                    </Button>
+                  );
+                }
                 return (
                   <Button
                     key={item.path}
@@ -553,6 +560,7 @@ function AppContent() {
       </AppShell>
       <PayHistoryModal opened={payHistoryOpen} onClose={() => setPayHistoryOpen(false)} />
       <WithdrawHistoryModal opened={withdrawHistoryOpen} onClose={() => setWithdrawHistoryOpen(false)} />
+      <BonusHistoryModal opened={bonusHistoryOpen} onClose={() => setBonusHistoryOpen(false)} />
     </>
   );
 }
