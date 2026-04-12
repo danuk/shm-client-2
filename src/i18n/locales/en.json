@@ -166,7 +166,8 @@
     "partnerLink": "Partner link",
     "partnerLinkDescription": "Invite friends and receive bonuses for their orders and payments.",
     "payHistory": "Payment history",
-    "wdHistory": "Withdrawal history"
+    "wdHistory": "Withdrawal history",
+    "bonusHistory": "Bonus history"
   },
   "services": {
     "title": "My Services",
