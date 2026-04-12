@@ -17,6 +17,7 @@ import { hasTelegramWebAppAutoAuth, isTelegramWebApp } from './constants/webapp'
 import { useEmailRequired } from './hooks/useEmailRequired';
 import PayHistoryModal from './components/PayHistoryModal';
 import WithdrawHistoryModal from './components/WithdrawHistoryModal';
+import BonusHistoryModal from './components/BonusHistoryModal';
 
 parseAndSaveSessionId();
 parseAndSavePartnerId();
@@ -130,7 +131,7 @@ function WebAppHeader({ onShowVersion }: { onShowVersion?: () => void }) {
   );
 }
 
-function BottomNavigation({ onPayments, onWithdrawals }: { onPayments: () => void; onWithdrawals: () => void }) {
+function BottomNavigation({ onPayments, onWithdrawals, onBonuses }: { onPayments: () => void; onWithdrawals: () => void; onBonuses: () => void }) {
   const location = useLocation();
   const navigate = useNavigate();
   const computedColorScheme = useComputedColorScheme('light');
@@ -139,6 +140,7 @@ function BottomNavigation({ onPayments, onWithdrawals }: { onPayments: () => voi
   const handleClick = (path: string) => {
     if (path === '/payments') { onPayments(); }
     else if (path === '/withdrawals') { onWithdrawals(); }
+    else if (path === '/bonuses') { onBonuses(); }
     else { navigate(path); }
   };
 
@@ -232,6 +234,7 @@ function AppContent() {
 
   const [payHistoryOpen, setPayHistoryOpen] = useState(false);
   const [withdrawHistoryOpen, setWithdrawHistoryOpen] = useState(false);
+  const [bonusHistoryOpen, setBonusHistoryOpen] = useState(false);
   const [versionOpen, setVersionOpen] = useState(false);
   const showVersion = () => setVersionOpen(true);
   const longPressProps = useLongPress(showVersion);
@@ -430,10 +433,11 @@ function AppContent() {
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Box>
-          <BottomNavigation onPayments={() => setPayHistoryOpen(true)} onWithdrawals={() => setWithdrawHistoryOpen(true)} />
+          <BottomNavigation onPayments={() => setPayHistoryOpen(true)} onWithdrawals={() => setWithdrawHistoryOpen(true)} onBonuses={() => setBonusHistoryOpen(true)} />
         </Box>
         <PayHistoryModal opened={payHistoryOpen} onClose={() => setPayHistoryOpen(false)} />
         <WithdrawHistoryModal opened={withdrawHistoryOpen} onClose={() => setWithdrawHistoryOpen(false)} />
+        <BonusHistoryModal opened={bonusHistoryOpen} onClose={() => setBonusHistoryOpen(false)} />
       </>
     );
   }
@@ -498,6 +502,13 @@ function AppContent() {
                     </Button>
                   );
                 }
+                if (item.path === '/bonuses') {
+                  return (
+                    <Button key={item.path} leftSection={<Icon size={16} />} variant="subtle" size="xs" radius="md" onClick={() => setBonusHistoryOpen(true)}>
+                      {t(item.labelKey)}
+                    </Button>
+                  );
+                }
                 return (
                   <Button
                     key={item.path}
@@ -549,6 +560,7 @@ function AppContent() {
       </AppShell>
       <PayHistoryModal opened={payHistoryOpen} onClose={() => setPayHistoryOpen(false)} />
       <WithdrawHistoryModal opened={withdrawHistoryOpen} onClose={() => setWithdrawHistoryOpen(false)} />
+      <BonusHistoryModal opened={bonusHistoryOpen} onClose={() => setBonusHistoryOpen(false)} />
     </>
   );
 }

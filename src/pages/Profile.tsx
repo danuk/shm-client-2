@@ -8,6 +8,9 @@ import { userApi, telegramApi, userEmailApi } from '../api/client';
 import { encodePartnerIdBase64url } from '../api/cookie';
 import PayModal from '../components/PayModal';
 import PromoModal from '../components/PromoModal';
+import PayHistoryModal from '../components/PayHistoryModal';
+import WithdrawHistoryModal from '../components/WithdrawHistoryModal';
+import BonusHistoryModal from '../components/BonusHistoryModal';
 import SecuritySettings from '../components/security/SecuritySettings';
 import { useStore } from '../store/useStore';
 import { config } from '../config';
@@ -72,6 +75,9 @@ export default function Profile() {
   const [payModalOpen, setPayModalOpen] = useState(false);
   const [payModalAmount, setPayModalAmount] = useState<number | undefined>(undefined);
   const [promoModalOpen, setPromoModalOpen] = useState(false);
+  const [payHistoryOpen, setPayHistoryOpen] = useState(false);
+  const [withdrawHistoryOpen, setWithdrawHistoryOpen] = useState(false);
+  const [bonusHistoryOpen, setBonusHistoryOpen] = useState(false);
   const [telegramModalOpen, setTelegramModalOpen] = useState(false);
   const [telegramInput, setTelegramInput] = useState('');
   const [telegramSaving, setTelegramSaving] = useState(false);
@@ -463,6 +469,20 @@ export default function Profile() {
               </Button>
             </Group>
 
+            <Divider my="md" />
+
+            <Stack gap="xs">
+              <Button variant="light" onClick={() => setPayHistoryOpen(true)}>
+                {t('profile.payHistory')}
+              </Button>
+              <Button variant="light" onClick={() => setWithdrawHistoryOpen(true)}>
+                {t('profile.wdHistory')}
+              </Button>
+              <Button variant="light" onClick={() => setBonusHistoryOpen(true)}>
+                {t('profile.bonusHistory')}
+              </Button>
+            </Stack>
+
           </Card>
 
         </Grid.Col>
@@ -690,6 +710,9 @@ export default function Profile() {
         onClose={() => setPromoModalOpen(false)}
         onSuccess={refreshProfile}
       />
+      <PayHistoryModal opened={payHistoryOpen} onClose={() => setPayHistoryOpen(false)} />
+      <WithdrawHistoryModal opened={withdrawHistoryOpen} onClose={() => setWithdrawHistoryOpen(false)} />
+      <BonusHistoryModal opened={bonusHistoryOpen} onClose={() => setBonusHistoryOpen(false)} />
 
       <Modal
         opened={telegramModalOpen}

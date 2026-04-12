@@ -90,7 +90,8 @@
     "services": "Услуги",
     "tickets": "Поддержка",
     "payments": "Платежи",
-    "withdrawals": "Списания"
+    "withdrawals": "Списания",
+    "bonuses": "Бонусы"
   },
   "profile": {
     "title": "Профиль",
@@ -165,7 +166,8 @@
     "partnerLink": "Партнёрская ссылка",
     "partnerLinkDescription": "Приглашайте друзей и получайте бонусы за их заказы и платежи.",
     "payHistory": "История платежей",
-    "wdHistory": "История списаний"
+    "wdHistory": "История списаний",
+    "bonusHistory": "История бонусов"
   },
   "services": {
     "title": "Мои услуги",
@@ -304,6 +306,12 @@
     "withdrawDate": "Дата списания",
     "endDate": "Дата окончания",
     "total": "Итого"
+  },
+  "bonuses": {
+    "historyTitle": "История бонусов",
+    "historyEmpty": "История бонусов пуста",
+    "date": "Дата операции",
+    "amount": "Бонусы"
   },
   "apps": {
     "downloadTitle": "Скачать приложение",
