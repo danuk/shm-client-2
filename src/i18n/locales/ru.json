@@ -90,7 +90,8 @@
     "services": "Услуги",
     "tickets": "Поддержка",
     "payments": "Платежи",
-    "withdrawals": "Списания"
+    "withdrawals": "Списания",
+    "bonuses": "Бонусы"
   },
   "profile": {
     "title": "Профиль",
@@ -304,6 +305,12 @@
     "withdrawDate": "Дата списания",
     "endDate": "Дата окончания",
     "total": "Итого"
+  },
+  "bonuses": {
+    "historyTitle": "История бонусов",
+    "historyEmpty": "История бонусов пуста",
+    "date": "Дата операции",
+    "amount": "Бонусы"
   },
   "apps": {
     "downloadTitle": "Скачать приложение",
