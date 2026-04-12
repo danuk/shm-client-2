@@ -90,7 +90,8 @@
     "services": "Services",
     "tickets": "Support",
     "payments": "Payments",
-    "withdrawals": "Withdrawals"
+    "withdrawals": "Withdrawals",
+    "bonuses": "Bonuses"
   },
   "profile": {
     "title": "Profile",
@@ -165,7 +166,8 @@
     "partnerLink": "Partner link",
     "partnerLinkDescription": "Invite friends and receive bonuses for their orders and payments.",
     "payHistory": "Payment history",
-    "wdHistory": "Withdrawal history"
+    "wdHistory": "Withdrawal history",
+    "bonusHistory": "Bonus history"
   },
   "services": {
     "title": "My Services",
@@ -304,6 +306,12 @@
     "withdrawDate": "Withdrawal date",
     "endDate": "End date",
     "total": "Total"
+  },
+  "bonuses": {
+    "historyTitle": "Bonus history",
+    "historyEmpty": "Bonus history is empty",
+    "date": "Operation date",
+    "amount": "Bonuses"
   },
   "apps": {
     "downloadTitle": "Download app",
