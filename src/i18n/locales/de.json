@@ -27,7 +27,10 @@
     "months3": "3 Monate",
     "months6": "6 Monate",
     "year": "Jahr",
-    "pieces": "Stk."
+    "pieces": "Stk.",
+    "privacyPolicy": "Datenschutzrichtlinie",
+    "termsOfUse": "Nutzungsbedingungen",
+    "publicOffer": "Öffentliches Angebot"
   },
   "auth": {
     "login": "Anmelden",

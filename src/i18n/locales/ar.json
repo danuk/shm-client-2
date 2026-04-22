@@ -27,7 +27,10 @@
     "months3": "3 أشهر",
     "months6": "6 أشهر",
     "year": "سنة",
-    "pieces": "قطعة."
+    "pieces": "قطعة.",
+    "privacyPolicy": "سياسة الخصوصية",
+    "termsOfUse": "شروط الاستخدام",
+    "publicOffer": "العرض العام"
   },
   "auth": {
     "login": "تسجيل الدخول",

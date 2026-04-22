@@ -27,7 +27,10 @@
     "months3": "3 meses",
     "months6": "6 meses",
     "year": "año",
-    "pieces": "uds."
+    "pieces": "uds.",
+    "privacyPolicy": "Política de privacidad",
+    "termsOfUse": "Términos de uso",
+    "publicOffer": "Oferta pública"
   },
   "auth": {
     "login": "Iniciar sesión",

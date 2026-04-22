@@ -27,7 +27,10 @@
     "months3": "3 oy",
     "months6": "6 oy",
     "year": "yil",
-    "pieces": "dona."
+    "pieces": "dona.",
+    "privacyPolicy": "Maxfiylik siyosati",
+    "termsOfUse": "Foydalanish shartlari",
+    "publicOffer": "Ommaviy oferta"
   },
   "auth": {
     "login": "Kirish",

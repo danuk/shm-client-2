@@ -9,6 +9,9 @@ interface AppConfig {
   TELEGRAM_WEBAPP_AUTO_AUTH_ENABLE: string;
   TELEGRAM_WEBAPP_PROFILE: string;
   SUPPORT_LINK: string;
+  PRIVACY_POLICY_URL: string;
+  TERMS_OF_USE_URL: string;
+  PUBLIC_OFFER_URL: string;
   DEFAULT_LANGUAGE: string;
   SHM_BASE_PATH: string;
   OTP_ENABLE: string;
@@ -85,6 +88,9 @@ function getConfig(): AppConfig {
     TELEGRAM_WEBAPP_AUTO_AUTH_ENABLE: runtimeConfig?.TELEGRAM_WEBAPP_AUTO_AUTH_ENABLE || import.meta.env.VITE_TELEGRAM_WEBAPP_AUTO_AUTH_ENABLE || 'false',
     TELEGRAM_WEBAPP_PROFILE: runtimeConfig?.TELEGRAM_WEBAPP_PROFILE || import.meta.env.VITE_TELEGRAM_WEBAPP_PROFILE || '',
     SUPPORT_LINK: runtimeConfig?.SUPPORT_LINK || import.meta.env.VITE_SUPPORT_LINK || '',
+    PRIVACY_POLICY_URL: runtimeConfig?.PRIVACY_POLICY_URL || import.meta.env.VITE_PRIVACY_POLICY_URL || '',
+    TERMS_OF_USE_URL: runtimeConfig?.TERMS_OF_USE_URL || import.meta.env.VITE_TERMS_OF_USE_URL || '',
+    PUBLIC_OFFER_URL: runtimeConfig?.PUBLIC_OFFER_URL || import.meta.env.VITE_PUBLIC_OFFER_URL || '',
     DEFAULT_LANGUAGE: runtimeConfig?.DEFAULT_LANGUAGE || import.meta.env.VITE_DEFAULT_LANGUAGE || 'ru',
     SHM_BASE_PATH: runtimeConfig?.SHM_BASE_PATH || import.meta.env.VITE_SHM_BASE_PATH || '/',
     OTP_ENABLE: runtimeConfig?.OTP_ENABLE || import.meta.env.VITE_OTP_ENABLE || 'true',

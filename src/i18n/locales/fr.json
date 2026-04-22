@@ -27,7 +27,10 @@
     "months3": "3 mois",
     "months6": "6 mois",
     "year": "an",
-    "pieces": "pcs."
+    "pieces": "pcs.",
+    "privacyPolicy": "Politique de confidentialité",
+    "termsOfUse": "Conditions d'utilisation",
+    "publicOffer": "Offre publique"
   },
   "auth": {
     "login": "Se connecter",

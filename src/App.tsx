@@ -26,6 +26,37 @@ import Profile from './pages/Profile';
 import Login from './pages/Login';
 import NotFound from './pages/NotFound';
 
+function LegalLinks() {
+  const { t } = useTranslation();
+
+  const links = [
+    { href: config.PRIVACY_POLICY_URL, label: t('common.privacyPolicy') },
+    { href: config.TERMS_OF_USE_URL, label: t('common.termsOfUse') },
+    { href: config.PUBLIC_OFFER_URL, label: t('common.publicOffer') },
+  ].filter((link) => Boolean(link.href));
+
+  if (links.length === 0) return null;
+
+  return (
+    <Group justify="center" gap="md" wrap="wrap" py="sm">
+      {links.map((link) => (
+        <Text
+          key={link.href}
+          component="a"
+          href={link.href}
+          target="_blank"
+          rel="noopener noreferrer"
+          size="xs"
+          c="dimmed"
+          td="underline"
+        >
+          {link.label}
+        </Text>
+      ))}
+    </Group>
+  );
+}
+
 const theme = createTheme({
   primaryColor: 'blue',
   fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif',
@@ -98,7 +129,6 @@ function WebAppHeader({ onShowVersion }: { onShowVersion?: () => void }) {
 
   return (
     <Group justify="flex-end" p="sm" gap="xs">
-     <Text size="sm" style={{ cursor: 'pointer' }} onClick={() => navigate('/')} {...longPressProps}>{user?.login}</Text>
      { config.SUPPORT_LINK &&  <ActionIcon
         onClick={handleSupportLink}
         variant="subtle"
@@ -421,7 +451,7 @@ function AppContent() {
         {emailRequiredModal}
         {verifyRequiredModal}
         {versionModal}
-        <Box style={{ minHeight: '100vh', paddingBottom: 100 }}>
+        <Box style={{ minHeight: '100vh', paddingBottom: 150 }}>
           <WebAppHeader onShowVersion={showVersion} />
           <Box px="md">
             <Routes>
@@ -430,6 +460,7 @@ function AppContent() {
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Box>
+          <LegalLinks />
           <BottomNavigation onPayments={() => setPayHistoryOpen(true)} onWithdrawals={() => setWithdrawHistoryOpen(true)} />
         </Box>
         <PayHistoryModal opened={payHistoryOpen} onClose={() => setPayHistoryOpen(false)} />
@@ -514,7 +545,6 @@ function AppContent() {
               })}
             </Group>
             <Group>
-              <Text size="sm" style={{ cursor: 'pointer' }} onClick={() => navigate('/profile')}>{user?.login}</Text>
               { config.SUPPORT_LINK &&  <ActionIcon
                 onClick={handleSupportLink}
                 variant="subtle"
@@ -545,6 +575,7 @@ function AppContent() {
             <Route path="/profile" element={<Profile />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
+          <LegalLinks />
         </AppShell.Main>
       </AppShell>
       <PayHistoryModal opened={payHistoryOpen} onClose={() => setPayHistoryOpen(false)} />

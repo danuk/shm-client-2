@@ -45,6 +45,9 @@ services:
 | `TELEGRAM_WEBAPP_AUTO_AUTH_ENABLE` | Автоматическая авторизация через телеграмм вебапп | `false` |
 | `TELEGRAM_WEBAPP_PROFILE` | Название бота (профиля) в SHM | - |
 | `SUPPORT_LINK` | Ссылка на поддержку | - |
+| `PRIVACY_POLICY_URL` | Ссылка на `Политика конфиденциальности` | - |
+| `TERMS_OF_USE_URL` | Ссылка на `Условия использования` | - |
+| `PUBLIC_OFFER_URL` | Ссылка на `Договор оферты` | - |
 | `DEFAULT_LANGUAGE` | Язык системы по умолчанию | ru |
 | `OTP_ENABLE` | Показать настройки OTP | `true` |
 | `PASSKEY_ENABLE` | Показать настройки Passkey | `true` |
