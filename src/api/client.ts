@@ -70,13 +70,18 @@ export const auth = {
     photo_url?: string;
     auth_date: number;
     hash: string;
+    bind_to_profile?: number;
+    uid?: number;
+    register_if_not_exists?: number;
   }) => {
     const partnerId = getPartnerCookie();
     const response = await api.post('/telegram/web/auth', {
       ...userData,
-      register_if_not_exists: 1,
       profile: config.TELEGRAM_BOT_AUTH_PROFILE,
       ...(partnerId && { partner_id: partnerId }),
+      ...(userData.bind_to_profile && { bind_to_profile: userData.bind_to_profile }),
+      ...(userData.uid && { uid: userData.uid }),
+      ...(userData.register_if_not_exists && { register_if_not_exists: userData.register_if_not_exists }),
     });
     const sessionId = response.data?.session_id || response.data?.id;
     if (sessionId) {

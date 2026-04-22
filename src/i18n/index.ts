@@ -5,10 +5,20 @@ import { config } from '../config';
 
 import en from './locales/en.json';
 import ru from './locales/ru.json';
+import de from './locales/de.json';
+import es from './locales/es.json';
+import fr from './locales/fr.json';
+import uz from './locales/uz.json';
+import ar from './locales/ar.json';
 
 const resources = {
   en: { translation: en },
   ru: { translation: ru },
+  de: { translation: de },
+  es: { translation: es },
+  fr: { translation: fr },
+  uz: { translation: uz },
+  ar: { translation: ar },
 };
 
 i18n
@@ -17,7 +27,7 @@ i18n
   .init({
     resources,
     fallbackLng: config.DEFAULT_LANGUAGE,
-    supportedLngs: ['en', 'ru'],
+    supportedLngs: ['en', 'ru', 'de', 'es', 'fr', 'uz', 'ar'],
 
     detection: {
       order: ['localStorage', 'navigator', 'htmlTag'],

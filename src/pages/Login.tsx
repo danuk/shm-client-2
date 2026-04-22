@@ -311,7 +311,10 @@ export default function Login() {
   const handleTelegramWidgetAuth = async (telegramUser: TelegramUser) => {
     setLoading(true);
     try {
-      await auth.telegramWidgetAuth(telegramUser);
+      await auth.telegramWidgetAuth({
+          ...telegramUser,
+          register_if_not_exists: 1,
+        });
       const userResponse = await auth.getCurrentUser();
       const responseData = userResponse.data.data;
       const userData = Array.isArray(responseData) ? responseData[0] : responseData;
