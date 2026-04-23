@@ -100,10 +100,9 @@ function ThemeToggle() {
   );
 }
 
-function WebAppHeader({ onShowVersion }: { onShowVersion?: () => void }) {
+function WebAppHeader() {
   const navigate = useNavigate();
-  const { logout, user } = useStore();
-  const longPressProps = useLongPress(onShowVersion ?? (() => {}));
+  const { logout } = useStore();
   const computedColorScheme = useComputedColorScheme('light');
   const { setColorScheme } = useMantineColorScheme();
 
@@ -237,7 +236,7 @@ function BottomNavigation({ onPayments, onWithdrawals }: { onPayments: () => voi
 function AppContent() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { user, userEmail, isAuthenticated, isLoading, setUser, setIsLoading, logout } = useStore();
+  const { userEmail, isAuthenticated, isLoading, setUser, setIsLoading, logout } = useStore();
   const isMobile = useMediaQuery('(max-width: 768px)');
   const { t } = useTranslation();
   const {
@@ -452,7 +451,7 @@ function AppContent() {
         {verifyRequiredModal}
         {versionModal}
         <Box style={{ minHeight: '100vh', paddingBottom: 150 }}>
-          <WebAppHeader onShowVersion={showVersion} />
+          <WebAppHeader />
           <Box px="md">
             <Routes>
               <Route path="/" element={<Services />} />

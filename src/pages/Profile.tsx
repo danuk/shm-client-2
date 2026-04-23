@@ -428,13 +428,31 @@ export default function Profile() {
             <Divider my="md" />
 
             <Group>
-              <div style={{ maxWidth: '80%' }}>
-                <Text size="sm"> {partnerLink}
+              <div style={{ maxWidth: '80%', width: '100%' }}>
+                <Group wrap="nowrap" gap="xs" align="center">
+                  <Text
+                    size="sm"
+                    style={{
+                      flex: 1,
+                      minWidth: 0,
+                      whiteSpace: 'nowrap',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                    }}
+                  >
+                    {partnerLink}
+                  </Text>
                   <Tooltip label={clipboardLink.copied ? t('common.copied') : t('common.copy')}>
-                    <ActionIcon color={clipboardLink.copied ? 'teal' : 'gray'} variant="subtle" onClick={() => clipboardLink.copy(partnerLink)}>                      {clipboardLink.copied ? <IconCheck size={16} /> : <IconCopy size={16} />}
+                    <ActionIcon
+                      color={clipboardLink.copied ? 'teal' : 'gray'}
+                      variant="subtle"
+                      onClick={() => clipboardLink.copy(partnerLink)}
+                      style={{ flexShrink: 0 }}
+                    >
+                      {clipboardLink.copied ? <IconCheck size={16} /> : <IconCopy size={16} />}
                     </ActionIcon>
                   </Tooltip>
-                </Text>
+                </Group>
                 <Text size="xs" c="dimmed">{t('profile.partnerLinkDescription')}</Text>
               </div>
             </Group>
