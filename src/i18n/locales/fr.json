@@ -87,7 +87,9 @@
     "resetPasswordButton": "Réinitialiser le mot de passe",
     "passwordResetSuccess": "Mot de passe réinitialisé avec succès. Veuillez vous connecter.",
     "invalidResetToken": "Jeton de réinitialisation invalide ou expiré.",
-    "verifyingToken": "Vérification du jeton..."
+    "verifyingToken": "Vérification du jeton...",
+    "acceptLegal": "J'accepte",
+    "acceptDocumentsRequired": "Pour continuer, veuillez accepter les documents juridiques"
   },
   "nav": {
     "home": "Accueil",

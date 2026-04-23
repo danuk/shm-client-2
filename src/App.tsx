@@ -352,7 +352,14 @@ function AppContent() {
   }
 
   if (!isAuthenticated) {
-    return <Login />;
+    return (
+      <Box style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+        <Box style={{ flex: 1 }}>
+          <Login />
+          <LegalLinks />
+        </Box>
+      </Box>
+    );
   }
 
   const emailRequiredModal = (

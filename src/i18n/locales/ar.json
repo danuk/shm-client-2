@@ -87,7 +87,9 @@
     "resetPasswordButton": "إعادة تعيين كلمة المرور",
     "passwordResetSuccess": "تم إعادة تعيين كلمة المرور بنجاح. يرجى تسجيل الدخول.",
     "invalidResetToken": "رمز إعادة التعيين غير صالح أو منتهي الصلاحية.",
-    "verifyingToken": "جارٍ التحقق من الرمز..."
+    "verifyingToken": "جارٍ التحقق من الرمز...",
+    "acceptLegal": "أوافق على",
+    "acceptDocumentsRequired": "للمتابعة، يرجى قبول المستندات القانونية"
   },
   "nav": {
     "home": "الرئيسية",

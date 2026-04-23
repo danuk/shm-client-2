@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Card, Text, Stack, Button, ActionIcon, TextInput, PasswordInput, Divider, Title, Center, Modal, Group, Loader, useMantineColorScheme, useComputedColorScheme } from '@mantine/core';
+import { Card, Text, Stack, Button, ActionIcon, TextInput, PasswordInput, Divider, Title, Center, Modal, Group, Loader, useMantineColorScheme, useComputedColorScheme, Checkbox } from '@mantine/core';
 import { useForm, isEmail, hasLength } from '@mantine/form';
 import { IconLogin, IconUserPlus, IconHeadset, IconFingerprint, IconShieldLock, IconBrandTelegram, IconMailForward, IconLock, IconMoon, IconSun} from '@tabler/icons-react';
 import { notifications } from '@mantine/notifications';
@@ -71,6 +71,7 @@ export default function Login() {
   const [showNewPasswordForm, setShowNewPasswordForm] = useState(false);
   const [resetToken, setResetToken] = useState<string | null>(null);
   const [newPasswordData, setNewPasswordData] = useState({ password: '', confirmPassword: '' });
+  const [acceptedLegal, setAcceptedLegal] = useState(false);
   const [verifyingToken, setVerifyingToken] = useState(false);
   const { setUser, setTelegramPhoto } = useStore();
   const { t } = useTranslation();
@@ -105,6 +106,12 @@ export default function Login() {
   const autoAuthTriggeredRef = useRef(false);
   const autoAuthAttemptKey = 'tg_webapp_auto_auth_attempted';
   const autoAuthCooldownMs = 60 * 1000;
+  const legalLinks = [
+    { href: config.PRIVACY_POLICY_URL, label: t('common.privacyPolicy') },
+    { href: config.TERMS_OF_USE_URL, label: t('common.termsOfUse') },
+    { href: config.PUBLIC_OFFER_URL, label: t('common.publicOffer') },
+  ].filter((link) => Boolean(link.href));
+  const hasLegalLinks = legalLinks.length > 0;
 
   const fetchCaptcha = async () => {
     try {
@@ -123,6 +130,12 @@ export default function Login() {
       setCaptchaAnswer('');
     }
   }, [mode]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (mode !== 'register') {
+      setAcceptedLegal(false);
+    }
+  }, [mode]);
 
   useEffect(() => {
     if (!hasTelegramWebAppAutoAuth || autoAuthTriggeredRef.current || !telegramWebApp?.initData) {
@@ -259,6 +272,11 @@ export default function Login() {
   const handleRegister = async () => {
     const { hasErrors } = form.validate();
     if (hasErrors) return;
+
+    if (hasLegalLinks && !acceptedLegal) {
+      notifications.show({ title: t('common.error'), message: t('auth.acceptDocumentsRequired'), color: 'red' });
+      return;
+    }
 
     const { login, password } = form.values;
     if (!login || !password) {
@@ -594,10 +612,42 @@ export default function Login() {
                       />
                     </Group>
                   )}
+                  {mode === 'register' && hasLegalLinks && (
+                    <Checkbox
+                      checked={acceptedLegal}
+                      onChange={(e) => setAcceptedLegal(e.currentTarget.checked)}
+                      label={
+                        <Text size="sm">
+                          {t('auth.acceptLegal')}{' '}
+                          {legalLinks.map((link, index) => (
+                            <Text
+                              key={link.href}
+                              component="span"
+                              size="sm"
+                            >
+                              {index > 0 ? ', ' : ''}
+                              <Text
+                                component="a"
+                                href={link.href}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                c="blue"
+                                td="underline"
+                                size="sm"
+                              >
+                                {link.label}
+                              </Text>
+                            </Text>
+                          ))}
+                        </Text>
+                      }
+                    />
+                  )}
                   <Button
                     type="submit"
                     leftSection={mode === 'login' ? <IconLogin size={18} /> : <IconUserPlus size={18} />}
                     loading={loading}
+                    disabled={mode === 'register' && hasLegalLinks && !acceptedLegal}
                   >
                     {mode === 'login' ? t('auth.login') : t('auth.register')}
                   </Button>

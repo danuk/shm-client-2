@@ -87,7 +87,9 @@
     "resetPasswordButton": "Reset password",
     "passwordResetSuccess": "Password reset successfully. Please log in.",
     "invalidResetToken": "Invalid or expired reset token.",
-    "verifyingToken": "Verifying token..."
+    "verifyingToken": "Verifying token...",
+    "acceptLegal": "I agree to",
+    "acceptDocumentsRequired": "Please accept the legal documents to continue"
   },
   "nav": {
     "home": "Home",

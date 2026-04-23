@@ -87,7 +87,9 @@
     "resetPasswordButton": "Passwort zurücksetzen",
     "passwordResetSuccess": "Passwort erfolgreich zurückgesetzt. Bitte melden Sie sich an.",
     "invalidResetToken": "Ungültiges oder abgelaufenes Reset-Token.",
-    "verifyingToken": "Token wird überprüft..."
+    "verifyingToken": "Token wird überprüft...",
+    "acceptLegal": "Ich akzeptiere",
+    "acceptDocumentsRequired": "Bitte akzeptieren Sie die rechtlichen Dokumente, um fortzufahren"
   },
   "nav": {
     "home": "Startseite",

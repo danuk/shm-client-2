@@ -87,7 +87,9 @@
     "resetPasswordButton": "Restablecer contraseña",
     "passwordResetSuccess": "Contraseña restablecida correctamente. Por favor inicia sesión.",
     "invalidResetToken": "Token de restablecimiento inválido o expirado.",
-    "verifyingToken": "Verificando token..."
+    "verifyingToken": "Verificando token...",
+    "acceptLegal": "Acepto",
+    "acceptDocumentsRequired": "Para continuar, acepta los documentos legales"
   },
   "nav": {
     "home": "Inicio",

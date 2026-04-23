@@ -87,7 +87,9 @@
     "resetPasswordButton": "Parolni tiklash",
     "passwordResetSuccess": "Parol muvaffaqiyatli tiklandi. Iltimos, kiring.",
     "invalidResetToken": "Tiklash tokeni noto'g'ri yoki muddati o'tgan.",
-    "verifyingToken": "Token tekshirilmoqda..."
+    "verifyingToken": "Token tekshirilmoqda...",
+    "acceptLegal": "Men qabul qilaman",
+    "acceptDocumentsRequired": "Davom etish uchun yuridik hujjatlarni qabul qiling"
   },
   "nav": {
     "home": "Bosh sahifa",

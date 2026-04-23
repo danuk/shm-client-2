@@ -87,7 +87,9 @@
     "resetPasswordButton": "Сбросить пароль",
     "passwordResetSuccess": "Пароль успешно сброшен. Пожалуйста, войдите.",
     "invalidResetToken": "Недействительный или просроченный токен сброса пароля.",
-    "verifyingToken": "Проверка токена..."
+    "verifyingToken": "Проверка токена...",
+    "acceptLegal": "Я принимаю",
+    "acceptDocumentsRequired": "Для продолжения примите юридические документы"
   },
   "nav": {
     "home": "Главная",
