@@ -40,6 +40,7 @@ services:
 | `LOGO_URL` | Ссылка на логитип приложения | локальный favicon.jpg |
 | `TELEGRAM_BOT_NAME` | Username Telegram бота (без @) s | - |
 | `TELEGRAM_BOT_AUTH_ENABLE` | Включить авторизацию через Telegram виджет | `false` |
+| `TELEGRAM_OIDC_AUTH_ENABLE` | Включить авторизацию через Telegram OIDC | `false` |
 | `TELEGRAM_BOT_AUTH_PROFILE` | Название бота (профиля) в SHM | `telegram_bot` |
 | `TELEGRAM_WEBAPP_AUTH_ENABLE` | Авторизация через телеграмм вебапп | `false` |
 | `TELEGRAM_WEBAPP_AUTO_AUTH_ENABLE` | Автоматическая авторизация через телеграмм вебапп | `false` |

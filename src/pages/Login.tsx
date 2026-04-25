@@ -11,7 +11,7 @@ import TelegramLoginButton, { TelegramUser } from '../components/TelegramLoginBu
 import { config } from '../config';
 import { useTelegramWebApp } from '../hooks/useTelegramWebApp';
 import LanguageSwitcher from '../components/LanguageSwitcher';
-import { hasTelegramWebAppAutoAuth, hasTelegramWidget, hasTelegramWebAppAuth } from '../constants/webapp';
+import { hasTelegramOidcAuth, hasTelegramWebAppAutoAuth, hasTelegramWidget, hasTelegramWebAppAuth } from '../constants/webapp';
 
 function base64UrlToArrayBuffer(base64url: string): ArrayBuffer {
   const base64 = base64url.replace(/-/g, '+').replace(/_/g, '/');
@@ -326,6 +326,22 @@ export default function Login() {
     }
   };
 
+  const handleTelegramOidcAuth = async () => {
+    setLoading(true);
+    try {
+      const returnUrl = `${window.location.origin}${window.location.pathname}${window.location.search}${window.location.hash}`;
+      const params = new URLSearchParams({
+        profile: config.TELEGRAM_BOT_AUTH_PROFILE,
+        register_if_not_exists: '1',
+        return_url: returnUrl,
+      });
+      window.location.href = `/shm/v1/telegram/web/auth/start?${params.toString()}`;
+    } catch {
+      notifications.show({ title: t('common.error'), message: t('auth.telegramAuthError'), color: 'red' });
+      setLoading(false);
+    }
+  };
+
   const handleTelegramWidgetAuth = async (telegramUser: TelegramUser) => {
     setLoading(true);
     try {
@@ -534,16 +550,32 @@ export default function Login() {
             </>
           )}
 
-          {hasTelegramWidget && (
+          {(hasTelegramOidcAuth || hasTelegramWidget) && (
             <>
-              <Center>
-                <TelegramLoginButton
-                  botName={config.TELEGRAM_BOT_NAME}
-                  onAuth={handleTelegramWidgetAuth}
-                  buttonSize="large"
-                  requestAccess="write"
-                />
-              </Center>
+              {hasTelegramOidcAuth && (
+                <Button
+                  color="blue"
+                  leftSection={<IconBrandTelegram size={18} />}
+                  onClick={handleTelegramOidcAuth}
+                  fullWidth
+                  loading={loading}
+                >
+                  {t('auth.loginWithTelegram')}
+                </Button>
+              )}
+
+              {hasTelegramOidcAuth && hasTelegramWidget && <Divider label={t('common.or')} labelPosition="center" />}
+
+              {hasTelegramWidget && (
+                <Center>
+                  <TelegramLoginButton
+                    botName={config.TELEGRAM_BOT_NAME}
+                    onAuth={handleTelegramWidgetAuth}
+                    buttonSize="large"
+                    requestAccess="write"
+                  />
+                </Center>
+              )}
 
               <Divider label={t('common.or')} labelPosition="center" />
             </>

@@ -4,6 +4,7 @@ interface AppConfig {
   LOGO_URL: string;
   TELEGRAM_BOT_NAME: string;
   TELEGRAM_BOT_AUTH_ENABLE: string;
+  TELEGRAM_OIDC_AUTH_ENABLE: string;
   TELEGRAM_BOT_AUTH_PROFILE: string;
   TELEGRAM_WEBAPP_AUTH_ENABLE: string;
   TELEGRAM_WEBAPP_AUTO_AUTH_ENABLE: string;
@@ -83,6 +84,7 @@ function getConfig(): AppConfig {
     LOGO_URL: runtimeConfig?.LOGO_URL || import.meta.env.VITE_LOGO_URL || './favicon.jpg',
     TELEGRAM_BOT_NAME: runtimeConfig?.TELEGRAM_BOT_NAME || import.meta.env.VITE_TELEGRAM_BOT_NAME || '',
     TELEGRAM_BOT_AUTH_ENABLE: runtimeConfig?.TELEGRAM_BOT_AUTH_ENABLE || import.meta.env.VITE_TELEGRAM_BOT_AUTH_ENABLE || 'false',
+    TELEGRAM_OIDC_AUTH_ENABLE: runtimeConfig?.TELEGRAM_OIDC_AUTH_ENABLE || import.meta.env.VITE_TELEGRAM_OIDC_AUTH_ENABLE || 'false',
     TELEGRAM_BOT_AUTH_PROFILE: runtimeConfig?.TELEGRAM_BOT_AUTH_PROFILE || import.meta.env.VITE_TELEGRAM_BOT_AUTH_PROFILE || 'telegram_bot',
     TELEGRAM_WEBAPP_AUTH_ENABLE: runtimeConfig?.TELEGRAM_WEBAPP_AUTH_ENABLE || import.meta.env.VITE_TELEGRAM_WEBAPP_AUTH_ENABLE || 'false',
     TELEGRAM_WEBAPP_AUTO_AUTH_ENABLE: runtimeConfig?.TELEGRAM_WEBAPP_AUTO_AUTH_ENABLE || import.meta.env.VITE_TELEGRAM_WEBAPP_AUTO_AUTH_ENABLE || 'false',

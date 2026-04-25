@@ -128,6 +128,19 @@ export const auth = {
     }
     return response;
   },
+
+  telegramOidcInit: (params?: {
+    profile?: string;
+    register_if_not_exists?: number;
+    return_url?: string;
+  }) => {
+    const queryParams = {
+      profile: params?.profile || config.TELEGRAM_BOT_AUTH_PROFILE,
+      register_if_not_exists: params?.register_if_not_exists ?? 1,
+      ...(params?.return_url ? { return_url: params.return_url } : {}),
+    };
+    return api.get('/telegram/web/auth/init', { params: queryParams });
+  },
 };
 
 export const userApi = {
