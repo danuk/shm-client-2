@@ -1,0 +1,37 @@
+services:
+  client-vite:
+    build:
+      context: .
+      dockerfile: ./Dockerfile-dev
+      target: node
+    pull_policy: always
+    restart: always
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      SHM_URL: "http://host.docker.internal:8080"
+      VITE_BASE_PATH: /
+    expose:
+      - "5173"
+    volumes:
+      - ./src:/app/src
+      - ./public:/app/public
+      - ./index.html:/app/index.html
+
+  client-nginx:
+    build:
+      context: .
+      dockerfile: ./Dockerfile-dev
+      target: client-nginx
+    restart: always
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      - VITE_HOST=client-vite
+      - SHM_URL=http://host.docker.internal:8080
+      - APP_NAME=SHM
+      - APP_DESCRIPTION=SHM
+    ports:
+      - "3001:80"
+    depends_on:
+      - client-vite

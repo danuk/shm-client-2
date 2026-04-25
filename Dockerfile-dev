@@ -1,0 +1,29 @@
+FROM --platform=$BUILDPLATFORM node:20-alpine AS node
+
+WORKDIR /app
+ENTRYPOINT ["/vite-entry.sh"]
+EXPOSE 5173
+
+COPY package*.json ./
+RUN npm install
+
+# Копируем основные файлы для Vite
+COPY index.html ./
+COPY tsconfig.json ./
+COPY tsconfig.app.json ./
+COPY tsconfig.node.json ./
+COPY vite.config.ts ./
+COPY vite-entry.sh /vite-entry.sh
+RUN chmod +x /vite-entry.sh
+
+
+FROM nginx:stable-alpine AS client-nginx
+
+WORKDIR /app
+ENTRYPOINT ["/entry.sh"]
+HEALTHCHECK --interval=10s --timeout=5s --retries=3 CMD wget --no-verbose --tries=1 --spider "127.0.0.1/healthcheck" || exit 1
+EXPOSE 80
+
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY entry.sh /entry.sh
+RUN chmod +x /entry.sh
