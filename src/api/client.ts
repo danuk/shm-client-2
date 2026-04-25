@@ -183,6 +183,14 @@ export const servicesApi = {
 export const telegramApi = {
   getSettings: () => api.get('/telegram/user'),
   updateSettings: (data: Record<string, unknown>) => api.post('/telegram/user', data),
+  unbindAccount: () => api.delete('/telegram/user'),
+  initOidc: (params: { uid: number; return_url: string; profile?: string }) => api.get('/telegram/web/auth/init', {
+    params: {
+      bind_to_profile: 1,
+      register_if_not_exists: 0,
+      ...params,
+    },
+  }),
 };
 
 export const promoApi = {
