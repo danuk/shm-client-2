@@ -102,6 +102,8 @@ services:
 | `ANDROID_PROXY_URL_SCHEMA` | URL-схема для открытия подписки на Android (`happ://add/`) | `` |
 | `CAPTCHA_ENABLED` | Включение/выключение капчи (надо включить в кабинете администратора) | `false` |
 | `ORDER_SORTING` | Сортировка услуг при покупке (cost_asc, cost_desc, name_asc, name_desc) | `cost_asc` |
+| `CONTACT_EMAIL` | Почта для контакта | - |
+| `CONTACT_PHONE` | Номер телефона для контакта | - |
 
 ### Telegram Widget
 
