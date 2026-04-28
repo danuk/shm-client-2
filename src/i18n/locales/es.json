@@ -30,7 +30,8 @@
     "pieces": "uds.",
     "privacyPolicy": "Política de privacidad",
     "termsOfUse": "Términos de uso",
-    "publicOffer": "Oferta pública"
+    "publicOffer": "Oferta pública",
+    "contacts": "Contactos"
   },
   "auth": {
     "login": "Iniciar sesión",
@@ -401,7 +402,7 @@
     "selectServicePlaceholder": "Selecciona el servicio relacionado con tu problema",
     "noServices": "No tienes servicios activos",
     "send": "Enviar",
-    "closeTicket": "Cerrar",
+    "closeTicket": "Cerrar ticket",
     "ticketCreated": "Solicitud creada",
     "ticketClosed": "Solicitud cerrada",
     "createError": "Error al crear la solicitud",
@@ -411,12 +412,19 @@
     "attachFile": "Adjuntar archivo",
     "fileTooLarge": "El archivo {{name}} es demasiado grande (máx. 5 MB)",
     "fileTypeNotAllowed": "El tipo de archivo {{name}} no está admitido",
+    "noSubject": "Sin asunto",
+    "search": "Buscar...",
+    "messageTooLong": "El mensaje es demasiado largo (máx. 2000 caracteres)",
+    "ticket": "Solicitud",
+    "ticketClosedNote": "Esta solicitud está cerrada. No puedes enviar nuevos mensajes.",
+    "selectTicket": "Selecciona una solicitud para abrir el chat",
     "status": {
       "open": "Abierto",
       "in_progress": "En proceso",
       "waiting": "Esperando respuesta",
       "closed": "Cerrado",
-      "archived": "Archivado"
+      "archived": "Archivado",
+      "unknown": "Desconocido"
     },
     "priority": {
       "low": "Baja",

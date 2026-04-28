@@ -1,7 +1,7 @@
 import '@mantine/core/styles.css';
 import '@mantine/notifications/styles.css';
 import { useEffect, useState } from 'react';
-import { MantineProvider, createTheme, AppShell, Group, Text, ActionIcon, useMantineColorScheme, useComputedColorScheme, Center, Loader, Box, Button, Modal, TextInput, Stack, DirectionProvider } from '@mantine/core';
+import { MantineProvider, createTheme, AppShell, Group, Text, ActionIcon, useMantineColorScheme, useComputedColorScheme, Center, Loader, Box, Button, Modal, TextInput, Stack, DirectionProvider, Indicator } from '@mantine/core';
 import { Notifications } from '@mantine/notifications';
 import { useMediaQuery, useHotkeys, useLongPress } from '@mantine/hooks';
 import { BrowserRouter, Routes, Route, Link, useLocation, useNavigate } from 'react-router-dom';
@@ -15,6 +15,7 @@ import { config } from './config';
 import LanguageSwitcher from './components/LanguageSwitcher';
 import { hasTelegramWebAppAutoAuth, isTelegramWebApp } from './constants/webapp';
 import { useEmailRequired } from './hooks/useEmailRequired';
+import { useTicketPoller } from './hooks/useTicketPoller';
 import PayHistoryModal from './components/PayHistoryModal';
 import WithdrawHistoryModal from './components/WithdrawHistoryModal';
 
@@ -23,37 +24,67 @@ parseAndSavePartnerId();
 
 import Services from './pages/Services';
 import Profile from './pages/Profile';
+import Tickets from './pages/Tickets.tsx';
 import Login from './pages/Login';
 import NotFound from './pages/NotFound';
 
 function LegalLinks() {
   const { t } = useTranslation();
 
-  const links = [
+  const legalLinks = [
     { href: config.PRIVACY_POLICY_URL, label: t('common.privacyPolicy') },
     { href: config.TERMS_OF_USE_URL, label: t('common.termsOfUse') },
     { href: config.PUBLIC_OFFER_URL, label: t('common.publicOffer') },
   ].filter((link) => Boolean(link.href));
 
-  if (links.length === 0) return null;
+  const contactLinks = [
+    config.CONTACT_EMAIL ? { href: `mailto:${config.CONTACT_EMAIL}`, label: config.CONTACT_EMAIL } : null,
+    config.CONTACT_PHONE ? { href: `tel:${config.CONTACT_PHONE}`, label: config.CONTACT_PHONE } : null,
+  ].filter(Boolean) as { href: string; label: string }[];
+
+  const hasContacts = contactLinks.length > 0;
+  const hasLegal = legalLinks.length > 0;
+
+  if (!hasLegal && !hasContacts) return null;
 
   return (
-    <Group justify="center" gap="md" wrap="wrap" py="sm">
-      {links.map((link) => (
-        <Text
-          key={link.href}
-          component="a"
-          href={link.href}
-          target="_blank"
-          rel="noopener noreferrer"
-          size="xs"
-          c="dimmed"
-          td="underline"
-        >
-          {link.label}
-        </Text>
-      ))}
-    </Group>
+    <Stack gap={0}>
+      {hasLegal && (
+        <Group justify="center" gap="md" wrap="wrap" py="sm">
+          {legalLinks.map((link) => (
+            <Text
+              key={link.href}
+              component="a"
+              href={link.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              size="xs"
+              c="dimmed"
+              td="underline"
+            >
+              {link.label}
+            </Text>
+          ))}
+        </Group>
+      )}
+      {hasContacts && (
+        <Group justify="center" gap="md" wrap="wrap" py="xs">
+          <Text size="xs" c="dimmed">{t('common.contacts')}:</Text>
+          {contactLinks.map((link) => (
+            <Text
+              key={link.href}
+              component="a"
+              href={link.href}
+              size="xs"
+              c="dimmed"
+              td="underline"
+            >
+              {link.label}
+            </Text>
+          ))}
+        </Group>
+      )}
+    </Stack>
   );
 }
 
@@ -164,6 +195,7 @@ function BottomNavigation({ onPayments, onWithdrawals }: { onPayments: () => voi
   const navigate = useNavigate();
   const computedColorScheme = useComputedColorScheme('light');
   const { t } = useTranslation();
+  const hasNewTicketMessages = useStore((s) => s.hasNewTicketMessages);
   const { userEmail, isEmailLoaded, setOpenEmailModal } = useStore();
   const emailBlocked = config.EMAIL_REQUIRED === 'true' && isEmailLoaded && !userEmail;
 
@@ -206,6 +238,7 @@ function BottomNavigation({ onPayments, onWithdrawals }: { onPayments: () => voi
           {NAV_ITEMS.map((item) => {
             const isActive = location.pathname === item.path;
             const Icon = item.icon;
+            const showDot = (item.path as string) === '/tickets' && hasNewTicketMessages;
             const isItemBlocked = emailBlocked && (item.path === '/payments' || item.path === '/withdrawals');
             return (
               <Box
@@ -227,7 +260,9 @@ function BottomNavigation({ onPayments, onWithdrawals }: { onPayments: () => voi
                   transition: 'all 0.2s ease',
                 }}
               >
-                <Icon size={20} />
+                <Indicator disabled={!showDot} color="blue" size={8} offset={2}>
+                  <Icon size={20} />
+                </Indicator>
                 <Text size="xs" mt={4} fw={isActive ? 600 : 400}>{t(item.labelKey)}</Text>
               </Box>
             );
@@ -241,7 +276,7 @@ function BottomNavigation({ onPayments, onWithdrawals }: { onPayments: () => voi
 function AppContent() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { isAuthenticated, isLoading, setUser, setIsLoading, logout, userEmail, isEmailLoaded, setOpenEmailModal } = useStore();
+  const { isAuthenticated, isLoading, setUser, setIsLoading, logout, hasNewTicketMessages, userEmail, isEmailLoaded, setOpenEmailModal } = useStore();
   const emailBlocked = config.EMAIL_REQUIRED === 'true' && isEmailLoaded && !userEmail;
   const isMobile = useMediaQuery('(max-width: 768px)');
   const { t } = useTranslation();
@@ -264,6 +299,9 @@ function AppContent() {
     handleConfirmEmail: handleGlobalConfirmEmail,
     handleResendCode: handleGlobalResendCode,
   } = useEmailRequired();
+
+  // useTicketPoller(isAuthenticated);
+  useTicketPoller(false); // TODO: включить когда бэкенд будет готов
 
   const [payHistoryOpen, setPayHistoryOpen] = useState(false);
   const [withdrawHistoryOpen, setWithdrawHistoryOpen] = useState(false);
@@ -466,6 +504,7 @@ function AppContent() {
             <Routes>
               <Route path="/" element={<Services />} />
               <Route path="/profile" element={<Profile />} />
+              <Route path="/tickets" element={<Tickets />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Box>
@@ -480,6 +519,7 @@ function AppContent() {
 
   const appShellMaxWidth = 1200;
   const appShellOffset = `max(0px, calc(50% - ${appShellMaxWidth / 2}px))`;
+  const hasLegalLinks = [config.PRIVACY_POLICY_URL, config.TERMS_OF_USE_URL, config.PUBLIC_OFFER_URL, config.CONTACT_EMAIL, config.CONTACT_PHONE].some(Boolean);
 
   return (
     <>
@@ -488,6 +528,7 @@ function AppContent() {
       {versionModal}
       <AppShell
         header={{ height: 60 }}
+        footer={hasLegalLinks ? { height: 'auto' } : undefined}
         padding="md"
         styles={{
           header: {
@@ -524,6 +565,7 @@ function AppContent() {
               {NAV_ITEMS.map((item) => {
                 const Icon = item.icon;
                 const isActive = location.pathname === item.path;
+                const showDot = (item.path as string) === '/tickets' && hasNewTicketMessages;
                 if (item.path === '/payments') {
                   return (
                     <Button key={item.path} leftSection={<Icon size={16} />} variant="subtle" size="xs" radius="md" disabled={emailBlocked} onClick={() => emailBlocked ? setOpenEmailModal(true) : setPayHistoryOpen(true)}>
@@ -539,17 +581,18 @@ function AppContent() {
                   );
                 }
                 return (
-                  <Button
-                    key={item.path}
-                    component={Link}
-                    to={item.path}
-                    leftSection={<Icon size={16} />}
-                    variant={isActive ? 'light' : 'subtle'}
-                    size="xs"
-                    radius="md"
-                  >
-                    {t(item.labelKey)}
-                  </Button>
+                  <Indicator key={item.path} disabled={!showDot} color="blue" size={8} offset={4}>
+                    <Button
+                      component={Link}
+                      to={item.path}
+                      leftSection={<Icon size={16} />}
+                      variant={isActive ? 'light' : 'subtle'}
+                      size="xs"
+                      radius="md"
+                    >
+                      {t(item.labelKey)}
+                    </Button>
+                  </Indicator>
                 );
               })}
             </Group>
@@ -582,10 +625,13 @@ function AppContent() {
           <Routes>
             <Route path="/" element={<Services />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/tickets" element={<Tickets />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
-          <LegalLinks />
         </AppShell.Main>
+        <AppShell.Footer withBorder={false}>
+          <LegalLinks />
+        </AppShell.Footer>
       </AppShell>
       <PayHistoryModal opened={payHistoryOpen} onClose={() => setPayHistoryOpen(false)} />
       <WithdrawHistoryModal opened={withdrawHistoryOpen} onClose={() => setWithdrawHistoryOpen(false)} />

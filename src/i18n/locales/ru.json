@@ -30,7 +30,8 @@
     "pieces": "шт.",
     "privacyPolicy": "Политика конфиденциальности",
     "termsOfUse": "Условия использования",
-    "publicOffer": "Договор оферты"
+    "publicOffer": "Договор оферты",
+    "contacts": "Контакты"
   },
   "auth": {
     "login": "Войти",
@@ -400,8 +401,11 @@
     "selectService": "Выберите услугу",
     "selectServicePlaceholder": "Выберите услугу, с которой связана проблема",
     "noServices": "У вас нет активных услуг",
+    "selectPayment": "Выберите платёж",
+    "selectPaymentPlaceholder": "Выберите платёж из истории",
+    "noPayments": "Нет платежей в истории",
     "send": "Отправить",
-    "closeTicket": "Закрыть",
+    "closeTicket": "Закрыть тикет",
     "ticketCreated": "Обращение создано",
     "ticketClosed": "Обращение закрыто",
     "createError": "Не удалось создать обращение",
@@ -411,12 +415,19 @@
     "attachFile": "Прикрепить файл",
     "fileTooLarge": "Файл {{name}} слишком большой (макс. 5 МБ)",
     "fileTypeNotAllowed": "Тип файла {{name}} не поддерживается",
+    "noSubject": "Тема не указана",
+    "search": "Поиск...",
+    "messageTooLong": "Сообщение слишком длинное (макс. 2000 символов)",
+    "ticket": "Обращение",
+    "ticketClosedNote": "Это обращение закрыто. Отправка новых сообщений недоступна.",
+    "selectTicket": "Выберите обращение, чтобы открыть чат",
     "status": {
       "open": "Открыто",
       "in_progress": "В работе",
       "waiting": "Ожидает ответа",
       "closed": "Закрыто",
-      "archived": "В архиве"
+      "archived": "В архиве",
+      "unknown": "Неизвестно"
     },
     "priority": {
       "low": "Низкий",

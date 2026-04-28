@@ -30,7 +30,8 @@
     "pieces": "dona.",
     "privacyPolicy": "Maxfiylik siyosati",
     "termsOfUse": "Foydalanish shartlari",
-    "publicOffer": "Ommaviy oferta"
+    "publicOffer": "Ommaviy oferta",
+    "contacts": "Aloqa"
   },
   "auth": {
     "login": "Kirish",
@@ -401,7 +402,7 @@
     "selectServicePlaceholder": "Muammo bilan bog'liq xizmatni tanlang",
     "noServices": "Faol xizmatlaringiz yo'q",
     "send": "Yuborish",
-    "closeTicket": "Yopish",
+    "closeTicket": "Chiptani yopish",
     "ticketCreated": "So'rov yaratildi",
     "ticketClosed": "So'rov yopildi",
     "createError": "So'rov yaratib bo'lmadi",
@@ -411,12 +412,19 @@
     "attachFile": "Fayl biriktirish",
     "fileTooLarge": "{{name}} fayli juda katta (maks. 5 MB)",
     "fileTypeNotAllowed": "{{name}} fayl turi qo'llab-quvvatlanmaydi",
+    "noSubject": "Mavzu ko'rsatilmagan",
+    "search": "Qidirish...",
+    "messageTooLong": "Xabar juda uzun (maks. 2000 belgi)",
+    "ticket": "So'rov",
+    "ticketClosedNote": "Bu so'rov yopilgan. Yangi xabar yuborib bo'lmaydi.",
+    "selectTicket": "Chatni ochish uchun so'rovni tanlang",
     "status": {
       "open": "Ochiq",
       "in_progress": "Jarayonda",
       "waiting": "Javob kutilmoqda",
       "closed": "Yopiq",
-      "archived": "Arxivlangan"
+      "archived": "Arxivlangan",
+      "unknown": "Noma'lum"
     },
     "priority": {
       "low": "Past",

@@ -30,7 +30,8 @@
     "pieces": "pcs.",
     "privacyPolicy": "Privacy policy",
     "termsOfUse": "Terms of use",
-    "publicOffer": "Public offer"
+    "publicOffer": "Public offer",
+    "contacts": "Contacts"
   },
   "auth": {
     "login": "Login",
@@ -400,8 +401,11 @@
     "selectService": "Select Service",
     "selectServicePlaceholder": "Select the service related to your issue",
     "noServices": "You don't have any active services",
+    "selectPayment": "Select Payment",
+    "selectPaymentPlaceholder": "Select a payment from history",
+    "noPayments": "No payments in history",
     "send": "Send",
-    "closeTicket": "Close",
+    "closeTicket": "Close ticket",
     "ticketCreated": "Request created",
     "ticketClosed": "Request closed",
     "createError": "Failed to create request",
@@ -411,12 +415,19 @@
     "attachFile": "Attach file",
     "fileTooLarge": "File {{name}} is too large (max 5 MB)",
     "fileTypeNotAllowed": "File type {{name}} is not supported",
+    "noSubject": "No subject",
+    "search": "Search...",
+    "messageTooLong": "Message is too long (max 2000 characters)",
+    "ticket": "Ticket",
+    "ticketClosedNote": "This ticket is closed. You cannot send new messages.",
+    "selectTicket": "Select a ticket to open chat",
     "status": {
       "open": "Open",
       "in_progress": "In Progress",
       "waiting": "Awaiting Reply",
       "closed": "Closed",
-      "archived": "Archived"
+      "archived": "Archived",
+      "unknown": "Unknown"
     },
     "priority": {
       "low": "Low",

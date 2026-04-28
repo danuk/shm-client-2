@@ -30,7 +30,8 @@
     "pieces": "قطعة.",
     "privacyPolicy": "سياسة الخصوصية",
     "termsOfUse": "شروط الاستخدام",
-    "publicOffer": "العرض العام"
+    "publicOffer": "العرض العام",
+    "contacts": "جهات الاتصال"
   },
   "auth": {
     "login": "تسجيل الدخول",
@@ -399,7 +400,7 @@
     "selectServicePlaceholder": "اختر الخدمة المتعلقة بمشكلتك",
     "noServices": "ليس لديك خدمات نشطة",
     "send": "إرسال",
-    "closeTicket": "إغلاق",
+    "closeTicket": "إغلاق التذكرة",
     "ticketCreated": "تم إنشاء الطلب",
     "ticketClosed": "تم إغلاق الطلب",
     "createError": "فشل إنشاء الطلب",
@@ -409,12 +410,19 @@
     "attachFile": "إرفاق ملف",
     "fileTooLarge": "الملف {{name}} كبير جداً (الحد الأقصى 5 ميغابايت)",
     "fileTypeNotAllowed": "نوع الملف {{name}} غير مدعوم",
+    "noSubject": "بدون موضوع",
+    "search": "بحث...",
+    "messageTooLong": "الرسالة طويلة جداً (الحد الأقصى 2000 حرف)",
+    "ticket": "تذكرة",
+    "ticketClosedNote": "هذه التذكرة مغلقة. لا يمكنك إرسال رسائل جديدة.",
+    "selectTicket": "اختر تذكرة لفتح المحادثة",
     "status": {
       "open": "مفتوح",
       "in_progress": "قيد المعالجة",
       "waiting": "في انتظار الرد",
       "closed": "مغلق",
-      "archived": "مؤرشف"
+      "archived": "مؤرشف",
+      "unknown": "غير معروف"
     },
     "priority": {
       "low": "منخفضة",

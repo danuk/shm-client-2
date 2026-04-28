@@ -171,6 +171,60 @@ export const userApi = {
   },
 };
 
+export interface TicketMedia {
+  id: number;
+  name: string;
+  mime_type?: string;
+  size?: number;
+  created?: string;
+}
+
+export interface TicketMessage {
+  message_id: number;
+  ticket_id: number;
+  user_id?: number;
+  is_admin?: number;
+  message: string;
+  created?: string;
+  media?: TicketMedia[];
+}
+
+export interface TicketItem {
+  ticket_id: number;
+  subject: string;
+  status: string;
+  priority?: string;
+  ticket_type?: string;
+  user_service_id?: number;
+  created?: string;
+  updated?: string;
+  closed_at?: string;
+  archived_at?: string;
+  messages?: TicketMessage[];
+}
+
+export const ticketApi = {
+  list: (params?: { status?: string; limit?: number; offset?: number }) =>
+    api.get<{ data: TicketItem[] }>('/user/ticket', { params }),
+  get: (ticketId: number | string) =>
+    api.get<{ data: TicketItem[] }>(`/user/ticket/${ticketId}`),
+  create: (data: {
+    subject: string;
+    message: string;
+    priority?: 'low' | 'normal' | 'high' | 'urgent';
+    ticket_type?: 'service' | 'payment' | 'other';
+    user_service_id?: number;
+  }) => api.put<{ data: TicketItem }>('/user/ticket', data),
+  sendMessage: (ticketId: number | string, data: { message: string; media_ids?: number[] }) =>
+    api.post<{ data: TicketMessage }>(`/user/ticket/${ticketId}`, data),
+  close: (ticketId: number | string) =>
+    api.delete<{ data: TicketItem }>(`/user/ticket/${ticketId}`),
+  uploadMedia: (data: { name: string; data: string; mime_type?: string }) =>
+    api.put<{ data: TicketMedia }>('/user/media', data),
+  downloadMedia: (id: number | string) =>
+    api.get<Blob>(`/user/media/${id}`, { responseType: 'blob' }),
+};
+
 export const userEmailApi = {
   getEmail: () => api.get<{ data: { email: string, email_verified: number } }>('/user/email'),
   setEmail: (email: string) => api.put('/user/email', { email: email }),

@@ -30,7 +30,8 @@
     "pieces": "Stk.",
     "privacyPolicy": "Datenschutzrichtlinie",
     "termsOfUse": "Nutzungsbedingungen",
-    "publicOffer": "Öffentliches Angebot"
+    "publicOffer": "Öffentliches Angebot",
+    "contacts": "Kontakt"
   },
   "auth": {
     "login": "Anmelden",
@@ -401,7 +402,7 @@
     "selectServicePlaceholder": "Wählen Sie den mit Ihrem Problem zusammenhängenden Dienst",
     "noServices": "Sie haben keine aktiven Dienste",
     "send": "Senden",
-    "closeTicket": "Schließen",
+    "closeTicket": "Ticket schließen",
     "ticketCreated": "Anfrage erstellt",
     "ticketClosed": "Anfrage geschlossen",
     "createError": "Anfrage konnte nicht erstellt werden",
@@ -411,12 +412,19 @@
     "attachFile": "Datei anhängen",
     "fileTooLarge": "Datei {{name}} ist zu groß (max. 5 MB)",
     "fileTypeNotAllowed": "Dateityp {{name}} wird nicht unterstützt",
+    "noSubject": "Kein Betreff",
+    "search": "Suchen...",
+    "messageTooLong": "Die Nachricht ist zu lang (max. 2000 Zeichen)",
+    "ticket": "Anfrage",
+    "ticketClosedNote": "Diese Anfrage ist geschlossen. Sie können keine neuen Nachrichten senden.",
+    "selectTicket": "Wählen Sie eine Anfrage, um den Chat zu öffnen",
     "status": {
       "open": "Offen",
       "in_progress": "In Bearbeitung",
       "waiting": "Wartet auf Antwort",
       "closed": "Geschlossen",
-      "archived": "Archiviert"
+      "archived": "Archiviert",
+      "unknown": "Unbekannt"
     },
     "priority": {
       "low": "Niedrig",

@@ -67,6 +67,8 @@ interface AppConfig {
   ANDROID_PROXY_URL_SCHEMA: string;
   CAPTCHA_ENABLED: string;
   ORDER_SORTING: string;
+  CONTACT_EMAIL: string;
+  CONTACT_PHONE: string;
 }
 
 declare global {
@@ -147,7 +149,8 @@ function getConfig(): AppConfig {
     IOS_PROXY_URL_SCHEMA: runtimeConfig?.IOS_PROXY_URL_SCHEMA || import.meta.env.VITE_IOS_PROXY_URL_SCHEMA || '',
     ANDROID_PROXY_URL_SCHEMA: runtimeConfig?.ANDROID_PROXY_URL_SCHEMA || import.meta.env.VITE_ANDROID_PROXY_URL_SCHEMA || '',
     CAPTCHA_ENABLED: runtimeConfig?.CAPTCHA_ENABLED || import.meta.env.VITE_CAPTCHA_ENABLED || 'false',
-
+    CONTACT_EMAIL: runtimeConfig?.CONTACT_EMAIL || import.meta.env.VITE_CONTACT_EMAIL || '',
+    CONTACT_PHONE: runtimeConfig?.CONTACT_PHONE || import.meta.env.VITE_CONTACT_PHONE || '',
   };
 }
 
