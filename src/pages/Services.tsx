@@ -955,7 +955,12 @@ export default function Services() {
       <Group justify="space-between">
         <Title order={2}>{t('services.title')}</Title>
         <Group>
-          <Button leftSection={<IconPlus size={16} />} onClick={emailBlocked ? () => setOpenEmailModal(true) : (config.EMAIL_VERIFY_REQUIRED === "true" && !userEmailVerified ? () => setConfirmEmailNotVerified(true) : openOrderModal)}>
+          <Button
+            leftSection={<IconPlus size={16} />}
+            disabled={config.BLOCK_ORDER_IF_UNPAID === 'true' && hasNotPaidServices(services)}
+            title={config.BLOCK_ORDER_IF_UNPAID === 'true' && hasNotPaidServices(services) ? t('order.blockedByUnpaid') : undefined}
+            onClick={emailBlocked ? () => setOpenEmailModal(true) : (config.EMAIL_VERIFY_REQUIRED === "true" && !userEmailVerified ? () => setConfirmEmailNotVerified(true) : openOrderModal)}
+          >
             {t('services.orderService')}
           </Button>
           <Button leftSection={<IconRefresh size={16} />} variant="light" color="cyan" onClick={() => fetchServices()}>

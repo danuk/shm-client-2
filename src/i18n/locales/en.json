@@ -298,7 +298,8 @@
     "loadError": "Failed to load services list",
     "orderSuccess": "Service \"{{name}}\" ordered and paid from balance",
     "orderPaySuccess": "Service \"{{name}}\" ordered. Open payment window.",
-    "orderError": "Failed to order service"
+    "orderError": "Failed to order service",
+    "blockedByUnpaid": "Order unavailable: you have an unpaid service"
   },
   "confirm": {
     "title": "Confirmation"

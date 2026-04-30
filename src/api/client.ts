@@ -220,9 +220,9 @@ export const ticketApi = {
   close: (ticketId: number | string) =>
     api.delete<{ data: TicketItem }>(`/user/ticket/${ticketId}`),
   uploadMedia: (data: { name: string; data: string; mime_type?: string }) =>
-    api.put<{ data: TicketMedia }>('/user/media', data),
+    api.put<{ data: TicketMedia }>('/user/ticket/media', data),
   downloadMedia: (id: number | string) =>
-    api.get<Blob>(`/user/media/${id}`, { responseType: 'blob' }),
+    api.get<Blob>(`/user/ticket/media/${id}`, { responseType: 'blob' }),
 };
 
 export const userEmailApi = {

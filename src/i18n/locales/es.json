@@ -298,7 +298,8 @@
     "loadError": "Error al cargar la lista de servicios",
     "orderSuccess": "Servicio \"{{name}}\" contratado y pagado desde el saldo",
     "orderPaySuccess": "Servicio \"{{name}}\" contratado. Abre la ventana de pago.",
-    "orderError": "Error al contratar el servicio"
+    "orderError": "Error al contratar el servicio",
+    "blockedByUnpaid": "Pedido no disponible: tiene un servicio sin pagar"
   },
   "confirm": {
     "title": "Confirmación"

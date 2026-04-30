@@ -296,7 +296,8 @@
     "loadError": "فشل تحميل قائمة الخدمات",
     "orderSuccess": "تم طلب خدمة \"{{name}}\" ودفعها من الرصيد",
     "orderPaySuccess": "تم طلب خدمة \"{{name}}\". افتح نافذة الدفع.",
-    "orderError": "فشل طلب الخدمة"
+    "orderError": "فشل طلب الخدمة",
+    "blockedByUnpaid": "الطلب غير متاح: لديك خدمة غير مدفوعة"
   },
   "confirm": {
     "title": "التأكيد"

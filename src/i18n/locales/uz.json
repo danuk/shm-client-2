@@ -298,7 +298,8 @@
     "loadError": "Xizmatlar ro'yxatini yuklab bo'lmadi",
     "orderSuccess": "\"{{name}}\" xizmati buyurtma qilindi va balansdan to'landi",
     "orderPaySuccess": "\"{{name}}\" xizmati buyurtma qilindi. To'lov oynasini oching.",
-    "orderError": "Xizmatni buyurtma qilib bo'lmadi"
+    "orderError": "Xizmatni buyurtma qilib bo'lmadi",
+    "blockedByUnpaid": "Buyurtma mavjud emas: to'lanmagan xizmat mavjud"
   },
   "confirm": {
     "title": "Tasdiqlash"

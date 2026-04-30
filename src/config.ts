@@ -38,6 +38,7 @@ interface AppConfig {
   ALLOW_SERVICE_CHANGE: string;
   ALLOW_SERVICE_CHANGE_FORCE: string;
   SERVICE_CHANGE_ALL_CATEGORY: string;
+  BLOCK_ORDER_IF_UNPAID: string;
   ALLOW_TELEGRAM_PIN: string;
   VPN_APP_WINDOWS_URL: string;
   VPN_APP_LINUX_URL: string;
@@ -123,6 +124,7 @@ function getConfig(): AppConfig {
     ALLOW_SERVICE_CHANGE: runtimeConfig?.ALLOW_SERVICE_CHANGE || import.meta.env.VITE_ALLOW_SERVICE_CHANGE || 'true',
     ALLOW_SERVICE_CHANGE_FORCE: runtimeConfig?.ALLOW_SERVICE_CHANGE_FORCE || import.meta.env.VITE_ALLOW_SERVICE_CHANGE_FORCE || 'false',
     SERVICE_CHANGE_ALL_CATEGORY: runtimeConfig?.SERVICE_CHANGE_ALL_CATEGORY || import.meta.env.VITE_SERVICE_CHANGE_ALL_CATEGORY || 'true',
+    BLOCK_ORDER_IF_UNPAID: runtimeConfig?.BLOCK_ORDER_IF_UNPAID || import.meta.env.VITE_BLOCK_ORDER_IF_UNPAID || 'false',
     ALLOW_TELEGRAM_PIN: runtimeConfig?.ALLOW_TELEGRAM_PIN || import.meta.env.VITE_ALLOW_TELEGRAM_PIN || 'false',
     VPN_APP_WINDOWS_URL: runtimeConfig?.VPN_APP_WINDOWS_URL || import.meta.env.VITE_VPN_APP_WINDOWS_URL || '',
     VPN_APP_LINUX_URL: runtimeConfig?.VPN_APP_LINUX_URL || import.meta.env.VITE_VPN_APP_LINUX_URL || '',

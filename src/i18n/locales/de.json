@@ -298,7 +298,8 @@
     "loadError": "Diensteliste konnte nicht geladen werden",
     "orderSuccess": "Dienst \"{{name}}\" bestellt und vom Guthaben bezahlt",
     "orderPaySuccess": "Dienst \"{{name}}\" bestellt. Zahlungsfenster öffnen.",
-    "orderError": "Dienst konnte nicht bestellt werden"
+    "orderError": "Dienst konnte nicht bestellt werden",
+    "blockedByUnpaid": "Bestellung nicht verfügbar: Sie haben einen unbezahlten Dienst"
   },
   "confirm": {
     "title": "Bestätigung"

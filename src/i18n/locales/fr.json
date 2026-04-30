@@ -298,7 +298,8 @@
     "loadError": "Échec du chargement de la liste des services",
     "orderSuccess": "Service \"{{name}}\" commandé et payé depuis le solde",
     "orderPaySuccess": "Service \"{{name}}\" commandé. Ouvrez la fenêtre de paiement.",
-    "orderError": "Échec de la commande du service"
+    "orderError": "Échec de la commande du service",
+    "blockedByUnpaid": "Commande indisponible : vous avez un service impayé"
   },
   "confirm": {
     "title": "Confirmation"
