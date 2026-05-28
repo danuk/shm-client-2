@@ -31,7 +31,8 @@
     "privacyPolicy": "Politique de confidentialité",
     "termsOfUse": "Conditions d'utilisation",
     "publicOffer": "Offre publique",
-    "contacts": "Contacts"
+    "contacts": "Contacts",
+    "document": "Document"
   },
   "auth": {
     "login": "Se connecter",

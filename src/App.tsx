@@ -17,6 +17,7 @@ import { hasTelegramWebAppAutoAuth, isTelegramWebApp } from './constants/webapp'
 import { useEmailRequired } from './hooks/useEmailRequired';
 import { useTicketPoller } from './hooks/useTicketPoller';
 import PayHistoryModal from './components/PayHistoryModal';
+import DocumentModal from './components/DocumentModal';
 import WithdrawHistoryModal from './components/WithdrawHistoryModal';
 
 parseAndSaveSessionId();
@@ -28,8 +29,14 @@ import Tickets from './pages/Tickets.tsx';
 import Login from './pages/Login';
 import NotFound from './pages/NotFound';
 
+function isPdf(value: string) {
+  return value.toLowerCase().endsWith('.pdf');
+}
+
 function LegalLinks() {
   const { t } = useTranslation();
+  const [docUrl, setDocUrl] = useState<string | null>(null);
+  const [docTitle, setDocTitle] = useState('');
 
   const legalLinks = [
     { href: config.PRIVACY_POLICY_URL, label: t('common.privacyPolicy') },
@@ -48,43 +55,70 @@ function LegalLinks() {
   if (!hasLegal && !hasContacts) return null;
 
   return (
-    <Stack gap={0}>
-      {hasLegal && (
-        <Group justify="center" gap="md" wrap="wrap" py="sm">
-          {legalLinks.map((link) => (
-            <Text
-              key={link.href}
-              component="a"
-              href={link.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              size="xs"
-              c="dimmed"
-              td="underline"
-            >
-              {link.label}
-            </Text>
-          ))}
-        </Group>
-      )}
-      {hasContacts && (
-        <Group justify="center" gap="md" wrap="wrap" py="xs">
-          <Text size="xs" c="dimmed">{t('common.contacts')}:</Text>
-          {contactLinks.map((link) => (
-            <Text
-              key={link.href}
-              component="a"
-              href={link.href}
-              size="xs"
-              c="dimmed"
-              td="underline"
-            >
-              {link.label}
-            </Text>
-          ))}
-        </Group>
-      )}
-    </Stack>
+    <>
+      <DocumentModal
+        opened={!!docUrl}
+        onClose={() => setDocUrl(null)}
+        url={docUrl || ''}
+        title={docTitle}
+      />
+      <Stack gap={0}>
+        {hasLegal && (
+          <Group justify="center" gap="md" wrap="wrap" py="sm">
+            {legalLinks.map((link) =>
+              isPdf(link.href) ? (
+                <Text
+                  key={link.href}
+                  component="a"
+                  href={link.href}
+                  size="xs"
+                  c="dimmed"
+                  td="underline"
+                  style={{ cursor: 'pointer' }}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setDocTitle(link.label);
+                    setDocUrl(link.href);
+                  }}
+                >
+                  {link.label}
+                </Text>
+              ) : (
+                <Text
+                  key={link.href}
+                  component="a"
+                  href={link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  size="xs"
+                  c="dimmed"
+                  td="underline"
+                >
+                  {link.label}
+                </Text>
+              )
+            )}
+          </Group>
+        )}
+        {hasContacts && (
+          <Group justify="center" gap="md" wrap="wrap" py="xs">
+            <Text size="xs" c="dimmed">{t('common.contacts')}:</Text>
+            {contactLinks.map((link) => (
+              <Text
+                key={link.href}
+                component="a"
+                href={link.href}
+                size="xs"
+                c="dimmed"
+                td="underline"
+              >
+                {link.label}
+              </Text>
+            ))}
+          </Group>
+        )}
+      </Stack>
+    </>
   );
 }
 

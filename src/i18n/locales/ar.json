@@ -31,7 +31,8 @@
     "privacyPolicy": "سياسة الخصوصية",
     "termsOfUse": "شروط الاستخدام",
     "publicOffer": "العرض العام",
-    "contacts": "جهات الاتصال"
+    "contacts": "جهات الاتصال",
+    "document": "وثيقة"
   },
   "auth": {
     "login": "تسجيل الدخول",

@@ -11,7 +11,12 @@ import TelegramLoginButton, { TelegramUser } from '../components/TelegramLoginBu
 import { config } from '../config';
 import { useTelegramWebApp } from '../hooks/useTelegramWebApp';
 import LanguageSwitcher from '../components/LanguageSwitcher';
+import DocumentModal from '../components/DocumentModal';
 import { hasTelegramOidcAuth, hasTelegramWebAppAutoAuth, hasTelegramWidget, hasTelegramWebAppAuth } from '../constants/webapp';
+
+function isPdf(value: string) {
+  return value.toLowerCase().endsWith('.pdf');
+}
 
 function base64UrlToArrayBuffer(base64url: string): ArrayBuffer {
   const base64 = base64url.replace(/-/g, '+').replace(/_/g, '/');
@@ -73,6 +78,8 @@ export default function Login() {
   const [newPasswordData, setNewPasswordData] = useState({ password: '', confirmPassword: '' });
   const [acceptedLegal, setAcceptedLegal] = useState(false);
   const [verifyingToken, setVerifyingToken] = useState(false);
+  const [docModalUrl, setDocModalUrl] = useState('');
+  const [docModalTitle, setDocModalTitle] = useState('');
   const { setUser, setTelegramPhoto } = useStore();
   const { t } = useTranslation();
   const modeRef = useRef(mode);
@@ -645,35 +652,62 @@ export default function Login() {
                     </Group>
                   )}
                   {mode === 'register' && hasLegalLinks && (
-                    <Checkbox
-                      checked={acceptedLegal}
-                      onChange={(e) => setAcceptedLegal(e.currentTarget.checked)}
-                      label={
-                        <Text size="sm">
-                          {t('auth.acceptLegal')}{' '}
-                          {legalLinks.map((link, index) => (
-                            <Text
-                              key={link.href}
-                              component="span"
-                              size="sm"
-                            >
-                              {index > 0 ? ', ' : ''}
+                    <>
+                      <DocumentModal
+                        opened={!!docModalUrl}
+                        onClose={() => setDocModalUrl('')}
+                        url={docModalUrl}
+                        title={docModalTitle}
+                      />
+                      <Checkbox
+                        checked={acceptedLegal}
+                        onChange={(e) => setAcceptedLegal(e.currentTarget.checked)}
+                        label={
+                          <Text size="sm">
+                            {t('auth.acceptLegal')}{' '}
+                            {legalLinks.map((link, index) => (
                               <Text
-                                component="a"
-                                href={link.href}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                c="blue"
-                                td="underline"
+                                key={link.href}
+                                component="span"
                                 size="sm"
                               >
-                                {link.label}
+                                {index > 0 ? ', ' : ''}
+                                {isPdf(link.href) ? (
+                                  <Text
+                                    component="a"
+                                    href={link.href}
+                                    c="blue"
+                                    td="underline"
+                                    size="sm"
+                                    style={{ cursor: 'pointer' }}
+                                    onClick={(e) => {
+                                      e.preventDefault();
+                                      e.stopPropagation();
+                                      setDocModalTitle(link.label);
+                                      setDocModalUrl(link.href);
+                                    }}
+                                  >
+                                    {link.label}
+                                  </Text>
+                                ) : (
+                                  <Text
+                                    component="a"
+                                    href={link.href}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    c="blue"
+                                    td="underline"
+                                    size="sm"
+                                  >
+                                    {link.label}
+                                  </Text>
+                                )}
                               </Text>
-                            </Text>
-                          ))}
-                        </Text>
-                      }
-                    />
+                            ))}
+                          </Text>
+                        }
+                      />
+                    </>
                   )}
                   <Button
                     type="submit"

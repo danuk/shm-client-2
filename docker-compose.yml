@@ -3,8 +3,11 @@ services:
     image: danuk/shm-client-2:latest
     ports:
       - "3001:80"
+    volumes:
+      - ./docs:/app/docs
     environment:
       SHM_URL: "https://api.mydomain.com"
       APP_NAME: "My Company"
       APP_DESCRIPTION: "My Company Description"
+      PRIVACY_POLICY_URL: /docs/privacy.pdf
     restart: unless-stopped

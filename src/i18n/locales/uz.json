@@ -31,7 +31,8 @@
     "privacyPolicy": "Maxfiylik siyosati",
     "termsOfUse": "Foydalanish shartlari",
     "publicOffer": "Ommaviy oferta",
-    "contacts": "Aloqa"
+    "contacts": "Aloqa",
+    "document": "Hujjat"
   },
   "auth": {
     "login": "Kirish",
