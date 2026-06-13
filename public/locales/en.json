@@ -15,6 +15,11 @@
     "back": "Back",
     "next": "Next",
     "close": "Close",
+    "installApp": "Install app",
+    "installAppDesc": "Add to home screen for quick access",
+    "installAppIOSDesc": "Tap Share <icon /> → 'Add to Home Screen'",
+    "installAppBtn": "Install",
+    "installAppDismiss": "Not now",
     "refresh": "Refresh",
     "copy": "Copy",
     "copied": "Copied!",
@@ -29,6 +34,7 @@
     "year": "year",
     "pieces": "pcs.",
     "privacyPolicy": "Privacy policy",
+    "returnPolicy": "Return policy",
     "termsOfUse": "Terms of use",
     "publicOffer": "Public offer",
     "userAgreement": "User agreement",
@@ -183,7 +189,17 @@
     "partnerLink": "Partner link",
     "partnerLinkDescription": "Invite friends and receive bonuses for their orders and payments.",
     "payHistory": "Payment history",
-    "wdHistory": "Withdrawal history"
+    "wdHistory": "Withdrawal history",
+    "pushNotifications": "Notifications",
+    "pushEnabled": "Notifications enabled",
+    "pushDisabled": "Notifications disabled",
+    "pushEnableHint": "Enable notifications about services and balance changes",
+    "pushDisableHint": "Disable notifications",
+    "pushIsEnabled": "Push notifications enabled",
+    "pushIsDisabled": "Push notifications disabled",
+    "pushNotSupported": "Add to home screen to enable notifications",
+    "pushSubscribe": "Enable",
+    "pushUnsubscribe": "Disable"
   },
   "services": {
     "title": "My Services",
@@ -461,5 +477,10 @@
   },
   "security": {
     "changePasswordDescription": "Change your password for logging into your account"
+  },
+  "config": {
+    "code": "en",
+    "label": "English",
+    "flag": "🇺🇸"
   }
 }

@@ -61,8 +61,8 @@ const statusColors: Record<string, string> = {
 };
 
 function normalizeCategory(category: string): string {
-  const proxyCategories = new Set(config.PROXY_CATEGORY.split(','));
-  const vpnCategories = new Set(config.VPN_CATEGORY.split(','));
+  const proxyCategories = new Set((config.PROXY_CATEGORY || '').split(','));
+  const vpnCategories = new Set((config.VPN_CATEGORY || '').split(','));
 
   if (proxyCategories.has(category)) {
     return 'proxy';

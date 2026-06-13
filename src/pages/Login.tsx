@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
-import { Card, Text, Stack, Button, ActionIcon, TextInput, PasswordInput, Divider, Title, Center, Modal, Group, Loader, useMantineColorScheme, useComputedColorScheme, Checkbox } from '@mantine/core';
+import { Card, Text, Stack, Button, ActionIcon, TextInput, PasswordInput, Divider, Title, Center, Modal, Group, Loader, useMantineColorScheme, useComputedColorScheme, Checkbox, Tooltip } from '@mantine/core';
+import { useMediaQuery } from '@mantine/hooks';
 import { useForm, isEmail, hasLength } from '@mantine/form';
 import { IconLogin, IconUserPlus, IconHeadset, IconFingerprint, IconShieldLock, IconBrandTelegram, IconMailForward, IconLock, IconMoon, IconSun} from '@tabler/icons-react';
 import { notifications } from '@mantine/notifications';
@@ -82,6 +83,7 @@ export default function Login() {
   const [docModalTitle, setDocModalTitle] = useState('');
   const { setUser, setTelegramPhoto } = useStore();
   const { t } = useTranslation();
+  const isMobile = useMediaQuery('(max-width: 768px)');
   const modeRef = useRef(mode);
   modeRef.current = mode;
   const form = useForm({
@@ -505,7 +507,7 @@ export default function Login() {
   };
 
   return (
-    <Center h="80vh" style={{ position: 'relative' }}>
+    <Center style={{ minHeight: '100svh', paddingTop: 16, paddingBottom: isMobile ? 72 : 16, position: 'relative' }}>
       <Card withBorder radius="md" p="xl" w={400}>
         <Stack gap="lg">
           <Group justify="space-between" align="center">
@@ -918,20 +920,29 @@ export default function Login() {
       )}
 
       {config.SUPPORT_LINK && (
-        <Button
-          onClick={handleSupportLink}
-          style={{
-            position: 'fixed',
-            bottom: 24,
-            right: 24,
-            zIndex: 200,
-          }}
-          leftSection={<IconHeadset size={20} />}
-          radius="xl"
-          size="md"
-        >
-          {t('common.support')}
-        </Button>
+        isMobile ? (
+          <Tooltip label={t('common.support')} position="left" withArrow>
+            <ActionIcon
+              onClick={handleSupportLink}
+              style={{ position: 'fixed', bottom: 24, right: 24, zIndex: 200 }}
+              radius="xl"
+              size="xl"
+              variant="filled"
+            >
+              <IconHeadset size={22} />
+            </ActionIcon>
+          </Tooltip>
+        ) : (
+          <Button
+            onClick={handleSupportLink}
+            style={{ position: 'fixed', bottom: 24, right: 24, zIndex: 200 }}
+            leftSection={<IconHeadset size={20} />}
+            radius="xl"
+            size="md"
+          >
+            {t('common.support')}
+          </Button>
+        )
       )}
     </Center>
   );

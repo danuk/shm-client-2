@@ -15,6 +15,11 @@
     "back": "Atrás",
     "next": "Siguiente",
     "close": "Cerrar",
+    "installApp": "Instalar aplicación",
+    "installAppDesc": "Añadir a la pantalla de inicio para acceso rápido",
+    "installAppIOSDesc": "Toca Compartir <icon /> → «Agregar a inicio»",
+    "installAppBtn": "Instalar",
+    "installAppDismiss": "Ahora no",
     "refresh": "Actualizar",
     "copy": "Copiar",
     "copied": "¡Copiado!",
@@ -29,6 +34,7 @@
     "year": "año",
     "pieces": "uds.",
     "privacyPolicy": "Política de privacidad",
+    "returnPolicy": "Política de devoluciones",
     "termsOfUse": "Términos de uso",
     "publicOffer": "Oferta pública",
     "userAgreement": "Acuerdo de usuario",
@@ -183,7 +189,17 @@
     "partnerLink": "Enlace de socio",
     "partnerLinkDescription": "Invita amigos y recibe bonos por sus pedidos y pagos.",
     "payHistory": "Historial de pagos",
-    "wdHistory": "Historial de retiros"
+    "wdHistory": "Historial de retiros",
+    "pushNotifications": "Notificaciones",
+    "pushEnabled": "Notificaciones activadas",
+    "pushDisabled": "Notificaciones desactivadas",
+    "pushEnableHint": "Activa las notificaciones sobre servicios y cambios de saldo",
+    "pushDisableHint": "Desactivar notificaciones",
+    "pushIsEnabled": "Notificaciones push activadas",
+    "pushIsDisabled": "Notificaciones push desactivadas",
+    "pushNotSupported": "Añade a la pantalla de inicio para activar las notificaciones",
+    "pushSubscribe": "Activar",
+    "pushUnsubscribe": "Desactivar"
   },
   "services": {
     "title": "Mis servicios",
@@ -458,5 +474,10 @@
   },
   "security": {
     "changePasswordDescription": "Cambia tu contraseña para iniciar sesión en tu cuenta"
+  },
+  "config": {
+    "code": "es",
+    "label": "Español",
+    "flag": "🇪🇸"
   }
 }

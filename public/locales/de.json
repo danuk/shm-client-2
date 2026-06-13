@@ -15,6 +15,11 @@
     "back": "Zurück",
     "next": "Weiter",
     "close": "Schließen",
+    "installApp": "App installieren",
+    "installAppDesc": "Zum Startbildschirm hinzufügen für schnellen Zugriff",
+    "installAppIOSDesc": "Tippe auf Teilen <icon /> → „Zum Home-Bildschirm"",
+    "installAppBtn": "Installieren",
+    "installAppDismiss": "Nicht jetzt",
     "refresh": "Aktualisieren",
     "copy": "Kopieren",
     "copied": "Kopiert!",
@@ -29,6 +34,7 @@
     "year": "Jahr",
     "pieces": "Stk.",
     "privacyPolicy": "Datenschutzrichtlinie",
+    "returnPolicy": "Rückgaberichtlinie",
     "termsOfUse": "Nutzungsbedingungen",
     "publicOffer": "Öffentliches Angebot",
     "userAgreement": "Nutzervereinbarung",
@@ -183,7 +189,17 @@
     "partnerLink": "Partnerlink",
     "partnerLinkDescription": "Laden Sie Freunde ein und erhalten Sie Boni für deren Bestellungen und Zahlungen.",
     "payHistory": "Zahlungsverlauf",
-    "wdHistory": "Abbuchungsverlauf"
+    "wdHistory": "Abbuchungsverlauf",
+    "pushNotifications": "Benachrichtigungen",
+    "pushEnabled": "Benachrichtigungen aktiviert",
+    "pushDisabled": "Benachrichtigungen deaktiviert",
+    "pushEnableHint": "Aktivieren Sie Benachrichtigungen über Dienste und Kontostandsänderungen",
+    "pushDisableHint": "Benachrichtigungen deaktivieren",
+    "pushIsEnabled": "Push-Benachrichtigungen aktiviert",
+    "pushIsDisabled": "Push-Benachrichtigungen deaktiviert",
+    "pushNotSupported": "Zur Startseite hinzufügen, um Benachrichtigungen zu aktivieren",
+    "pushSubscribe": "Aktivieren",
+    "pushUnsubscribe": "Deaktivieren"
   },
   "services": {
     "title": "Meine Dienste",
@@ -458,5 +474,10 @@
   },
   "security": {
     "changePasswordDescription": "Ändern Sie Ihr Passwort für die Anmeldung in Ihrem Konto"
+  },
+  "config": {
+    "code": "de",
+    "label": "Deutsch",
+    "flag": "🇩🇪"
   }
 }

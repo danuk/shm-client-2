@@ -15,6 +15,11 @@
     "back": "Назад",
     "next": "Далее",
     "close": "Закрыть",
+    "installApp": "Установить приложение",
+    "installAppDesc": "Добавьте в домашний экран для быстрого доступа",
+    "installAppIOSDesc": "Нажмите «Поделиться» <icon /> → «На экран «Домой»",
+    "installAppBtn": "Установить",
+    "installAppDismiss": "Не сейчас",
     "refresh": "Обновить",
     "copy": "Копировать",
     "copied": "Скопировано!",
@@ -29,6 +34,7 @@
     "year": "год",
     "pieces": "шт.",
     "privacyPolicy": "Политика конфиденциальности",
+    "returnPolicy": "Политика возврата",
     "termsOfUse": "Условия использования",
     "publicOffer": "Договор оферты",
     "userAgreement": "Пользовательское соглашение",
@@ -183,7 +189,17 @@
     "partnerLink": "Партнёрская ссылка",
     "partnerLinkDescription": "Приглашайте друзей и получайте бонусы за их заказы и платежи.",
     "payHistory": "История платежей",
-    "wdHistory": "История списаний"
+    "wdHistory": "История списаний",
+    "pushNotifications": "Уведомления",
+    "pushEnabled": "Уведомления включены",
+    "pushDisabled": "Уведомления отключены",
+    "pushEnableHint": "Включите уведомления об услугах и изменении баланса",
+    "pushDisableHint": "Отключить уведомления",
+    "pushIsEnabled": "Push-уведомления включены",
+    "pushIsDisabled": "Push-уведомления отключены",
+    "pushNotSupported": "Установите приложение на главный экран для включения уведомлений",
+    "pushSubscribe": "Включить",
+    "pushUnsubscribe": "Отключить"
   },
   "services": {
     "title": "Мои услуги",
@@ -461,5 +477,10 @@
   },
   "security": {
     "changePasswordDescription": "Измените пароль для входа в личный кабинет"
+  },
+  "config": {
+    "code": "ru",
+    "label": "Русский",
+    "flag": "🇷🇺"
   }
 }

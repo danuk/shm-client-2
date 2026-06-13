@@ -15,6 +15,11 @@
     "back": "رجوع",
     "next": "التالي",
     "close": "إغلاق",
+    "installApp": "تثبيت التطبيق",
+    "installAppDesc": "أضف إلى الشاشة الرئيسية للوصول السريع",
+    "installAppIOSDesc": "اضغط مشاركة <icon /> ← «إضافة إلى الشاشة الرئيسية»",
+    "installAppBtn": "تثبيت",
+    "installAppDismiss": "ليس الآن",
     "refresh": "تحديث",
     "copy": "نسخ",
     "copied": "تم النسخ!",
@@ -29,6 +34,7 @@
     "year": "سنة",
     "pieces": "قطعة.",
     "privacyPolicy": "سياسة الخصوصية",
+    "returnPolicy": "سياسة الإرجاع",
     "termsOfUse": "شروط الاستخدام",
     "publicOffer": "العرض العام",
     "userAgreement": "اتفاقية المستخدم",
@@ -181,7 +187,17 @@
     "partnerLink": "رابط الشريك",
     "partnerLinkDescription": "ادعُ أصدقاءك واحصل على مكافآت على طلباتهم ومدفوعاتهم.",
     "payHistory": "سجل المدفوعات",
-    "wdHistory": "سجل الخصومات"
+    "wdHistory": "سجل الخصومات",
+    "pushNotifications": "الإشعارات",
+    "pushEnabled": "تم تفعيل الإشعارات",
+    "pushDisabled": "تم تعطيل الإشعارات",
+    "pushEnableHint": "فعّل الإشعارات حول الخدمات وتغييرات الرصيد",
+    "pushDisableHint": "تعطيل الإشعارات",
+    "pushIsEnabled": "تم تفعيل الإشعارات الفورية",
+    "pushIsDisabled": "تم تعطيل الإشعارات الفورية",
+    "pushNotSupported": "أضف إلى الشاشة الرئيسية لتفعيل الإشعارات",
+    "pushSubscribe": "تفعيل",
+    "pushUnsubscribe": "تعطيل"
   },
   "services": {
     "title": "خدماتي",
@@ -456,5 +472,10 @@
   },
   "security": {
     "changePasswordDescription": "غيّر كلمة المرور لتسجيل الدخول إلى حسابك"
+  },
+  "config": {
+    "code": "ar",
+    "label": "العربية",
+    "flag": "🇸🇦"
   }
 }

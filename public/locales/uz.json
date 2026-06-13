@@ -15,6 +15,11 @@
     "back": "Orqaga",
     "next": "Keyingi",
     "close": "Yopish",
+    "installApp": "Ilovani o'rnatish",
+    "installAppDesc": "Tez kirish uchun bosh ekranga qo'shing",
+    "installAppIOSDesc": "Ulashish <icon /> → «Bosh ekranga qo'shish» tugmasini bosing",
+    "installAppBtn": "O'rnatish",
+    "installAppDismiss": "Keyinroq",
     "refresh": "Yangilash",
     "copy": "Nusxa olish",
     "copied": "Nusxa olindi!",
@@ -29,6 +34,7 @@
     "year": "yil",
     "pieces": "dona.",
     "privacyPolicy": "Maxfiylik siyosati",
+    "returnPolicy": "Qaytarish siyosati",
     "termsOfUse": "Foydalanish shartlari",
     "publicOffer": "Ommaviy oferta",
     "userAgreement": "Foydalanuvchi shartnomasi",
@@ -183,7 +189,17 @@
     "partnerLink": "Hamkor havolasi",
     "partnerLinkDescription": "Do'stlarni taklif qiling va ularning buyurtmalari va to'lovlari uchun bonuslar oling.",
     "payHistory": "To'lovlar tarixi",
-    "wdHistory": "Hisobdan chiqarishlar tarixi"
+    "wdHistory": "Hisobdan chiqarishlar tarixi",
+    "pushNotifications": "Bildirishnomalar",
+    "pushEnabled": "Bildirishnomalar yoqildi",
+    "pushDisabled": "Bildirishnomalar ochirildi",
+    "pushEnableHint": "Xizmatlar va balans ozgarishlari haqida bildirishnomalarni yoqing",
+    "pushDisableHint": "Bildirishnomalarni ochirish",
+    "pushIsEnabled": "Push-bildirishnomalar yoqildi",
+    "pushIsDisabled": "Push-bildirishnomalar ochirildi",
+    "pushNotSupported": "Bildirishnomalarni yoqish uchun bosh ekranga qo'shing",
+    "pushSubscribe": "Yoqish",
+    "pushUnsubscribe": "Ochirish"
   },
   "services": {
     "title": "Mening xizmatlarim",
@@ -458,5 +474,10 @@
   },
   "security": {
     "changePasswordDescription": "Hisobingizga kirish parolini o'zgartiring"
+  },
+  "config": {
+    "code": "uz",
+    "label": "Oʻzbekcha",
+    "flag": "🇺🇿"
   }
 }

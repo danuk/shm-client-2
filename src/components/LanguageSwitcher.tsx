@@ -2,24 +2,50 @@ import { ActionIcon, Menu, useDirection } from '@mantine/core';
 import { IconLanguage } from '@tabler/icons-react';
 import { useTranslation } from 'react-i18next';
 import { config } from '../config';
-
-const languages = [
-  { code: 'en', label: 'English', flag: '🇺🇸' },
-  { code: 'ru', label: 'Русский', flag: '🇷🇺' },
-  { code: 'de', label: 'Deutsch', flag: '🇩🇪' },
-  { code: 'es', label: 'Español', flag: '🇪🇸' },
-  { code: 'fr', label: 'Français', flag: '🇫🇷' },
-  { code: 'uz', label: 'Oʻzbekcha', flag: '🇺🇿' },
-  { code: 'ar', label: 'العربية', flag: '🇸🇦' },
-];
+import { BUILT_IN_LANGS, CUSTOM_LANGS } from '../i18n';
 
 const RTL_LANGUAGES = ['ar'];
+
+function countLeafKeys(obj: unknown): number {
+  if (typeof obj !== 'object' || obj === null || Array.isArray(obj)) return 1;
+  return Object.values(obj as Record<string, unknown>).reduce<number>(
+    (sum, v) => sum + countLeafKeys(v),
+    0,
+  );
+}
 
 export default function LanguageSwitcher() {
   const { i18n } = useTranslation();
   const { toggleDirection, dir } = useDirection();
 
-  if (config.SINGLE_LANGUAGE === 'true' ) return null;
+  if (config.SINGLE_LANGUAGE === 'true') return null;
+
+  const refKeyCount = countLeafKeys(i18n.getResourceBundle('en', 'translation'));
+
+  const builtInLanguages = BUILT_IN_LANGS.map(code => {
+    const cfg = i18n.getResource(code, 'translation', 'config') as
+      | { code: string; label: string; flag: string }
+      | undefined;
+    return cfg?.label && cfg?.flag ? { code, label: cfg.label, flag: cfg.flag } : null;
+  }).filter(Boolean) as { code: string; label: string; flag: string }[];
+
+  const customLanguages = CUSTOM_LANGS.map(code => {
+    const cfg = i18n.getResource(code, 'translation', 'config') as
+      | { code: string; label: string; flag: string }
+      | undefined;
+    if (!cfg?.label || !cfg?.flag) return null;
+
+    const keyCount = countLeafKeys(i18n.getResourceBundle(code, 'translation'));
+    const completeness = refKeyCount > 0 ? keyCount / refKeyCount : 0;
+    if (completeness < 0.5) {
+      console.warn(`[i18n] Custom language "${code}" is only ${Math.round(completeness * 100)}% complete (${keyCount}/${refKeyCount} keys), skipping.`);
+      return null;
+    }
+
+    return { code, label: cfg.label, flag: cfg.flag };
+  }).filter(Boolean) as { code: string; label: string; flag: string }[];
+
+  const languages = [...builtInLanguages, ...customLanguages];
 
   const currentLang = languages.find(l => l.code === i18n.language) || languages[0];
 
@@ -33,7 +59,7 @@ export default function LanguageSwitcher() {
   return (
     <Menu shadow="md" width={150}>
       <Menu.Target>
-        <ActionIcon variant="default" size="lg" aria-label="Change language" title={`Current language: ${currentLang.label}`}>
+        <ActionIcon variant="default" size="lg" aria-label="Change language" title={`Current language: ${currentLang?.label}`}>
           <IconLanguage size={18} />
         </ActionIcon>
       </Menu.Target>

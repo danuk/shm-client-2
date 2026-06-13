@@ -1,39 +1,38 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
+import HttpBackend from 'i18next-http-backend';
 import { config } from '../config';
 
-import en from './locales/en.json';
-import ru from './locales/ru.json';
-import de from './locales/de.json';
-import es from './locales/es.json';
-import fr from './locales/fr.json';
-import uz from './locales/uz.json';
-import ar from './locales/ar.json';
+export const BUILT_IN_LANGS = ['en', 'ru', 'de', 'es', 'fr', 'uz', 'ar'];
 
-const resources = {
-  en: { translation: en },
-  ru: { translation: ru },
-  de: { translation: de },
-  es: { translation: es },
-  fr: { translation: fr },
-  uz: { translation: uz },
-  ar: { translation: ar },
-};
+export const CUSTOM_LANGS: string[] = config.CUSTOM_LANGS
+  ? config.CUSTOM_LANGS.split(',').map(s => s.trim()).filter(Boolean)
+  : [];
+
+const allLangs = [...BUILT_IN_LANGS, ...CUSTOM_LANGS];
 
 const isSingleLanguage = config.SINGLE_LANGUAGE === 'true';
 const savedLanguage = localStorage.getItem('shm_language');
 
+const activeLangs = isSingleLanguage
+  ? [config.DEFAULT_LANGUAGE || 'en']
+  : allLangs;
+
 i18n
+  .use(HttpBackend)
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
-    resources,
+    backend: {
+      loadPath: `${import.meta.env.BASE_URL}locales/{{lng}}.json`,
+    },
     lng: isSingleLanguage
       ? config.DEFAULT_LANGUAGE
       : (!savedLanguage && config.DEFAULT_LANGUAGE ? config.DEFAULT_LANGUAGE : undefined),
     fallbackLng: config.DEFAULT_LANGUAGE || 'en',
-    supportedLngs: ['en', 'ru', 'de', 'es', 'fr', 'uz', 'ar'],
+    supportedLngs: activeLangs,
+    preload: activeLangs,
 
     detection: {
       order: ['localStorage', 'navigator', 'htmlTag'],

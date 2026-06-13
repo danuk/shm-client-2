@@ -15,6 +15,11 @@
     "back": "Retour",
     "next": "Suivant",
     "close": "Fermer",
+    "installApp": "Installer l'application",
+    "installAppDesc": "Ajouter à l'écran d'accueil pour un accès rapide",
+    "installAppIOSDesc": "Appuyez sur Partager <icon /> → « Sur l'écran d'accueil »",
+    "installAppBtn": "Installer",
+    "installAppDismiss": "Pas maintenant",
     "refresh": "Actualiser",
     "copy": "Copier",
     "copied": "Copié !",
@@ -29,6 +34,7 @@
     "year": "an",
     "pieces": "pcs.",
     "privacyPolicy": "Politique de confidentialité",
+    "returnPolicy": "Politique de remboursement",
     "termsOfUse": "Conditions d'utilisation",
     "publicOffer": "Offre publique",
     "userAgreement": "Accord utilisateur",
@@ -183,7 +189,17 @@
     "partnerLink": "Lien partenaire",
     "partnerLinkDescription": "Invitez des amis et recevez des bonus pour leurs commandes et paiements.",
     "payHistory": "Historique des paiements",
-    "wdHistory": "Historique des retraits"
+    "wdHistory": "Historique des retraits",
+    "pushNotifications": "Notifications",
+    "pushEnabled": "Notifications activées",
+    "pushDisabled": "Notifications désactivées",
+    "pushEnableHint": "Activez les notifications sur les services et les changements de solde",
+    "pushDisableHint": "Désactiver les notifications",
+    "pushIsEnabled": "Notifications push activées",
+    "pushIsDisabled": "Notifications push désactivées",
+    "pushNotSupported": "Ajoutez à l'écran d'accueil pour activer les notifications",
+    "pushSubscribe": "Activer",
+    "pushUnsubscribe": "Désactiver"
   },
   "services": {
     "title": "Mes services",
@@ -458,5 +474,10 @@
   },
   "security": {
     "changePasswordDescription": "Changez votre mot de passe pour vous connecter à votre compte"
+  },
+  "config": {
+    "code": "fr",
+    "label": "Français",
+    "flag": "🇫🇷"
   }
 }
