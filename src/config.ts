@@ -77,6 +77,8 @@ interface AppConfig {
   CONTACT_PHONE: string;
   WEB_PUSH_ENABLE: string;
   VAPID_PUBLIC_KEY: string;
+  SUPPORT_WIDGET_URL: string;
+  SUPPORT_WIDGET_API: string;
 }
 
 declare global {
@@ -167,6 +169,8 @@ function getConfig(): AppConfig {
     CONTACT_PHONE: runtimeConfig?.CONTACT_PHONE || import.meta.env.VITE_CONTACT_PHONE || undefined,
     WEB_PUSH_ENABLE: runtimeConfig?.WEB_PUSH_ENABLE || import.meta.env.VITE_WEB_PUSH_ENABLE || 'false',
     VAPID_PUBLIC_KEY: runtimeConfig?.VAPID_PUBLIC_KEY || import.meta.env.VITE_VAPID_PUBLIC_KEY || undefined,
+    SUPPORT_WIDGET_URL: runtimeConfig?.SUPPORT_WIDGET_URL || import.meta.env.VITE_SUPPORT_WIDGET_URL || undefined,
+    SUPPORT_WIDGET_API: runtimeConfig?.SUPPORT_WIDGET_API || import.meta.env.VITE_SUPPORT_WIDGET_API || undefined,
   };
 }
 

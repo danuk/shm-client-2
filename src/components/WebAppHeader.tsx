@@ -1,17 +1,20 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Group, ActionIcon, useMantineColorScheme, useComputedColorScheme, Tooltip, Indicator } from '@mantine/core';
+import { Group, ActionIcon, useMantineColorScheme, useComputedColorScheme, Tooltip, Indicator, Button } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
-import { IconSun, IconMoon, IconLogout, IconHeadset, IconBell, IconBellOff } from '@tabler/icons-react';
+import { IconSun, IconMoon, IconLogout, IconHeadset, IconBell, IconBellOff, IconWallet } from '@tabler/icons-react';
 import { useTranslation } from 'react-i18next';
 import { useStore } from '../store/useStore';
 import { config } from '../config';
 import { hasTelegramWebAppAutoAuth } from '../constants/webapp';
 import { usePushNotifications } from '../hooks/usePushNotifications';
 import LanguageSwitcher from './LanguageSwitcher';
+import PayModal from './PayModal';
 
 export function WebAppHeader() {
   const navigate = useNavigate();
-  const { logout } = useStore();
+  const { logout, user } = useStore();
+  const [payModalOpen, setPayModalOpen] = useState(false);
   const computedColorScheme = useComputedColorScheme('light');
   const { setColorScheme } = useMantineColorScheme();
   const { isSupported, isSubscribed, isLoading: pushLoading, error: pushError, subscribe, unsubscribe } = usePushNotifications();
@@ -34,7 +37,19 @@ export function WebAppHeader() {
   };
 
   return (
+    <>
     <Group justify="flex-end" p="sm" gap="xs">
+      {user && (
+        <Button
+          leftSection={<IconWallet size={16} />}
+          variant="light"
+          color="cyan"
+          size="xs"
+          onClick={() => setPayModalOpen(true)}
+        >
+          {user.balance} {t('common.currency')}
+        </Button>
+      )}
       {isSupported && (
         <Tooltip
           label={isSubscribed ? t('profile.pushDisableHint') : t('profile.pushEnableHint')}
@@ -84,5 +99,7 @@ export function WebAppHeader() {
         </ActionIcon>
       )}
     </Group>
+    <PayModal opened={payModalOpen} onClose={() => setPayModalOpen(false)} />
+    </>
   );
 }

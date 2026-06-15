@@ -5,7 +5,7 @@ import { MantineProvider, AppShell, Group, Text, ActionIcon, Button, Modal, Text
 import { Notifications, notifications } from '@mantine/notifications';
 import { useMediaQuery, useHotkeys, useLongPress } from '@mantine/hooks';
 import { BrowserRouter, Routes, Route, Link, useLocation, useNavigate } from 'react-router-dom';
-import { IconLogout, IconHeadset, IconBell, IconBellOff } from '@tabler/icons-react';
+import { IconLogout, IconHeadset, IconBell, IconBellOff, IconWallet } from '@tabler/icons-react';
 import { useTranslation } from 'react-i18next';
 import { useStore } from './store/useStore';
 import { NAV_ITEMS } from './constants/navigation';
@@ -19,6 +19,7 @@ import { useTicketPoller } from './hooks/useTicketPoller';
 import { usePushNotifications } from './hooks/usePushNotifications';
 import { useNotificationFromUrl } from './hooks/useNotificationFromUrl';
 import PayHistoryModal from './components/PayHistoryModal';
+import PayModal from './components/PayModal';
 import WithdrawHistoryModal from './components/WithdrawHistoryModal';
 import { PWAInstallBanner } from './components/PWAInstallBanner';
 import { LegalLinks } from './components/LegalLinks';
@@ -39,11 +40,11 @@ import NotFound from './pages/NotFound';
 function AppContent() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { isAuthenticated, isLoading, setUser, setIsLoading, logout, hasNewTicketMessages, userEmail, isEmailLoaded, setOpenEmailModal } = useStore();
+  const { isAuthenticated, isLoading, setUser, setIsLoading, logout, hasNewTicketMessages, userEmail, isEmailLoaded, setOpenEmailModal, user } = useStore();
   const emailBlocked = config.EMAIL_REQUIRED === 'true' && isEmailLoaded && !userEmail;
   const { isSupported, isSubscribed, isLoading: pushLoading, error: pushError, subscribe, unsubscribe } = usePushNotifications();
   const isMobile = useMediaQuery('(max-width: 768px)');
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const {
     modalOpen: globalEmailModalOpen,
     setModalOpen: setGlobalEmailModalOpen,
@@ -70,6 +71,7 @@ function AppContent() {
 
   const [payHistoryOpen, setPayHistoryOpen] = useState(false);
   const [withdrawHistoryOpen, setWithdrawHistoryOpen] = useState(false);
+  const [payModalOpen, setPayModalOpen] = useState(false);
   const [versionOpen, setVersionOpen] = useState(false);
   const showVersion = () => setVersionOpen(true);
   const longPressProps = useLongPress(showVersion);
@@ -130,6 +132,22 @@ function AppContent() {
     };
     checkAuth();
   }, [setUser, setIsLoading]);
+
+  useEffect(() => {
+    if (!config.SUPPORT_WIDGET_URL || !user) return;
+    const existing = document.getElementById('__support_widget__');
+    if (existing) existing.remove();
+    const script = document.createElement('script');
+    script.id = '__support_widget__';
+    script.src = config.SUPPORT_WIDGET_URL;
+    script.async = true;
+    script.dataset.api = config.SUPPORT_WIDGET_API || '';
+    script.dataset.userId = String(user.user_id);
+    script.dataset.colorPrimary = '#1971c2';
+    script.dataset.lang = i18n.language === 'ru' ? 'ru' : 'en';
+    document.body.appendChild(script);
+    return () => { script.remove(); };
+  }, [user?.user_id]);
 
   useHotkeys([['shift + V', () => setVersionOpen(true)]]);
 
@@ -310,6 +328,17 @@ function AppContent() {
               })}
             </Group>
             <Group>
+              {user && (
+                <Button
+                  leftSection={<IconWallet size={16} />}
+                  variant="light"
+                  color="cyan"
+                  size="xs"
+                  onClick={() => setPayModalOpen(true)}
+                >
+                  {user.balance} {t('common.currency')}
+                </Button>
+              )}
               {isSupported && (
                 <Tooltip
                   label={isSubscribed ? t('profile.pushDisableHint') : t('profile.pushEnableHint')}
@@ -368,6 +397,7 @@ function AppContent() {
       </AppShell>
       <PayHistoryModal opened={payHistoryOpen} onClose={() => setPayHistoryOpen(false)} />
       <WithdrawHistoryModal opened={withdrawHistoryOpen} onClose={() => setWithdrawHistoryOpen(false)} />
+      <PayModal opened={payModalOpen} onClose={() => setPayModalOpen(false)} />
       <PWAInstallBanner />
     </>
   );

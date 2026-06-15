@@ -64,6 +64,8 @@ services:
 | `CONTACT_EMAIL` | Почта для контакта | - |
 | `CONTACT_PHONE` | Номер телефона для контакта | - |
 | `BITRIX_WIDGET_SCRIPT_URL` | URL виждета Битрих-24 `https://cdn-ru.bitrix24.ru/b********/crm/site_button/loader_****.js` | - |
+| `SUPPORT_WIDGET_URL` | URL скрипта виджета чата поддержки (например `https://widget.your-domain.com/widget.js`). Виджет загружается только после авторизации пользователя | - |
+| `SUPPORT_WIDGET_API` | API-ключ для виджета поддержки (передаётся в атрибут `data-api`) | - |
 | `PRIVACY_POLICY_URL` | Ссылка или путь на `Политика конфиденциальности` | - |
 | `TERMS_OF_USE_URL` | Ссылка или путь на `Условия использования` | - |
 | `PUBLIC_OFFER_URL` | Ссылка или путь на `Договор оферты` | - |
@@ -158,6 +160,72 @@ services:
 | `SERVICE_CHANGE_ALL_CATEGORY` | Разрешить сменить услугу на все доступные категории ( если `false` то можно сменить только на такую же категорию как и в текущей услуге) | `true` |
 | `ORDER_SORTING` | Сортировка услуг при покупке (`cost_asc`, `cost_desc`, `name_asc`, `name_desc`, `descr_asc`, `descr_desc`) | `cost_asc` |
 | `DEVICE_CONFIG_TEXT` | Замена текста `Добавить в приложение` только в 1 языке | `` |
+
+## Виджет поддержки [Support Bot](https://github.com/bkeenke/support-bot)
+
+Приложение поддерживает встраивание виджета чата поддержки. Скрипт виджета загружается только после авторизации пользователя — `data-user-id` подставляется автоматически из текущей сессии.
+
+### Переменные окружения
+
+| Переменная | Описание | По умолчанию |
+| ---------- | -------- | ------------ |
+| `SUPPORT_WIDGET_URL` | URL скрипта виджета | - |
+| `SUPPORT_WIDGET_API` | API-ключ виджета (передаётся в `data-api`) | - |
+
+### Пример конфигурации
+
+```yaml
+services:
+  client:
+    image: danuk/shm-client-2:latest
+    environment:
+      SUPPORT_WIDGET_URL: "https://widget.your-domain.com/widget.js"
+      SUPPORT_WIDGET_API: "your-api-key"
+```
+
+Виджет инициализируется как:
+
+```html
+<script src="https://widget.your-domain.com/widget.js"
+        data-api="your-api-key"
+        data-user-id="123">
+</script>
+```
+
+где `data-user-id` — это ID авторизованного пользователя в SHM.
+
+## Push-уведомления (Тестовый)
+
+Приложение поддерживает Web Push уведомления через Service Worker (браузерные push без PWA).
+
+### Переменные для Push
+
+| Переменная | Описание | По умолчанию |
+| ---------- | -------- | ------------ |
+| `WEB_PUSH_ENABLE` | Включить поддержку Web Push уведомлений | `false` |
+| `VAPID_PUBLIC_KEY` | Публичный VAPID-ключ для Web Push | - |
+
+### Настройка
+
+1. Сгенерируйте VAPID-ключи (например через `npx web-push generate-vapid-keys`)
+2. Укажите публичный ключ в `VAPID_PUBLIC_KEY`, приватный — в shm
+3. Установите `WEB_PUSH_ENABLE=true`
+
+в SHM нет прямой поддержки Push уведомлений, для этого нужны отдельные шаблоны, например сейчас для подписки используется POST запрос на `/shm/v1/template/subscribe` и `/shm/v1/template/unsubscribe` для отписки
+
+После авторизации в шапке приложения появится кнопка 🔔 — пользователь сам управляет подпиской.
+
+### Открытие уведомления из URL
+
+При клике на push-уведомление браузер открывает приложение. Если в URL присутствуют параметры `_nt` (заголовок) и `_nb` (текст), приложение автоматически показывает всплывающее уведомление внутри интерфейса:
+
+```text
+https://your-domain.com/?_nt=Заголовок&_nb=Текст+уведомления
+```
+
+### iOS
+
+На iOS Web Push работает только в **Safari 16.4+** при условии, что приложение добавлено на главный экран (режим PWA / Home Screen). В обычном браузере на iOS push-уведомления недоступны.
 
 ## Добавления как PWA ( Прогрессивные веб-приложения )
 

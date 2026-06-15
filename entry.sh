@@ -147,6 +147,8 @@ window.__APP_CONFIG__ = {
   CONTACT_PHONE: "${CONTACT_PHONE:-}",
   WEB_PUSH_ENABLE: "${WEB_PUSH_ENABLE:-false}",
   VAPID_PUBLIC_KEY: "${VAPID_PUBLIC_KEY:-}",
+  SUPPORT_WIDGET_URL: "${SUPPORT_WIDGET_URL:-}",
+  SUPPORT_WIDGET_API: "${SUPPORT_WIDGET_API:-}",
 };
 EOF
 
@@ -155,14 +157,15 @@ cat > "/app/manifest.webmanifest" << EOF
   "name": "${APP_NAME:-SHM Client}",
   "short_name": "${APP_NAME:-SHM}",
   "description": "${APP_DESCRIPTION:-Powerful and flexible client}",
-  "theme_color": "${PWA_THEME_COLOR:-#1a1a1a}",
-  "background_color": "${PWA_BG_COLOR:-#1a1a1a}",
+  "theme_color": "${PWA_THEME_COLOR:-#1971c2}",
+  "background_color": "${PWA_BG_COLOR:-#1a1b1e}",
   "display": "standalone",
   "id": "/",
+  "scope": "/",
   "start_url": "/",
   "icons": [
-    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
-    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" }
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
   ],
   "screenshots": [
     { "src": "screenshot-desktop.png", "sizes": "3410x1872", "type": "image/png", "form_factor": "wide", "label": "App" },

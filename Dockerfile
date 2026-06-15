@@ -13,7 +13,8 @@ FROM nginx:stable-alpine AS client
 EXPOSE 80
 
 COPY entry.sh /entry.sh
-RUN chmod +x /entry.sh
+RUN chmod +x /entry.sh && \
+    sed -i 's|application/json\s*json;|application/json json;\n    application/manifest+json webmanifest;|' /etc/nginx/mime.types
 
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=builder /app/dist /app
