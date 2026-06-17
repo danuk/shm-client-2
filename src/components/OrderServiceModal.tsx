@@ -12,10 +12,11 @@ interface OrderService {
   category: string;
   cost: number;
   partial_renew?: boolean;
-  real_cost?: number;
-  cost_discount?: number;
-  cost_bonus?: number;
-  discount?: number;
+  real_cost: number;
+  real_cost_with_bonuses:  number;
+  cost_discount: number;
+  cost_bonus: number;
+  discount: number;
   period: number;
   descr: string;
 }
@@ -64,7 +65,14 @@ function formatPeriod(value: number, t: any) {
 
   const parts: string[] = [];
 
-  if (months) parts.push(`${months} ${t('common.months')}`);
+  if (months) {
+    if (months % 12 === 0 && !days && !hours) {
+      const years = months / 12;
+      parts.push(`${years} ${t('common.years', { count: years })}`);
+    } else {
+      parts.push(`${months} ${t('common.months', { count: months })}`);
+    }
+  }
   if (days) parts.push(`${days} ${t('common.days')}`);
   if (hours) parts.push(`${hours} ${t('common.hours')}`);
 
@@ -96,16 +104,10 @@ export default function OrderServiceModal({
   const isChangeMode = mode === 'change';
   const canDeferChange = isChangeMode && currentService?.status === 'ACTIVE';
 
-  const getAppliedBonus = (service: OrderService): number => {
-    const plannedBonus = Number(service.cost_bonus || 0);
-    return Math.max(0, Math.min(plannedBonus, Number(userBonus || 0)));
-  };
-
   const getEffectiveCost = (service: OrderService): number => {
-    const cost = Number(service.cost || 0);
-    const costDiscount = Number(service.cost_discount || 0);
-    const appliedBonus = getAppliedBonus(service);
-    return Math.max(0, cost - costDiscount - appliedBonus);
+    if (config.ORDER_COST_WITH_BONUSES === 'true') return Number(service.real_cost_with_bonuses || 0);
+    if (config.ORDER_COST_DISCOUNT === 'true') return Number(service.real_cost || 0);
+    return Number(service.cost || 0);
   };
 
   const getTopUpAmount = (service: OrderService, balance: number): number => {
@@ -404,41 +406,25 @@ export default function OrderServiceModal({
                 <div>
                   <Text size="sm" c="dimmed">{t('services.cost')}</Text>
                   <Group gap="xs" align="baseline">
-                    {selectedService.discount && selectedService.discount > 0 ? (
-                      <>
-                        <Text fw={600} size="lg" style={{ textDecoration: 'line-through', color: '#999' }}>
-                          {selectedService.cost} ₽
-                        </Text>
-                      </>
-                    ) : null}
-                    <Text fw={600} size="lg" color={selectedService.discount && selectedService.discount > 0 ? 'green' : undefined}>
-                        {getEffectiveCost(selectedService)} ₽
+                    {selectedService.cost > getEffectiveCost(selectedService) && (
+                      <Text fw={600} size="lg" style={{ textDecoration: 'line-through', color: '#999' }}>
+                        {selectedService.cost} ₽
+                      </Text>
+                    )}
+                    <Text fw={600} size="lg" color={selectedService.cost > getEffectiveCost(selectedService) ? 'green' : undefined}>
+                      {getEffectiveCost(selectedService)} ₽
                     </Text>
                   </Group>
-                  {selectedService.cost_discount && selectedService.cost_discount > 0 && getAppliedBonus(selectedService) === 0 ? (
+                  {selectedService.cost > getEffectiveCost(selectedService) && (
                     <Text size="xs" c="dimmed" mt="xs">
-                      {t('services.savings', { amount: selectedService.cost_discount })}
+                      {t('services.profit', { amount: (selectedService.cost - getEffectiveCost(selectedService)).toFixed(2) })}
                     </Text>
-                  ) : null}
-                  {getAppliedBonus(selectedService) > 0 && selectedService.cost_discount === 0 ? (
-                    <Text size="xs" c="dimmed" mt="xs">
-                      {t('services.savings_bonus', { amount: getAppliedBonus(selectedService) })}
-                    </Text>
-                  ) : null}
-                  {selectedService.cost_discount && selectedService.cost_discount > 0 && getAppliedBonus(selectedService) > 0 ? (
-                    <Text size="xs" c="dimmed" mt="xs">
-                      {t('services.profit', { amount: getAppliedBonus(selectedService) + selectedService.cost_discount })}
-                    </Text>
-                  ) : null}
+                  )}
                 </div>
                 <div>
                   <Text size="sm" c="dimmed">{t('order.period')}</Text>
                   <Text fw={500}>
-                    {selectedService.period === 1 ? t('common.month') :
-                     selectedService.period === 3 ? t('common.months3') :
-                     selectedService.period === 6 ? t('common.months6') :
-                     selectedService.period === 12 ? t('common.year') :
-                     formatPeriod(selectedService.period, t)}
+                    {formatPeriod(selectedService.period, t)}
                   </Text>
                 </div>
               </Group>
@@ -580,23 +566,16 @@ export default function OrderServiceModal({
                         )}
                       </div>
                       <Group gap="sm" align="baseline">
-                        {service.discount && service.discount > 0 || getAppliedBonus(service) > 0 ? (
-                          <>
-                            <Text size="sm" c="dimmed" style={{ textDecoration: 'line-through' }}>
-                              {service.cost} ₽
-                            </Text>
-                          </>
-                        ) : null}
-                        <Text fw={600} color={service.discount && service.discount > 0 || getAppliedBonus(service) > 0 ? 'green' : undefined}>
+                        {service.cost > getEffectiveCost(service) && (
+                          <Text size="sm" c="dimmed" style={{ textDecoration: 'line-through' }}>
+                            {service.cost} ₽
+                          </Text>
+                        )}
+                        <Text fw={600} color={service.cost > getEffectiveCost(service) ? 'green' : undefined}>
                           {getEffectiveCost(service)} ₽
                         </Text>
                         <Text size="xs" c="dimmed">
-                          / {service.period === 1 ? t('common.month') :
-                             service.period === 3 ? t('common.months3') :
-                             service.period === 6 ? t('common.months6') :
-                             service.period === 12 ? t('common.year') :
-                             formatPeriod(service.period, t)
-                            }
+                          / {formatPeriod(service.period, t)}
                         </Text>
                       </Group>
                     </Group>

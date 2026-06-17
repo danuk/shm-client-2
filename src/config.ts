@@ -73,6 +73,8 @@ interface AppConfig {
   DEVICE_CONFIG_TEXT: string;
   CAPTCHA_ENABLED: string;
   ORDER_SORTING: string;
+  ORDER_COST_DISCOUNT: string;
+  ORDER_COST_WITH_BONUSES: string;
   CONTACT_EMAIL: string;
   CONTACT_PHONE: string;
   WEB_PUSH_ENABLE: string;
@@ -126,6 +128,8 @@ function getConfig(): AppConfig {
     VPN_STORAGE_PREFIX: runtimeConfig?.VPN_STORAGE_PREFIX || import.meta.env.VITE_VPN_STORAGE_PREFIX || undefined,
     VISIBLE_CATEGORIES: runtimeConfig?.VISIBLE_CATEGORIES || import.meta.env.VITE_VISIBLE_CATEGORIES || undefined,
     ORDER_SORTING: runtimeConfig?.ORDER_SORTING || import.meta.env.VITE_ORDER_SORTING || 'cost_asc',
+    ORDER_COST_DISCOUNT: runtimeConfig?.ORDER_COST_DISCOUNT || import.meta.env.VITE_ORDER_COST_DISCOUNT || 'true',
+    ORDER_COST_WITH_BONUSES: runtimeConfig?.ORDER_COST_WITH_BONUSES || import.meta.env.VITE_ORDER_COST_WITH_BONUSES || 'false',
     EMAIL_REQUIRED: runtimeConfig?.EMAIL_REQUIRED || import.meta.env.VITE_EMAIL_REQUIRED || 'false',
     EMAIL_VERIFY_REQUIRED: runtimeConfig?.EMAIL_VERIFY_REQUIRED || import.meta.env.VITE_EMAIL_VERIFY_REQUIRED || 'false',
     ALLOW_EMAIL_VERIFY: runtimeConfig?.ALLOW_EMAIL_VERIFY || import.meta.env.VITE_ALLOW_EMAIL_VERIFY || 'false',

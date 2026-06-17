@@ -159,6 +159,8 @@ services:
 | `ALLOW_SERVICE_CHANGE_FORCE` | Разрешить сменить услугу сразу (не спрашивая пользователя) | `false` |
 | `SERVICE_CHANGE_ALL_CATEGORY` | Разрешить сменить услугу на все доступные категории ( если `false` то можно сменить только на такую же категорию как и в текущей услуге) | `true` |
 | `ORDER_SORTING` | Сортировка услуг при покупке (`cost_asc`, `cost_desc`, `name_asc`, `name_desc`, `descr_asc`, `descr_desc`) | `cost_asc` |
+| `ORDER_COST_DISCOUNT` | показывать цену с учетом скидки | `true` |
+| `ORDER_COST_WITH_BONUSES` | показывать цену с учетом скидки и бонусов (если `true` `ORDER_COST_DISCOUNT` игнорируется ) | `false` |
 | `DEVICE_CONFIG_TEXT` | Замена текста `Добавить в приложение` только в 1 языке | `` |
 
 ## Виджет поддержки [Support Bot](https://github.com/bkeenke/support-bot)
