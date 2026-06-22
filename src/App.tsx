@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { MantineProvider, AppShell, Group, Text, ActionIcon, Button, Modal, TextInput, Stack, DirectionProvider, Indicator, Tooltip, Center, Loader, Box } from '@mantine/core';
 import { Notifications, notifications } from '@mantine/notifications';
 import { useMediaQuery, useHotkeys, useLongPress } from '@mantine/hooks';
-import { BrowserRouter, Routes, Route, Link, useLocation, useNavigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Link, Navigate, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { IconLogout, IconHeadset, IconBell, IconBellOff, IconWallet } from '@tabler/icons-react';
 import { useTranslation } from 'react-i18next';
 import { useStore } from './store/useStore';
@@ -36,10 +36,15 @@ import Profile from './pages/Profile';
 import Tickets from './pages/Tickets.tsx';
 import Login from './pages/Login';
 import NotFound from './pages/NotFound';
+import AddToHomeScreen from './pages/AddToHomeScreen';
 
 function AppContent() {
   const location = useLocation();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const hasAddToHomeScreen = searchParams.has('addToHomeScreen');
+  const isPWA = window.matchMedia('(display-mode: standalone)').matches || !!(window.navigator as Navigator & { standalone?: boolean }).standalone;
+
   const { isAuthenticated, isLoading, setUser, setIsLoading, logout, hasNewTicketMessages, userEmail, isEmailLoaded, setOpenEmailModal, user } = useStore();
   const emailBlocked = config.EMAIL_REQUIRED === 'true' && isEmailLoaded && !userEmail;
   const { isSupported, isSubscribed, isLoading: pushLoading, error: pushError, subscribe, unsubscribe } = usePushNotifications();
@@ -116,6 +121,7 @@ function AppContent() {
   }, [location.pathname, navigate, isTelegramWebApp]);
 
   useEffect(() => {
+    if (hasAddToHomeScreen) { setIsLoading(false); return; }
     const checkAuth = async () => {
       const token = getCookie();
       if (!token) { setIsLoading(false); return; }
@@ -131,7 +137,7 @@ function AppContent() {
       }
     };
     checkAuth();
-  }, [setUser, setIsLoading]);
+  }, [setUser, setIsLoading, hasAddToHomeScreen]);
 
   useEffect(() => {
     if (!config.SUPPORT_WIDGET_URL || !user) return;
@@ -150,6 +156,11 @@ function AppContent() {
   }, [user?.user_id]);
 
   useHotkeys([['shift + V', () => setVersionOpen(true)]]);
+
+  if (hasAddToHomeScreen) {
+    if (isPWA) return <Navigate to="/" replace />;
+    return <AddToHomeScreen />;
+  }
 
   if (isLoading) {
     return (

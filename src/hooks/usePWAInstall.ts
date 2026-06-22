@@ -52,9 +52,12 @@ export function usePWAInstall() {
     return outcome === 'accepted'
   }
 
+  const isTelegramWebApp = !isPWA && !!(window as any).Telegram?.WebApp?.initData
+
   return {
     canInstall: !!promptEvent && !isPWA,
-    isIOSInstall: isIOS && !isPWA,
+    isIOSInstall: isIOS && !isPWA && !isTelegramWebApp,
+    isTelegramWebApp,
     install,
   }
 }

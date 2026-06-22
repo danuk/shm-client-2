@@ -59,7 +59,9 @@ fi
 
 if [ ! -z "$APP_NAME" ]; then
     sed -i "s|<title>.*</title>|<title>${APP_NAME}</title>|" /app/index.html
+    sed -i "s|<title>.*</title>|<title>${APP_NAME}</title>|" /app/addToHomeScreen/index.html
     sed -i "s|<meta property=\"og:title\" content=\".*\" />|<meta property=\"og:title\" content=\"${APP_NAME}\" />|" /app/index.html
+    sed -i "s|<meta name=\"apple-mobile-web-app-title\" content=\"SHM Client\"/>|<meta name=\"apple-mobile-web-app-title\" content=\"${APP_NAME}\"/>" /app/addToHomeScreen/index.html
 fi
 
 if [ ! -z "$APP_DESCRIPTION" ]; then
@@ -81,7 +83,7 @@ window.__APP_CONFIG__ = {
   TELEGRAM_WEBAPP_PROFILE: "${TELEGRAM_WEBAPP_PROFILE:-}",
   SUPPORT_LINK: "${SUPPORT_LINK:-}",
   PRIVACY_POLICY_URL: "${PRIVACY_POLICY_URL:-}",
-  RETURN_POLICY_URL: "${PRIVACY_POLICY_URL:-}",
+  RETURN_POLICY_URL: "${RETURN_POLICY_URL:-}",
   TERMS_OF_USE_URL: "${TERMS_OF_USE_URL:-}",
   PUBLIC_OFFER_URL: "${PUBLIC_OFFER_URL:-}",
   USER_AGREEMENT_URL: "${USER_AGREEMENT_URL:-}",

@@ -5,9 +5,19 @@ services:
       - "3001:80"
     volumes:
       - ./docs:/app/docs
+      # Optional
+      # - "./logo.png:/app/logo.png"
+      # - "./favicon.ico:/app/favicon.ico"
+      # - "./favicon-16x16.png:/app/favicon-16x16.png"
+      # - "./favicon-32x32.png:/app/favicon-32x32.png"
+      # - "./apple-touch-icon.png:/app/apple-touch-icon.png"
+      # - "./web-app-manifest-192x192.png:/app/icon-192.png"
+      # - "./web-app-manifest-512x512.png:/app/icon-512.png"
     environment:
       SHM_URL: "https://api.mydomain.com"
       APP_NAME: "My Company"
       APP_DESCRIPTION: "My Company Description"
       PRIVACY_POLICY_URL: /docs/privacy.pdf
+      # Optional
+      # LOGO_URL: "logo.png"
     restart: unless-stopped
