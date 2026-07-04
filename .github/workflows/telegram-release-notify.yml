@@ -30,23 +30,99 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Получение информации о релизе
-        id: release_info
+      - name: Проверка условий для уведомления
+        id: check_conditions
         run: |
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "should_notify=true" >> $GITHUB_OUTPUT
+            echo "is_manual=true" >> $GITHUB_OUTPUT
+            echo "✅ Ручной запуск - отправим уведомление"
+          else
+            TAG_NAME="${GITHUB_REF##*/}"
+
+            if [ -z "$TAG_NAME" ]; then
+              echo "should_notify=false" >> $GITHUB_OUTPUT
+              echo "is_manual=false" >> $GITHUB_OUTPUT
+              echo "⏭️ Тег не найден - пропускаем уведомление"
+              exit 0
+            fi
+
+            # Теги с суффиксом (-rc, -beta, -alpha) создаются из не-main веток → пропускаем
+            if [[ "$TAG_NAME" =~ -[a-zA-Z]+ ]]; then
+              echo "should_notify=false" >> $GITHUB_OUTPUT
+              echo "is_manual=false" >> $GITHUB_OUTPUT
+              echo "⏭️ Тег ${TAG_NAME} имеет суффикс (не-main ветка) - пропускаем уведомление"
+              exit 0
+            fi
+
+            echo "should_notify=true" >> $GITHUB_OUTPUT
+            echo "is_manual=false" >> $GITHUB_OUTPUT
+            echo "tag_name=${TAG_NAME}" >> $GITHUB_OUTPUT
+            echo "✅ Тег ${TAG_NAME} без суффикса (main ветка) - отправим уведомление"
+          fi
+
+      - name: Получение информации о релизе
+        id: release_info
+        if: steps.check_conditions.outputs.should_notify == 'true'
+        run: |
+          if [ "${{ steps.check_conditions.outputs.is_manual }}" = "true" ]; then
             echo "tag_name=${{ github.event.inputs.tag_name }}" >> $GITHUB_OUTPUT
             echo "name=${{ github.event.inputs.release_name }}" >> $GITHUB_OUTPUT
             echo "prerelease=false" >> $GITHUB_OUTPUT
-            BODY=$(echo '${{ github.event.inputs.body }}' | sed ':a;N;$!ba;s/\n/\\n/g' | sed 's/"/\\"/g')
-            echo "body=$BODY" >> $GITHUB_OUTPUT
           else
-            # workflow_call - получаем информацию из тега
             TAG_NAME="${GITHUB_REF##*/}"
             echo "tag_name=$TAG_NAME" >> $GITHUB_OUTPUT
             echo "name=Release $TAG_NAME" >> $GITHUB_OUTPUT
             echo "prerelease=false" >> $GITHUB_OUTPUT
-            echo "body=" >> $GITHUB_OUTPUT
           fi
+
+      - name: Форматирование сообщения для Telegram
+        id: format_message
+        if: steps.check_conditions.outputs.should_notify == 'true'
+        run: |
+          TAG_NAME="${{ steps.release_info.outputs.tag_name }}"
+          PRERELEASE="${{ steps.release_info.outputs.prerelease }}"
+          REPO_NAME="${{ github.repository }}"
+          REPO_URL="https://github.com/${{ github.repository }}"
+
+          if [ "$PRERELEASE" = "true" ]; then
+            EMOJI="🧪"
+            RELEASE_TYPE="Пред-релиз"
+          else
+            EMOJI="🚀"
+            RELEASE_TYPE="Релиз"
+          fi
+
+          PREVIOUS_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo "")
+
+          COMMITS_FILE=$(mktemp)
+          if [ -n "$PREVIOUS_TAG" ]; then
+            git log --pretty=format:"• %s" "${PREVIOUS_TAG}..HEAD" 2>/dev/null \
+              | grep -v '^• Merge pull request' \
+              | head -100 > "$COMMITS_FILE"
+          else
+            git log --pretty=format:"• %s" HEAD 2>/dev/null \
+              | grep -v '^• Merge pull request' \
+              | head -100 > "$COMMITS_FILE"
+          fi
+
+          {
+            echo "${EMOJI} ${RELEASE_TYPE} ${TAG_NAME}"
+            echo ""
+            echo "📦 Репозиторий: ${REPO_NAME}"
+            echo ""
+            echo "📋 Changelog:"
+            if [ -s "$COMMITS_FILE" ]; then
+              cat "$COMMITS_FILE"
+            else
+              echo "Нет изменений в коде"
+            fi
+            echo ""
+            echo "🔗 Посмотреть релиз: ${REPO_URL}/releases/tag/${TAG_NAME}"
+          } > /tmp/telegram_message.txt
+
+          rm -f "$COMMITS_FILE"
+          echo "message_file=/tmp/telegram_message.txt" >> $GITHUB_OUTPUT
 
       - name: Форматирование сообщения для Telegram
         id: format_message
@@ -99,6 +175,7 @@ jobs:
           echo "message=$MESSAGE" >> $GITHUB_OUTPUT
 
       - name: Отправка в Telegram
+        if: steps.check_conditions.outputs.should_notify == 'true'
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
@@ -106,34 +183,35 @@ jobs:
         run: |
           if [ -z "$TELEGRAM_BOT_TOKEN" ]; then
             echo "❌ Секрет TELEGRAM_BOT_TOKEN не найден"
-            echo "Пожалуйста, добавьте токен Telegram бота в секреты репозитория"
             exit 1
           fi
 
           if [ -z "$TELEGRAM_CHAT_ID" ]; then
             echo "❌ Секрет TELEGRAM_CHAT_ID не найден"
-            echo "Пожалуйста, добавьте ID чата/канала Telegram в секреты репозитория"
             exit 1
           fi
 
-          MESSAGE="${{ steps.format_message.outputs.message }}"
+          MESSAGE_FILE="${{ steps.format_message.outputs.message_file }}"
 
-          # Отправка сообщения в Telegram
+          PAYLOAD=$(jq -n \
+            --arg chat_id "${TELEGRAM_CHAT_ID}" \
+            --arg thread_id "${TELEGRAM_THREAD_ID}" \
+            --rawfile text "$MESSAGE_FILE" \
+            '{
+              chat_id: $chat_id,
+              message_thread_id: ($thread_id // null),
+              text: $text,
+              disable_notification: true,
+              disable_web_page_preview: true
+            }')
+
           RESPONSE=$(curl -s -X POST \
             "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
             -H "Content-Type: application/json" \
-            -d "{
-              \"chat_id\": \"${TELEGRAM_CHAT_ID}\",
-              \"message_thread_id\": \"${TELEGRAM_THREAD_ID}\",
-              \"text\": \"${MESSAGE}\",
-              \"disable_notification\": true,
-              \"disable_web_page_preview\": true
-            }")
+            -d "$PAYLOAD")
 
-          # Проверка успешной отправки сообщения
           if echo "$RESPONSE" | grep -q '"ok":true'; then
-            echo "✅ Уведомление о релизе успешно отправлено в Telegram!"
-            echo "Ответ: $RESPONSE"
+            echo "✅ Уведомление успешно отправлено в Telegram!"
           else
             echo "❌ Не удалось отправить сообщение в Telegram"
             echo "Ответ: $RESPONSE"
@@ -141,7 +219,12 @@ jobs:
           fi
 
       - name: Тестовое сообщение (только при ручном запуске)
-        if: github.event_name == 'workflow_dispatch'
+        if: steps.check_conditions.outputs.is_manual == 'true'
         run: |
           echo "🧪 Это был тестовый запуск, выполненный вручную"
-          echo "В продакшене этот workflow будет запускаться автоматически при создании релиза"
+
+      - name: Информация о пропуске
+        if: steps.check_conditions.outputs.should_notify == 'false'
+        run: |
+          echo "⏭️ Уведомление пропущено"
+          echo "Уведомления отправляются только для тегов без суффикса (main ветка)"
