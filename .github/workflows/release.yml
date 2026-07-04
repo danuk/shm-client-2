@@ -68,6 +68,8 @@ jobs:
     permissions:
       contents: write
       packages: write
+    outputs:
+      is_release: ${{ steps.version.outputs.is_release }}
 
     steps:
     - name: Checkout repository
@@ -180,5 +182,6 @@ jobs:
 
   notify:
     needs: build
+    if: needs.build.outputs.is_release == 'true'
     uses: ./.github/workflows/telegram-release-notify.yml
     secrets: inherit
