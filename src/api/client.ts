@@ -251,13 +251,39 @@ export const telegramApi = {
   getSettings: () => api.get('/telegram/user'),
   updateSettings: (data: Record<string, unknown>) => api.post('/telegram/user', data),
   unbindAccount: () => api.delete('/telegram/user'),
-  initOidc: (params: { uid: number; return_url: string; profile?: string }) => api.get('/telegram/web/auth/init', {
+  // session_id (не uid!) — бэкенд определяет привязываемого пользователя только
+  // по реально провалидированной сессии, см. Core::Transport::Telegram::web_auth.
+  initOidc: (params: { session_id: string; return_url: string; profile?: string }) => api.get('/telegram/web/auth/init', {
     params: {
       bind_to_profile: 1,
       register_if_not_exists: 0,
       ...params,
     },
   }),
+};
+
+export type Oauth2Provider = 'google' | 'yandex' | 'vk' | 'github';
+
+export const oauth2Api = {
+  loginRedirectUrl: (provider: Oauth2Provider, returnUrl: string) => {
+    const params = new URLSearchParams({
+      return_url: returnUrl,
+    });
+    return `/shm/v1/oauth2/start/${provider}?${params.toString()}`;
+  },
+  bindRedirectUrl: (provider: Oauth2Provider, sessionId: string, returnUrl: string) => {
+    const params = new URLSearchParams({
+      bind_to_profile: '1',
+      session_id: sessionId,
+      return_url: returnUrl,
+    });
+    return `/shm/v1/oauth2/start/${provider}?${params.toString()}`;
+  },
+};
+
+export const accountsApi = {
+  list: () => api.get('/user/accounts'),
+  remove: (login: string, type: string) => api.delete('/user/accounts', { params: { login, type } }),
 };
 
 export const promoApi = {

@@ -79,7 +79,7 @@
     "telegramAuthError": "Error al autorizar por Telegram",
     "telegramBind": "Telegram vinculado correctamente",
     "telegramBindError": "Error al vincular Telegram",
-    "loginWithTelegram": "Iniciar sesión con Telegram",
+    "loginWithTelegram": "Telegram",
     "useLoginPassword": "Usar usuario y contraseña",
     "fillAllFields": "Completa todos los campos",
     "passwordsMismatch": "Las contraseñas no coinciden",
@@ -102,7 +102,14 @@
     "invalidResetToken": "Token de restablecimiento inválido o expirado.",
     "verifyingToken": "Verificando token...",
     "acceptLegal": "Acepto",
-    "acceptDocumentsRequired": "Para continuar, acepta los documentos legales"
+    "acceptDocumentsRequired": "Para continuar, acepta los documentos legales",
+    "loginWithGoogle": "Iniciar sesión con Google",
+    "loginWithYandex": "Iniciar sesión con Yandex",
+    "loginWithGithub": "Iniciar sesión con GitHub",
+    "oauth2AuthError": "Error al iniciar sesión",
+    "oauth2Bind": "Cuenta vinculada correctamente",
+    "oauth2BindError": "No se pudo vincular la cuenta",
+    "oauth2AccountExists": "Ya existe una cuenta con este email."
   },
   "nav": {
     "home": "Inicio",
@@ -203,7 +210,16 @@
     "pushIsDisabled": "Notificaciones push desactivadas",
     "pushNotSupported": "Añade a la pantalla de inicio para activar las notificaciones",
     "pushSubscribe": "Activar",
-    "pushUnsubscribe": "Desactivar"
+    "pushUnsubscribe": "Desactivar",
+    "oauth2AlreadyBound": "Esta cuenta ya está vinculada a otro usuario",
+    "oauth2BindAction": "Vincular",
+    "oauth2UnbindAction": "Desvincular",
+    "oauth2Linked": "Cuenta vinculada",
+    "oauth2NotLinked": "No vinculada",
+    "oauth2Unbind": "Cuenta desvinculada correctamente",
+    "oauth2UnbindError": "No se pudo desvincular la cuenta",
+    "oauth2WaitTitle": "Esperando confirmación",
+    "oauth2WaitDescription": "Una vez confirmado, volverá automáticamente a su cuenta."
   },
   "services": {
     "title": "Mis servicios",
@@ -402,7 +418,7 @@
     "manage": "Gestionar",
     "devicesCount": "Dispositivos: {{count}}",
     "notConfigured": "Passkey no configurado para esta cuenta",
-    "loginWithPasskey": "Iniciar sesión con Passkey",
+    "loginWithPasskey": "Passkey",
     "enterLogin": "Introduce tu usuario",
     "authError": "Error al iniciar sesión con Passkey"
   },

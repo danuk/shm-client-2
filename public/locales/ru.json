@@ -83,7 +83,7 @@
     "telegramAuthError": "Не удалось авторизоваться через Telegram",
     "telegramBind": "Telegram успешно привязан",
     "telegramBindError": "Не удалось привязать Telegram",
-    "loginWithTelegram": "Войти через Telegram",
+    "loginWithTelegram": "Telegram",
     "useLoginPassword": "Использовать логин и пароль",
     "fillAllFields": "Заполните все поля",
     "passwordsMismatch": "Пароли не совпадают",
@@ -106,7 +106,14 @@
     "invalidResetToken": "Недействительный или просроченный токен сброса пароля.",
     "verifyingToken": "Проверка токена...",
     "acceptLegal": "Я принимаю",
-    "acceptDocumentsRequired": "Для продолжения примите юридические документы"
+    "acceptDocumentsRequired": "Для продолжения примите юридические документы",
+    "loginWithGoogle": "Войти через Google",
+    "loginWithYandex": "Войти через Яндекс",
+    "loginWithGithub": "Войти через GitHub",
+    "oauth2AuthError": "Не удалось авторизоваться",
+    "oauth2Bind": "Аккаунт успешно привязан",
+    "oauth2BindError": "Не удалось привязать аккаунт",
+    "oauth2AccountExists": "Аккаунт с таким email уже существует."
   },
   "nav": {
     "home": "Главная",
@@ -207,7 +214,16 @@
     "pushIsDisabled": "Push-уведомления отключены",
     "pushNotSupported": "Установите приложение на главный экран для включения уведомлений",
     "pushSubscribe": "Включить",
-    "pushUnsubscribe": "Отключить"
+    "pushUnsubscribe": "Отключить",
+    "oauth2AlreadyBound": "Этот аккаунт уже привязан к другому пользователю",
+    "oauth2BindAction": "Привязать",
+    "oauth2UnbindAction": "Отвязать",
+    "oauth2Linked": "Привязан к аккаунту",
+    "oauth2NotLinked": "Не привязан",
+    "oauth2Unbind": "Аккаунт успешно отвязан",
+    "oauth2UnbindError": "Не удалось отвязать аккаунт",
+    "oauth2WaitTitle": "Ожидание подтверждения",
+    "oauth2WaitDescription": "После подтверждения вы будете автоматически возвращены в кабинет."
   },
   "services": {
     "title": "Мои услуги",
@@ -406,7 +422,7 @@
     "manage": "Управление",
     "devicesCount": "Устройств: {{count}}",
     "notConfigured": "Passkey не настроен для этого аккаунта",
-    "loginWithPasskey": "Войти с Passkey",
+    "loginWithPasskey": "Passkey",
     "enterLogin": "Введите логин",
     "authError": "Не удалось войти через Passkey"
   },

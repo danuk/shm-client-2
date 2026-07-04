@@ -77,7 +77,7 @@
     "telegramAuthError": "Telegram orqali avtorizatsiya qilib bo'lmadi",
     "telegramBind": "Telegram muvaffaqiyatli bog'landi",
     "telegramBindError": "Telegramni bog'lab bo'lmadi",
-    "loginWithTelegram": "Telegram orqali kirish",
+    "loginWithTelegram": "Telegram",
     "useLoginPassword": "Login va paroldan foydalanish",
     "fillAllFields": "Barcha maydonlarni to'ldiring",
     "passwordsMismatch": "Parollar mos kelmaydi",
@@ -100,7 +100,14 @@
     "invalidResetToken": "Tiklash tokeni noto'g'ri yoki muddati o'tgan.",
     "verifyingToken": "Token tekshirilmoqda...",
     "acceptLegal": "Men qabul qilaman",
-    "acceptDocumentsRequired": "Davom etish uchun yuridik hujjatlarni qabul qiling"
+    "acceptDocumentsRequired": "Davom etish uchun yuridik hujjatlarni qabul qiling",
+    "loginWithGoogle": "Google orqali kirish",
+    "loginWithYandex": "Yandex orqali kirish",
+    "loginWithGithub": "GitHub orqali kirish",
+    "oauth2AuthError": "Kirish amalga oshmadi",
+    "oauth2Bind": "Hisob muvaffaqiyatli bog’landi",
+    "oauth2BindError": "Hisobni bog’lab bo’lmadi",
+    "oauth2AccountExists": "Bu email bilan hisob allaqachon mavjud."
   },
   "nav": {
     "home": "Bosh sahifa",
@@ -201,7 +208,16 @@
     "pushIsDisabled": "Push-bildirishnomalar ochirildi",
     "pushNotSupported": "Bildirishnomalarni yoqish uchun bosh ekranga qo'shing",
     "pushSubscribe": "Yoqish",
-    "pushUnsubscribe": "Ochirish"
+    "pushUnsubscribe": "Ochirish",
+    "oauth2AlreadyBound": "Bu hisob allaqachon boshqa foydalanuvchiga bog’langan",
+    "oauth2BindAction": "Bog’lash",
+    "oauth2UnbindAction": "Uzish",
+    "oauth2Linked": "Bog’langan hisob",
+    "oauth2NotLinked": "Bog’lanmagan",
+    "oauth2Unbind": "Hisob muvaffaqiyatli uzildi",
+    "oauth2UnbindError": "Hisobni uzib bo’lmadi",
+    "oauth2WaitTitle": "Tasdiqlash kutilmoqda",
+    "oauth2WaitDescription": "Tasdiqlangandan so’ng avtomatik ravishda qaytarilasiz."
   },
   "services": {
     "title": "Mening xizmatlarim",
@@ -400,7 +416,7 @@
     "manage": "Boshqarish",
     "devicesCount": "Qurilmalar: {{count}}",
     "notConfigured": "Bu hisob uchun Passkey sozlanmagan",
-    "loginWithPasskey": "Passkey bilan kirish",
+    "loginWithPasskey": "Passkey",
     "enterLogin": "Loginingizni kiriting",
     "authError": "Passkey bilan kirish muvaffaqiyatsiz tugadi"
   },

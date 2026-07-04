@@ -18,6 +18,7 @@ import { useEmailRequired } from './hooks/useEmailRequired';
 import { useTicketPoller } from './hooks/useTicketPoller';
 import { usePushNotifications } from './hooks/usePushNotifications';
 import { useNotificationFromUrl } from './hooks/useNotificationFromUrl';
+import { useAuthCallbackStatus } from './hooks/useAuthCallbackStatus';
 import PayHistoryModal from './components/PayHistoryModal';
 import PayModal from './components/PayModal';
 import WithdrawHistoryModal from './components/WithdrawHistoryModal';
@@ -71,6 +72,7 @@ function AppContent() {
   } = useEmailRequired();
 
   useNotificationFromUrl();
+  useAuthCallbackStatus();
   // useTicketPoller(isAuthenticated);
   useTicketPoller(false); // TODO: включить когда бэкенд будет готов
 

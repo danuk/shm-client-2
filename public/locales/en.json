@@ -79,7 +79,7 @@
     "telegramAuthError": "Failed to authorize via Telegram",
     "telegramBind": "Telegram linked successfully",
     "telegramBindError": "Failed to link Telegram",
-    "loginWithTelegram": "Login with Telegram",
+    "loginWithTelegram": "Telegram",
     "useLoginPassword": "Use login and password",
     "fillAllFields": "Fill in all fields",
     "passwordsMismatch": "Passwords do not match",
@@ -102,7 +102,14 @@
     "invalidResetToken": "Invalid or expired reset token.",
     "verifyingToken": "Verifying token...",
     "acceptLegal": "I agree to",
-    "acceptDocumentsRequired": "Please accept the legal documents to continue"
+    "acceptDocumentsRequired": "Please accept the legal documents to continue",
+    "loginWithGoogle": "Sign in with Google",
+    "loginWithYandex": "Sign in with Yandex",
+    "loginWithGithub": "Sign in with GitHub",
+    "oauth2AuthError": "Failed to sign in",
+    "oauth2Bind": "Account successfully linked",
+    "oauth2BindError": "Failed to link account",
+    "oauth2AccountExists": "An account with this email already exists."
   },
   "nav": {
     "home": "Home",
@@ -203,7 +210,16 @@
     "pushIsDisabled": "Push notifications disabled",
     "pushNotSupported": "Add to home screen to enable notifications",
     "pushSubscribe": "Enable",
-    "pushUnsubscribe": "Disable"
+    "pushUnsubscribe": "Disable",
+    "oauth2AlreadyBound": "This account is already linked to another user",
+    "oauth2BindAction": "Link",
+    "oauth2UnbindAction": "Unlink",
+    "oauth2Linked": "Linked account",
+    "oauth2NotLinked": "Not linked",
+    "oauth2Unbind": "Account successfully unlinked",
+    "oauth2UnbindError": "Failed to unlink account",
+    "oauth2WaitTitle": "Waiting for confirmation",
+    "oauth2WaitDescription": "You will be returned automatically once confirmed."
   },
   "services": {
     "title": "My Services",
@@ -402,7 +418,7 @@
     "manage": "Manage",
     "devicesCount": "Devices: {{count}}",
     "notConfigured": "Passkey is not configured for this account",
-    "loginWithPasskey": "Sign in with Passkey",
+    "loginWithPasskey": "Passkey",
     "enterLogin": "Enter your login",
     "authError": "Failed to sign in with Passkey"
   },

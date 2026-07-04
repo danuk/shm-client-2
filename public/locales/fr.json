@@ -79,7 +79,7 @@
     "telegramAuthError": "Échec de l'autorisation via Telegram",
     "telegramBind": "Telegram lié avec succès",
     "telegramBindError": "Échec de la liaison Telegram",
-    "loginWithTelegram": "Se connecter avec Telegram",
+    "loginWithTelegram": "Telegram",
     "useLoginPassword": "Utiliser identifiant et mot de passe",
     "fillAllFields": "Remplissez tous les champs",
     "passwordsMismatch": "Les mots de passe ne correspondent pas",
@@ -102,7 +102,14 @@
     "invalidResetToken": "Jeton de réinitialisation invalide ou expiré.",
     "verifyingToken": "Vérification du jeton...",
     "acceptLegal": "J'accepte",
-    "acceptDocumentsRequired": "Pour continuer, veuillez accepter les documents juridiques"
+    "acceptDocumentsRequired": "Pour continuer, veuillez accepter les documents juridiques",
+    "loginWithGoogle": "Se connecter avec Google",
+    "loginWithYandex": "Se connecter avec Yandex",
+    "loginWithGithub": "Se connecter avec GitHub",
+    "oauth2AuthError": "Échec de la connexion",
+    "oauth2Bind": "Compte lié avec succès",
+    "oauth2BindError": "Impossible de lier le compte",
+    "oauth2AccountExists": "Un compte avec cet email existe déjà."
   },
   "nav": {
     "home": "Accueil",
@@ -203,7 +210,16 @@
     "pushIsDisabled": "Notifications push désactivées",
     "pushNotSupported": "Ajoutez à l'écran d'accueil pour activer les notifications",
     "pushSubscribe": "Activer",
-    "pushUnsubscribe": "Désactiver"
+    "pushUnsubscribe": "Désactiver",
+    "oauth2AlreadyBound": "Ce compte est déjà lié à un autre utilisateur",
+    "oauth2BindAction": "Lier",
+    "oauth2UnbindAction": "Délier",
+    "oauth2Linked": "Compte lié",
+    "oauth2NotLinked": "Non lié",
+    "oauth2Unbind": "Compte délié avec succès",
+    "oauth2UnbindError": "Impossible de délier le compte",
+    "oauth2WaitTitle": "En attente de confirmation",
+    "oauth2WaitDescription": "Une fois confirmé, vous serez automatiquement redirigé."
   },
   "services": {
     "title": "Mes services",
@@ -402,7 +418,7 @@
     "manage": "Gérer",
     "devicesCount": "Appareils : {{count}}",
     "notConfigured": "Passkey non configuré pour ce compte",
-    "loginWithPasskey": "Se connecter avec Passkey",
+    "loginWithPasskey": "Passkey",
     "enterLogin": "Entrez votre identifiant",
     "authError": "Échec de la connexion avec Passkey"
   },

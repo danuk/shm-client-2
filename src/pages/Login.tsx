@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
-import { Card, Text, Stack, Button, ActionIcon, TextInput, PasswordInput, Divider, Title, Center, Modal, Group, Loader, useMantineColorScheme, useComputedColorScheme, Checkbox, Tooltip } from '@mantine/core';
+import { Box, Text, Stack, Button, ActionIcon, TextInput, PasswordInput, Divider, Title, Center, Modal, Group, Loader, useMantineColorScheme, useComputedColorScheme, Checkbox, Tooltip } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { useForm, isEmail, hasLength } from '@mantine/form';
-import { IconLogin, IconUserPlus, IconHeadset, IconFingerprint, IconShieldLock, IconBrandTelegram, IconMailForward, IconLock, IconMoon, IconSun} from '@tabler/icons-react';
+import { IconLogin, IconUserPlus, IconHeadset, IconFingerprint, IconShieldLock, IconBrandTelegram, IconBrandGoogle, IconBrandYandex, IconBrandGithub, IconMailForward, IconLock, IconMoon, IconSun } from '@tabler/icons-react';
 import { notifications } from '@mantine/notifications';
 import { useTranslation } from 'react-i18next';
-import { auth, passkeyApi, userApi } from '../api/client';
+import { auth, passkeyApi, userApi, oauth2Api } from '../api/client';
 import { setCookie, getResetTokenCookie, removeResetTokenCookie, parseAndSaveResetToken } from '../api/cookie';
 import { useStore } from '../store/useStore';
 import TelegramLoginButton, { TelegramUser } from '../components/TelegramLoginButton';
@@ -13,7 +13,12 @@ import { config } from '../config';
 import { useTelegramWebApp } from '../hooks/useTelegramWebApp';
 import LanguageSwitcher from '../components/LanguageSwitcher';
 import DocumentModal from '../components/DocumentModal';
-import { hasTelegramOidcAuth, hasTelegramWebAppAutoAuth, hasTelegramWidget, hasTelegramWebAppAuth } from '../constants/webapp';
+import { hasTelegramOidcAuth, hasTelegramWebAppAutoAuth, hasTelegramWidget, hasTelegramWebAppAuth, isTelegramWebApp } from '../constants/webapp';
+
+const hasGoogleAuth = !isTelegramWebApp && config.GOOGLE_AUTH_ENABLE === 'true';
+const hasYandexAuth = !isTelegramWebApp && config.YANDEX_AUTH_ENABLE === 'true';
+const hasGithubAuth = !isTelegramWebApp && config.GITHUB_AUTH_ENABLE === 'true';
+const oauth2ProvidersCount = [hasGoogleAuth, hasYandexAuth, hasGithubAuth].filter(Boolean).length;
 
 function isPdf(value: string) {
   return value.toLowerCase().endsWith('.pdf');
@@ -63,6 +68,14 @@ export default function Login() {
       setMode('register');
     }
   }, [location.search]);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('oauth2_status') === 'error' && /not linked/i.test(params.get('error') || '')) {
+      setMode('login');
+      setShowLoginForm(true);
+    }
+  }, []);
   const [loading, setLoading] = useState(false);
   const [passkeyLoading, setPasskeyLoading] = useState(false);
   const [loginOrEmail, setLoginOrEmail] = useState('');
@@ -336,6 +349,17 @@ export default function Login() {
     }
   };
 
+  const handleOauth2Auth = (provider: 'google' | 'yandex' | 'github') => () => {
+    setLoading(true);
+    try {
+      const returnUrl = `${window.location.origin}${window.location.pathname}${window.location.search}${window.location.hash}`;
+      window.location.href = oauth2Api.loginRedirectUrl(provider, returnUrl);
+    } catch {
+      notifications.show({ title: t('common.error'), message: t('auth.oauth2AuthError'), color: 'red' });
+      setLoading(false);
+    }
+  };
+
   const handleTelegramOidcAuth = async () => {
     setLoading(true);
     try {
@@ -356,9 +380,9 @@ export default function Login() {
     setLoading(true);
     try {
       await auth.telegramWidgetAuth({
-          ...telegramUser,
-          register_if_not_exists: 1,
-        });
+        ...telegramUser,
+        register_if_not_exists: 1,
+      });
       const userResponse = await auth.getCurrentUser();
       const responseData = userResponse.data.data;
       const userData = Array.isArray(responseData) ? responseData[0] : responseData;
@@ -508,7 +532,7 @@ export default function Login() {
 
   return (
     <Center style={{ minHeight: '100svh', paddingTop: 16, paddingBottom: isMobile ? 72 : 16, position: 'relative' }}>
-      <Card withBorder radius="md" p="xl" w={400}>
+      <Box p="xl" w={500}>
         <Stack gap="lg">
           <Group justify="space-between" align="center">
             <div style={{ flex: 1, display: 'flex', justifyContent: 'flex-start' }}>
@@ -533,7 +557,7 @@ export default function Login() {
             <Text size="sm" c="dimmed" ta="center" style={{ flex: 'auto' }}>{config.APP_DESCRIPTION}</Text>
           )}
           <Text size="sm" c="dimmed" ta="center">
-              {mode === 'login' ? t('auth.loginTitle') : t('auth.registerTitle')}
+            {mode === 'login' ? t('auth.loginTitle') : t('auth.registerTitle')}
           </Text>
 
           {hasTelegramWebAppAuth && !showLoginForm && (
@@ -560,37 +584,6 @@ export default function Login() {
             </>
           )}
 
-          {(hasTelegramOidcAuth || hasTelegramWidget) && (
-            <>
-              {hasTelegramOidcAuth && (
-                <Button
-                  color="blue"
-                  leftSection={<IconBrandTelegram size={18} />}
-                  onClick={handleTelegramOidcAuth}
-                  fullWidth
-                  loading={loading}
-                >
-                  {t('auth.loginWithTelegram')}
-                </Button>
-              )}
-
-              {hasTelegramOidcAuth && hasTelegramWidget && <Divider label={t('common.or')} labelPosition="center" />}
-
-              {hasTelegramWidget && (
-                <Center>
-                  <TelegramLoginButton
-                    botName={config.TELEGRAM_BOT_NAME}
-                    onAuth={handleTelegramWidgetAuth}
-                    buttonSize="large"
-                    requestAccess="write"
-                  />
-                </Center>
-              )}
-
-              <Divider label={t('common.or')} labelPosition="center" />
-            </>
-          )}
-
           {(!hasTelegramWebAppAuth || showLoginForm) && (
             <>
               <form onSubmit={handleSubmit}>
@@ -613,13 +606,30 @@ export default function Login() {
                       {...form.getInputProps('login')}
                     />
                   )}
-                  <PasswordInput
-                    label={t('auth.passwordLabel')}
-                    placeholder={t('auth.passwordPlaceholder')}
-                    autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
-                    name="password"
-                    {...form.getInputProps('password')}
-                  />
+                  {mode === 'login' ? (
+                    <div>
+                      <Group justify="space-between" mb={4}>
+                        <Text component="label" size="sm" fw={500}>{t('auth.passwordLabel')}</Text>
+                        <Text size="sm" c="blue" style={{ cursor: 'pointer' }} onClick={() => setShowResetPassword(true)}>
+                          {t('auth.forgotPassword')}
+                        </Text>
+                      </Group>
+                      <PasswordInput
+                        placeholder={t('auth.passwordPlaceholder')}
+                        autoComplete="current-password"
+                        name="password"
+                        {...form.getInputProps('password')}
+                      />
+                    </div>
+                  ) : (
+                    <PasswordInput
+                      label={t('auth.passwordLabel')}
+                      placeholder={t('auth.passwordPlaceholder')}
+                      autoComplete="new-password"
+                      name="password"
+                      {...form.getInputProps('password')}
+                    />
+                  )}
                   {mode === 'register' && (
                     <PasswordInput
                       label={t('auth.confirmPasswordLabel')}
@@ -720,23 +730,126 @@ export default function Login() {
                   >
                     {mode === 'login' ? t('auth.login') : t('auth.register')}
                   </Button>
-                  {mode === 'login' && isWebAuthnSupported && config.PASSKEY_AUTH_DISABLED === 'false' && (
-                    <Button
-                      variant="light"
-                      leftSection={<IconFingerprint size={18} />}
-                      loading={passkeyLoading}
-                      onClick={handlePasskeyAuth}
-                    >
-                      {t('passkey.loginWithPasskey')}
-                    </Button>
+
+                  {(
+                    (mode === 'login' && isWebAuthnSupported && config.PASSKEY_AUTH_DISABLED === 'false')
+                    || hasTelegramOidcAuth || hasTelegramWidget || hasGoogleAuth || hasYandexAuth || hasGithubAuth
+                  ) && (
+                    <Divider label={t('common.or')} labelPosition="center" />
                   )}
+
+                  {(
+                    (mode === 'login' && isWebAuthnSupported && config.PASSKEY_AUTH_DISABLED === 'false')
+                    || hasTelegramOidcAuth
+                  ) && (
+                    <Group grow>
+                      {mode === 'login' && isWebAuthnSupported && config.PASSKEY_AUTH_DISABLED === 'false' && (
+                        <Button
+                          variant="light"
+                          leftSection={<IconFingerprint size={18} />}
+                          loading={passkeyLoading}
+                          onClick={handlePasskeyAuth}
+                        >
+                          {t('passkey.loginWithPasskey')}
+                        </Button>
+                      )}
+
+                      {hasTelegramOidcAuth && (
+                        <Button
+                          color="blue"
+                          leftSection={<IconBrandTelegram size={18} />}
+                          onClick={handleTelegramOidcAuth}
+                          loading={loading}
+                        >
+                          {t('auth.loginWithTelegram')}
+                        </Button>
+                      )}
+                    </Group>
+                  )}
+
+                  {(hasGoogleAuth || hasYandexAuth || hasGithubAuth) && (
+                    <Group grow>
+                      {hasGoogleAuth && (
+                        oauth2ProvidersCount > 1 ? (
+                          <Tooltip label={t('auth.loginWithGoogle')}>
+                            <Button variant="default" onClick={handleOauth2Auth('google')} loading={loading}>
+                              <IconBrandGoogle size={18} />
+                            </Button>
+                          </Tooltip>
+                        ) : (
+                          <Button
+                            variant="default"
+                            leftSection={<IconBrandGoogle size={18} />}
+                            onClick={handleOauth2Auth('google')}
+                            loading={loading}
+                          >
+                            {t('auth.loginWithGoogle')}
+                          </Button>
+                        )
+                      )}
+
+                      {hasYandexAuth && (
+                        oauth2ProvidersCount > 1 ? (
+                          <Tooltip label={t('auth.loginWithYandex')}>
+                            <Button color="red" onClick={handleOauth2Auth('yandex')} loading={loading}>
+                              <IconBrandYandex size={18} />
+                            </Button>
+                          </Tooltip>
+                        ) : (
+                          <Button
+                            color="red"
+                            leftSection={<IconBrandYandex size={18} />}
+                            onClick={handleOauth2Auth('yandex')}
+                            loading={loading}
+                          >
+                            {t('auth.loginWithYandex')}
+                          </Button>
+                        )
+                      )}
+
+                      {hasGithubAuth && (
+                        oauth2ProvidersCount > 1 ? (
+                          <Tooltip label={t('auth.loginWithGithub')}>
+                            <Button variant="default" onClick={handleOauth2Auth('github')} loading={loading}>
+                              <IconBrandGithub size={18} />
+                            </Button>
+                          </Tooltip>
+                        ) : (
+                          <Button
+                            variant="default"
+                            leftSection={<IconBrandGithub size={18} />}
+                            onClick={handleOauth2Auth('github')}
+                            loading={loading}
+                          >
+                            {t('auth.loginWithGithub')}
+                          </Button>
+                        )
+                      )}
+                    </Group>
+                  )}
+
+                  {hasTelegramWidget && (
+                    <>
+                      <Divider label={t('common.or')} labelPosition="center" />
+                      <Center>
+                        <TelegramLoginButton
+                          botName={config.TELEGRAM_BOT_NAME}
+                          onAuth={handleTelegramWidgetAuth}
+                          buttonSize="large"
+                          requestAccess="write"
+                        />
+                      </Center>
+                    </>
+                  )}
+
+                  <Divider label={t('auth.noAccount')} labelPosition="center" />
+
                 </Stack>
               </form>
 
               <Text size="sm" ta="center">
                 {mode === 'login' ? (
                   <>
-                    {t('auth.noAccount')}{' '}
                     <Text component="span" c="blue" style={{ cursor: 'pointer' }} onClick={() => { setMode('register'); form.clearErrors(); }}>
                       {t('auth.register')}
                     </Text>
@@ -750,14 +863,6 @@ export default function Login() {
                   </>
                 )}
               </Text>
-
-              {mode === 'login' && (
-                <Text size="sm" ta="center">
-                  <Text component="span" c="blue" style={{ cursor: 'pointer' }} onClick={() => setShowResetPassword(true)}>
-                    {t('auth.forgotPassword')}
-                  </Text>
-                </Text>
-              )}
 
               {hasTelegramWebAppAuth && showLoginForm && (
                 <>
@@ -777,7 +882,7 @@ export default function Login() {
             </>
           )}
         </Stack>
-      </Card>
+      </Box>
 
       <Modal
         opened={showOtp}
@@ -911,7 +1016,7 @@ export default function Login() {
       </Modal>
 
       {verifyingToken && (
-        <Modal opened={true} onClose={() => {}} withCloseButton={false} centered>
+        <Modal opened={true} onClose={() => { }} withCloseButton={false} centered>
           <Stack align="center" gap="md">
             <Loader />
             <Text>{t('auth.verifyingToken')}</Text>

@@ -17,7 +17,7 @@
     "close": "Schließen",
     "installApp": "App installieren",
     "installAppDesc": "Zum Startbildschirm hinzufügen für schnellen Zugriff",
-    "installAppIOSDesc": "Tippe auf Teilen <icon /> → „Zum Home-Bildschirm"",
+    "installAppIOSDesc": "Tippe auf Teilen <icon /> → „Zum Home-Bildschirm\"",
     "installAppBtn": "Installieren",
     "installAppDismiss": "Nicht jetzt",
     "refresh": "Aktualisieren",
@@ -79,7 +79,7 @@
     "telegramAuthError": "Autorisierung über Telegram fehlgeschlagen",
     "telegramBind": "Telegram erfolgreich verknüpft",
     "telegramBindError": "Verknüpfung mit Telegram fehlgeschlagen",
-    "loginWithTelegram": "Mit Telegram anmelden",
+    "loginWithTelegram": "Telegram",
     "useLoginPassword": "Benutzername und Passwort verwenden",
     "fillAllFields": "Alle Felder ausfüllen",
     "passwordsMismatch": "Passwörter stimmen nicht überein",
@@ -102,7 +102,14 @@
     "invalidResetToken": "Ungültiges oder abgelaufenes Reset-Token.",
     "verifyingToken": "Token wird überprüft...",
     "acceptLegal": "Ich akzeptiere",
-    "acceptDocumentsRequired": "Bitte akzeptieren Sie die rechtlichen Dokumente, um fortzufahren"
+    "acceptDocumentsRequired": "Bitte akzeptieren Sie die rechtlichen Dokumente, um fortzufahren",
+    "loginWithGoogle": "Mit Google anmelden",
+    "loginWithYandex": "Mit Yandex anmelden",
+    "loginWithGithub": "Mit GitHub anmelden",
+    "oauth2AuthError": "Anmeldung fehlgeschlagen",
+    "oauth2Bind": "Konto erfolgreich verknüpft",
+    "oauth2BindError": "Konto konnte nicht verknüpft werden",
+    "oauth2AccountExists": "Ein Konto mit dieser E-Mail existiert bereits."
   },
   "nav": {
     "home": "Startseite",
@@ -203,7 +210,16 @@
     "pushIsDisabled": "Push-Benachrichtigungen deaktiviert",
     "pushNotSupported": "Zur Startseite hinzufügen, um Benachrichtigungen zu aktivieren",
     "pushSubscribe": "Aktivieren",
-    "pushUnsubscribe": "Deaktivieren"
+    "pushUnsubscribe": "Deaktivieren",
+    "oauth2AlreadyBound": "Dieses Konto ist bereits mit einem anderen Benutzer verknüpft",
+    "oauth2BindAction": "Verknüpfen",
+    "oauth2UnbindAction": "Trennen",
+    "oauth2Linked": "Verknüpftes Konto",
+    "oauth2NotLinked": "Nicht verknüpft",
+    "oauth2Unbind": "Konto erfolgreich getrennt",
+    "oauth2UnbindError": "Konto konnte nicht getrennt werden",
+    "oauth2WaitTitle": "Warten auf Bestätigung",
+    "oauth2WaitDescription": "Nach der Bestätigung werden Sie automatisch zurückgeleitet."
   },
   "services": {
     "title": "Meine Dienste",
@@ -402,7 +418,7 @@
     "manage": "Verwalten",
     "devicesCount": "Geräte: {{count}}",
     "notConfigured": "Passkey ist für dieses Konto nicht konfiguriert",
-    "loginWithPasskey": "Mit Passkey anmelden",
+    "loginWithPasskey": "Passkey",
     "enterLogin": "Benutzernamen eingeben",
     "authError": "Anmeldung mit Passkey fehlgeschlagen"
   },
