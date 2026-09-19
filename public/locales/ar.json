@@ -198,6 +198,7 @@
     "telegramDescription": "يتيح ربط Telegram تلقي إشعارات حول حالة الخدمات والمدفوعات، فضلاً عن دفع خدمات Telegram بالنجوم.",
     "partnerLink": "رابط الشريك",
     "partnerLinkDescription": "ادعُ أصدقاءك واحصل على مكافآت على طلباتهم ومدفوعاتهم.",
+    "referralsCount": "الإحالات: {{count}}",
     "payHistory": "سجل المدفوعات",
     "wdHistory": "سجل الخصومات",
     "pushNotifications": "الإشعارات",

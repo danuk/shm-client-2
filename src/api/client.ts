@@ -226,11 +226,15 @@ export const ticketApi = {
 };
 
 export const userEmailApi = {
-  getEmail: () => api.get<{ data: { email: string, email_verified: number } }>('/user/email'),
+  getEmail: () => api.get<{ data: { email: string, email_verified: number }[] }>('/user/email'),
   setEmail: (email: string) => api.put('/user/email', { email: email }),
   sendVerifyCode: (email: string) => api.post('/user/email', { email: email }),
   confirmEmail: (email: string, code: string) => api.post('/user/email', { email: email, code: code }),
-  deleteEmail: () => api.delete('/user/email'),
+  deleteEmail: (email: string) => api.delete('/user/email', { params: { email } }),
+};
+
+export const referralsApi = {
+  getCount: () => api.get<{ data: { total: number }[] }>('/user/referrals'),
 };
 
 export const storageApi = {

@@ -192,6 +192,7 @@
     "telegramDescription": "Die Verknüpfung mit Telegram ermöglicht den Empfang von Benachrichtigungen über den Status von Diensten und Zahlungen sowie die Zahlung von Telegram-Diensten mit Sternen.",
     "partnerLink": "Partnerlink",
     "partnerLinkDescription": "Laden Sie Freunde ein und erhalten Sie Boni für deren Bestellungen und Zahlungen.",
+    "referralsCount": "Empfehlungen: {{count}}",
     "payHistory": "Zahlungsverlauf",
     "wdHistory": "Abbuchungsverlauf",
     "pushNotifications": "Benachrichtigungen",
