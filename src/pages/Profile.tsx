@@ -4,7 +4,7 @@ import { IconUser, IconPhone, IconCopy, IconCheck, IconBrandTelegram, IconCredit
 import { notifications } from '@mantine/notifications';
 import { useClipboard } from '@mantine/hooks';
 import { useTranslation } from 'react-i18next';
-import { userApi, telegramApi, userEmailApi } from '../api/client';
+import { userApi, telegramApi, userEmailApi, referralsApi } from '../api/client';
 import { encodePartnerIdBase64url } from '../api/cookie';
 import PayModal from '../components/PayModal';
 import PromoModal from '../components/PromoModal';
@@ -96,6 +96,7 @@ export default function Profile() {
   const [unbindConfirmOpen, setUnbindConfirmOpen] = useState(false);
   const [forecast, setForecast] = useState<ForecastData | null>(null);
   const [forecastOpen, setForecastOpen] = useState(false);
+  const [referralsCount, setReferralsCount] = useState<number | null>(null);
   const { colorScheme } = useMantineColorScheme();
   const clipboardId = useClipboard({ timeout: 1000 });
   const clipboardLink = useClipboard({ timeout: 1000 });
@@ -152,6 +153,13 @@ export default function Profile() {
           if (Array.isArray(forecastData) && forecastData.length > 0) {
             setForecast(forecastData[0]);
           }
+        } catch {
+        }
+        try {
+          const referralsResponse = await referralsApi.getCount();
+          const referralsData = referralsResponse.data.data;
+          const referralsItem = Array.isArray(referralsData) ? referralsData[0] : referralsData;
+          setReferralsCount(referralsItem?.total ?? 0);
         } catch {
         }
       } finally {
@@ -546,6 +554,9 @@ export default function Profile() {
                   </Tooltip>
                 </Group>
                 <Text size="xs" c="dimmed">{t('profile.partnerLinkDescription')}</Text>
+                {referralsCount !== null && (
+                  <Text size="xs" c="dimmed">{t('profile.referralsCount', { count: referralsCount })}</Text>
+                )}
               </div>
             </Group>
 

@@ -199,6 +199,7 @@
     "telegramDescription": "Telegramni bog'lash xizmatlar va to'lovlar holati haqida bildirishnomalar olish, shuningdek Telegram xizmatlarini yulduzlar bilan to'lash imkonini beradi.",
     "partnerLink": "Hamkor havolasi",
     "partnerLinkDescription": "Do'stlarni taklif qiling va ularning buyurtmalari va to'lovlari uchun bonuslar oling.",
+    "referralsCount": "Taklif qilingan: {{count}}",
     "payHistory": "To'lovlar tarixi",
     "wdHistory": "Hisobdan chiqarishlar tarixi",
     "pushNotifications": "Bildirishnomalar",

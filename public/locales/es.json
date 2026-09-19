@@ -201,6 +201,7 @@
     "telegramDescription": "Vincular Telegram te permitirá recibir notificaciones sobre el estado de los servicios y pagos, así como pagar servicios de Telegram con estrellas.",
     "partnerLink": "Enlace de socio",
     "partnerLinkDescription": "Invita amigos y recibe bonos por sus pedidos y pagos.",
+    "referralsCount": "Invitados: {{count}}",
     "payHistory": "Historial de pagos",
     "wdHistory": "Historial de retiros",
     "pushNotifications": "Notificaciones",

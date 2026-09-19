@@ -201,6 +201,7 @@
     "telegramDescription": "Lier Telegram vous permettra de recevoir des notifications sur le statut des services et des paiements, ainsi que de payer les services Telegram avec des étoiles.",
     "partnerLink": "Lien partenaire",
     "partnerLinkDescription": "Invitez des amis et recevez des bonus pour leurs commandes et paiements.",
+    "referralsCount": "Invités : {{count}}",
     "payHistory": "Historique des paiements",
     "wdHistory": "Historique des retraits",
     "pushNotifications": "Notifications",

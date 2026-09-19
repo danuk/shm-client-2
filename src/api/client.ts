@@ -233,6 +233,10 @@ export const userEmailApi = {
   deleteEmail: () => api.delete('/user/email'),
 };
 
+export const referralsApi = {
+  getCount: () => api.get<{ data: { total: number }[] }>('/user/referrals'),
+};
+
 export const storageApi = {
   get: (name: string) => api.get(`/storage/manage/${name}`),
   list: () => api.get('/storage/manage'),
