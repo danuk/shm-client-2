@@ -229,7 +229,7 @@ export const userEmailApi = {
   getEmail: () => api.get<{ data: { email: string, email_verified: number } }>('/user/email'),
   setEmail: (email: string) => api.put('/user/email', { email: email }),
   sendVerifyCode: (email: string) => api.post('/user/email', { email: email }),
-  confirmEmail: (code: string) => api.post('/user/email', { code: code }),
+  confirmEmail: (email: string, code: string) => api.post('/user/email', { email: email, code: code }),
   deleteEmail: () => api.delete('/user/email'),
 };
 

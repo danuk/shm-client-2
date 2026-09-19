@@ -156,10 +156,10 @@ export function useEmailRequired() {
   };
 
   const handleConfirmEmail = async () => {
-    if (!verifyCode.trim()) return;
+    if (!verifyCode.trim() || !pendingEmail) return;
     setVerifyConfirming(true);
     try {
-      const response = await userEmailApi.confirmEmail(verifyCode.trim());
+      const response = await userEmailApi.confirmEmail(pendingEmail, verifyCode.trim());
       const data = response.data?.data;
       if (Array.isArray(data) && data[0]?.msg && data[0].msg !== 'Email verified successfully') {
         notifications.show({ title: t('common.error'), message: data[0].msg, color: 'red' });
