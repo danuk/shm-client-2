@@ -743,38 +743,39 @@ export default function Login() {
                   {(
                     (mode === 'login' && isWebAuthnSupported && config.PASSKEY_AUTH_DISABLED === 'false')
                     || hasTelegramOidcAuth || hasTelegramWidget || hasGoogleAuth || hasYandexAuth || hasGithubAuth
-                  ) && (
-                    <Divider label={t('common.or')} labelPosition="center" />
                   )}
 
                   {(
                     (mode === 'login' && isWebAuthnSupported && config.PASSKEY_AUTH_DISABLED === 'false')
                     || hasTelegramOidcAuth
                   ) && (
-                    <Group grow>
-                      {mode === 'login' && isWebAuthnSupported && config.PASSKEY_AUTH_DISABLED === 'false' && (
-                        <Button
-                          variant="light"
-                          leftSection={<IconFingerprint size={18} />}
-                          loading={passkeyLoading}
-                          onClick={handlePasskeyAuth}
-                        >
-                          {t('passkey.loginWithPasskey')}
-                        </Button>
-                      )}
+                      <>
+                        <Divider label={t('common.or')} labelPosition="center" />
+                        <Group grow>
+                          {mode === 'login' && isWebAuthnSupported && config.PASSKEY_AUTH_DISABLED === 'false' && (
+                            <Button
+                              variant="light"
+                              leftSection={<IconFingerprint size={18} />}
+                              loading={passkeyLoading}
+                              onClick={handlePasskeyAuth}
+                            >
+                              {t('passkey.loginWithPasskey')}
+                            </Button>
+                          )}
 
-                      {hasTelegramOidcAuth && (
-                        <Button
-                          color="blue"
-                          leftSection={<IconBrandTelegram size={18} />}
-                          onClick={handleTelegramOidcAuth}
-                          loading={loading}
-                        >
-                          {t('auth.loginWithTelegram')}
-                        </Button>
-                      )}
-                    </Group>
-                  )}
+                          {hasTelegramOidcAuth && (
+                            <Button
+                              color="blue"
+                              leftSection={<IconBrandTelegram size={18} />}
+                              onClick={handleTelegramOidcAuth}
+                              loading={loading}
+                            >
+                              {t('auth.loginWithTelegram')}
+                            </Button>
+                          )}
+                        </Group>
+                      </>
+                    )}
 
                   {(hasGoogleAuth || hasYandexAuth || hasGithubAuth) && (
                     <Group grow>
