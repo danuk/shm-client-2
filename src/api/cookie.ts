@@ -101,41 +101,69 @@ export function parseAndSaveSessionId(): void {
 }
 
 const RESET_TOKEN_COOKIE_NAME = 'reset_token';
+const RESET_LOGIN_COOKIE_NAME = 'reset_login';
 const RESET_TOKEN_COOKIE_MINUTES = 60;
 
-export function setResetTokenCookie(value: string): void {
+function setSimpleCookie(name: string, value: string, minutes: number): void {
   const expires = new Date();
-  expires.setTime(expires.getTime() + RESET_TOKEN_COOKIE_MINUTES * 60 * 1000);
-  document.cookie = `${RESET_TOKEN_COOKIE_NAME}=${value};expires=${expires.toUTCString()};path=/;SameSite=Lax`;
+  expires.setTime(expires.getTime() + minutes * 60 * 1000);
+  document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/;SameSite=Lax`;
 }
 
-export function getResetTokenCookie(): string | null {
-  const name = RESET_TOKEN_COOKIE_NAME + '=';
+function getSimpleCookie(name: string): string | null {
+  const prefix = name + '=';
   const decodedCookie = decodeURIComponent(document.cookie);
   const ca = decodedCookie.split(';');
   for (let i = 0; i < ca.length; i++) {
     let c = ca[i].trim();
-    if (c.indexOf(name) === 0) {
-      return c.substring(name.length, c.length);
+    if (c.indexOf(prefix) === 0) {
+      return c.substring(prefix.length, c.length);
     }
   }
   return null;
 }
 
-export function removeResetTokenCookie(): void {
-  document.cookie = `${RESET_TOKEN_COOKIE_NAME}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;SameSite=Lax`;
+function removeSimpleCookie(name: string): void {
+  document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;SameSite=Lax`;
 }
 
-export function parseAndSaveResetToken(): string | null {
+export function setResetTokenCookie(value: string): void {
+  setSimpleCookie(RESET_TOKEN_COOKIE_NAME, value, RESET_TOKEN_COOKIE_MINUTES);
+}
+
+export function getResetTokenCookie(): string | null {
+  return getSimpleCookie(RESET_TOKEN_COOKIE_NAME);
+}
+
+export function removeResetTokenCookie(): void {
+  removeSimpleCookie(RESET_TOKEN_COOKIE_NAME);
+}
+
+export function setResetLoginCookie(value: string): void {
+  setSimpleCookie(RESET_LOGIN_COOKIE_NAME, value, RESET_TOKEN_COOKIE_MINUTES);
+}
+
+export function getResetLoginCookie(): string | null {
+  return getSimpleCookie(RESET_LOGIN_COOKIE_NAME);
+}
+
+export function removeResetLoginCookie(): void {
+  removeSimpleCookie(RESET_LOGIN_COOKIE_NAME);
+}
+
+export function parseAndSaveResetToken(): { token: string; login: string } | null {
   const urlParams = new URLSearchParams(window.location.search);
   const token = urlParams.get('token');
-  if (token) {
+  const login = urlParams.get('login');
+  if (token && login) {
     setResetTokenCookie(token);
+    setResetLoginCookie(login);
     urlParams.delete('token');
+    urlParams.delete('login');
     const newSearch = urlParams.toString();
     const newUrl = window.location.pathname + (newSearch ? '?' + newSearch : '') + window.location.hash;
     window.history.replaceState({}, '', newUrl);
-    return token;
+    return { token, login };
   }
   return null;
 }

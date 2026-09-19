@@ -124,56 +124,6 @@ jobs:
           rm -f "$COMMITS_FILE"
           echo "message_file=/tmp/telegram_message.txt" >> $GITHUB_OUTPUT
 
-      - name: Форматирование сообщения для Telegram
-        id: format_message
-        run: |
-          TAG_NAME="${{ steps.release_info.outputs.tag_name }}"
-          RELEASE_NAME="${{ steps.release_info.outputs.name }}"
-          PRERELEASE="${{ steps.release_info.outputs.prerelease }}"
-          BODY="${{ steps.release_info.outputs.body }}"
-          REPO_NAME="${{ github.repository }}"
-          REPO_URL="https://github.com/${{ github.repository }}"
-
-          # Определение типа релиза и эмодзи
-          if [ "$PRERELEASE" = "true" ]; then
-            EMOJI="🧪"
-            RELEASE_TYPE="Пред-релиз"
-          else
-            EMOJI="🚀"
-            RELEASE_TYPE="Релиз"
-          fi
-
-          # Получение коммитов для релиза
-          echo "Получение списка коммитов..."
-
-          # Получаем предыдущий тег
-          PREVIOUS_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo "")
-
-          if [ -n "$PREVIOUS_TAG" ]; then
-            # Получаем коммиты между предыдущим и текущим тегом
-            COMMITS=$(git log --pretty=format:"• %s" ${PREVIOUS_TAG}..HEAD 2>/dev/null || echo "")
-          else
-            # Если предыдущего тега нет, получаем все коммиты
-            COMMITS=$(git log --pretty=format:"• %s" HEAD 2>/dev/null || echo "")
-          fi
-
-          # Ограничиваем количество коммитов (последние 100)
-          if [ -n "$COMMITS" ]; then
-            # Исключаем строки, начинающиеся на 'Merge pull request'
-            COMMITS=$(echo "$COMMITS" | grep -v '^• Merge pull request')
-            COMMITS=$(echo "$COMMITS" | head -100)
-            COMMITS_SECTION="$COMMITS"
-          else
-            COMMITS_SECTION="Нет изменений в коде"
-          fi
-
-          # Форматирование сообщения (используем plain text без Markdown)
-          MESSAGE="${EMOJI} ${RELEASE_TYPE} ${TAG_NAME}\n\n📦 Репозиторий: ${REPO_NAME}\n\n📋 Changelog:\n${COMMITS_SECTION}\n\n🔗 Посмотреть релиз: ${REPO_URL}/releases/tag/${TAG_NAME}"
-
-          # Escape the message for JSON
-          MESSAGE=$(echo "$MESSAGE" | sed ':a;N;$!ba;s/\n/\\n/g' | sed 's/"/\\"/g')
-          echo "message=$MESSAGE" >> $GITHUB_OUTPUT
-
       - name: Отправка в Telegram
         if: steps.check_conditions.outputs.should_notify == 'true'
         env:

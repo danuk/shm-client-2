@@ -6,7 +6,7 @@ import { IconLogin, IconUserPlus, IconHeadset, IconFingerprint, IconShieldLock, 
 import { notifications } from '@mantine/notifications';
 import { useTranslation } from 'react-i18next';
 import { auth, passkeyApi, userApi, oauth2Api } from '../api/client';
-import { setCookie, getResetTokenCookie, removeResetTokenCookie, parseAndSaveResetToken } from '../api/cookie';
+import { setCookie, getResetTokenCookie, removeResetTokenCookie, getResetLoginCookie, removeResetLoginCookie, parseAndSaveResetToken } from '../api/cookie';
 import { useStore } from '../store/useStore';
 import TelegramLoginButton, { TelegramUser } from '../components/TelegramLoginButton';
 import { config } from '../config';
@@ -89,6 +89,7 @@ export default function Login() {
   const [resetLoading, setResetLoading] = useState(false);
   const [showNewPasswordForm, setShowNewPasswordForm] = useState(false);
   const [resetToken, setResetToken] = useState<string | null>(null);
+  const [resetLogin, setResetLogin] = useState<string | null>(null);
   const [newPasswordData, setNewPasswordData] = useState({ password: '', confirmPassword: '' });
   const [acceptedLegal, setAcceptedLegal] = useState(false);
   const [verifyingToken, setVerifyingToken] = useState(false);
@@ -178,16 +179,18 @@ export default function Login() {
 
   useEffect(() => {
     const checkResetToken = async () => {
-      const urlToken = parseAndSaveResetToken();
-      const token = urlToken || getResetTokenCookie();
+      const urlData = parseAndSaveResetToken();
+      const token = urlData?.token || getResetTokenCookie();
+      const login = urlData?.login || getResetLoginCookie();
 
-      if (!token) return;
+      if (!token || !login) return;
 
       setVerifyingToken(true);
       setResetToken(token);
+      setResetLogin(login);
 
       try {
-        const response = await userApi.verifyResetToken(token);
+        const response = await userApi.verifyResetToken(token, login);
         const msg = response.data?.data?.[0]?.msg || response.data?.data?.msg;
 
         if (msg === 'Successful') {
@@ -195,12 +198,16 @@ export default function Login() {
         } else {
           notifications.show({ title: t('common.error'), message: t('auth.invalidResetToken'), color: 'red' });
           removeResetTokenCookie();
+          removeResetLoginCookie();
           setResetToken(null);
+          setResetLogin(null);
         }
       } catch {
         notifications.show({ title: t('common.error'), message: t('auth.invalidResetToken'), color: 'red' });
         removeResetTokenCookie();
+        removeResetLoginCookie();
         setResetToken(null);
+        setResetLogin(null);
       } finally {
         setVerifyingToken(false);
       }
@@ -220,14 +227,14 @@ export default function Login() {
       return;
     }
 
-    if (!resetToken) {
+    if (!resetToken || !resetLogin) {
       notifications.show({ title: t('common.error'), message: t('auth.invalidResetToken'), color: 'red' });
       return;
     }
 
     setResetLoading(true);
     try {
-      const response = await userApi.resetPasswordWithToken(resetToken, newPasswordData.password);
+      const response = await userApi.resetPasswordWithToken(resetToken, resetLogin, newPasswordData.password);
       const msg = response.data?.data?.[0]?.msg || response.data?.data?.msg;
 
       if (msg === 'Password reset successful') {
@@ -239,7 +246,9 @@ export default function Login() {
       notifications.show({ title: t('common.error'), message: t('auth.invalidResetToken'), color: 'red' });
     } finally {
       removeResetTokenCookie();
+      removeResetLoginCookie();
       setResetToken(null);
+      setResetLogin(null);
       setShowNewPasswordForm(false);
       setNewPasswordData({ password: '', confirmPassword: '' });
       setResetLoading(false);
@@ -968,7 +977,9 @@ export default function Login() {
         onClose={() => {
           setShowNewPasswordForm(false);
           removeResetTokenCookie();
+          removeResetLoginCookie();
           setResetToken(null);
+          setResetLogin(null);
           setNewPasswordData({ password: '', confirmPassword: '' });
         }}
         title={
@@ -998,7 +1009,9 @@ export default function Login() {
             <Button variant="default" onClick={() => {
               setShowNewPasswordForm(false);
               removeResetTokenCookie();
+              removeResetLoginCookie();
               setResetToken(null);
+              setResetLogin(null);
               setNewPasswordData({ password: '', confirmPassword: '' });
             }}>
               {t('common.cancel')}
