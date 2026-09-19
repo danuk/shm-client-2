@@ -85,6 +85,8 @@
     "passwordsMismatch": "Passwörter stimmen nicht überein",
     "passwordAuthDisabled": "Anmeldung mit Passwort ist deaktiviert. Verwenden Sie Passkey.",
     "forgotPassword": "Passwort vergessen?",
+    "generatePassword": "Passwort generieren",
+    "passwordGenerated": "Sicheres Passwort generiert",
     "resetPasswordTitle": "Passwort zurücksetzen",
     "resetPasswordDescription": "Geben Sie Ihren Benutzernamen oder Ihre E-Mail ein. Ein Link zum Zurücksetzen des Passworts wird an Ihre E-Mail gesendet.",
     "loginOrEmail": "Benutzername oder E-Mail",

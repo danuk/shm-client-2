@@ -85,6 +85,8 @@
     "passwordsMismatch": "Les mots de passe ne correspondent pas",
     "passwordAuthDisabled": "La connexion par mot de passe est désactivée. Utilisez Passkey.",
     "forgotPassword": "Mot de passe oublié ?",
+    "generatePassword": "Générer un mot de passe",
+    "passwordGenerated": "Mot de passe fort généré",
     "resetPasswordTitle": "Réinitialiser le mot de passe",
     "resetPasswordDescription": "Entrez votre identifiant ou e-mail. Un lien de réinitialisation sera envoyé à votre e-mail.",
     "loginOrEmail": "Identifiant ou E-mail",

@@ -83,6 +83,8 @@
     "passwordsMismatch": "Parollar mos kelmaydi",
     "passwordAuthDisabled": "Parol bilan kirish o'chirilgan. Passkey dan foydalaning.",
     "forgotPassword": "Parolni unutdingizmi?",
+    "generatePassword": "Parol yaratish",
+    "passwordGenerated": "Kuchli parol yaratildi",
     "resetPasswordTitle": "Parolni tiklash",
     "resetPasswordDescription": "Login yoki elektron pochtangizni kiriting. Parolni tiklash havolasi elektron pochtangizga yuboriladi.",
     "loginOrEmail": "Login yoki elektron pochta",

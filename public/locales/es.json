@@ -85,6 +85,8 @@
     "passwordsMismatch": "Las contraseñas no coinciden",
     "passwordAuthDisabled": "El acceso con contraseña está desactivado. Usa Passkey.",
     "forgotPassword": "¿Olvidaste tu contraseña?",
+    "generatePassword": "Generar contraseña",
+    "passwordGenerated": "Contraseña segura generada",
     "resetPasswordTitle": "Restablecer contraseña",
     "resetPasswordDescription": "Introduce tu usuario o correo. Se enviará un enlace de restablecimiento a tu correo.",
     "loginOrEmail": "Usuario o Correo",

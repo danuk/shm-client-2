@@ -96,8 +96,9 @@ jobs:
         TAG=${GITHUB_REF#refs/tags/}
         echo "tag=${TAG}" >> $GITHUB_OUTPUT
 
-        # Get minor version (1.2 from 1.2.3)
-        VERSION_MINOR=$(echo $TAG | cut -d '.' -f 1,2)
+        # Get minor version (1.2 from 1.2.3, or 3.0 from 3.0-dev)
+        BASE_VERSION="${TAG%%-*}"
+        VERSION_MINOR=$(echo $BASE_VERSION | cut -d '.' -f 1,2)
         echo "minor=${VERSION_MINOR}" >> $GITHUB_OUTPUT
 
         # Get git revision

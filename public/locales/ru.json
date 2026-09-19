@@ -89,6 +89,8 @@
     "passwordsMismatch": "Пароли не совпадают",
     "passwordAuthDisabled": "Вход по паролю отключён. Используйте Passkey.",
     "forgotPassword": "Забыли пароль?",
+    "generatePassword": "Сгенерировать пароль",
+    "passwordGenerated": "Надёжный пароль сгенерирован",
     "resetPasswordTitle": "Восстановление пароля",
     "resetPasswordDescription": "Введите ваш логин или email. На указанный email будет отправлена ссылка для сброса пароля.",
     "loginOrEmail": "Логин или Email",

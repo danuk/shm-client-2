@@ -14,6 +14,7 @@ import { useTelegramWebApp } from '../hooks/useTelegramWebApp';
 import LanguageSwitcher from '../components/LanguageSwitcher';
 import DocumentModal from '../components/DocumentModal';
 import { hasTelegramOidcAuth, hasTelegramWebAppAutoAuth, hasTelegramWidget, hasTelegramWebAppAuth, isTelegramWebApp } from '../constants/webapp';
+import generateStrongPassword from '../utils/PasswordGenerate.ts'
 
 const hasGoogleAuth = !isTelegramWebApp && config.GOOGLE_AUTH_ENABLE === 'true';
 const hasYandexAuth = !isTelegramWebApp && config.YANDEX_AUTH_ENABLE === 'true';
@@ -349,6 +350,14 @@ export default function Login() {
     }
   };
 
+  const handleGeneratePassword = () => {
+    const generated = generateStrongPassword();
+    form.setValues({ password: generated, confirmPassword: generated });
+    form.clearFieldError('password');
+    form.clearFieldError('confirmPassword');
+    notifications.show({ title: t('common.success'), message: t('auth.passwordGenerated'), color: 'green' });
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (mode === 'login') {
@@ -631,13 +640,20 @@ export default function Login() {
                       />
                     </div>
                   ) : (
-                    <PasswordInput
-                      label={t('auth.passwordLabel')}
-                      placeholder={t('auth.passwordPlaceholder')}
-                      autoComplete="new-password"
-                      name="password"
-                      {...form.getInputProps('password')}
-                    />
+                    <div>
+                      <Group justify="space-between" mb={4}>
+                        <Text component="label" size="sm" fw={500}>{t('auth.passwordLabel')}</Text>
+                        <Text size="sm" c="blue" style={{ cursor: 'pointer' }} onClick={handleGeneratePassword}>
+                          {t('auth.generatePassword')}
+                        </Text>
+                      </Group>
+                      <PasswordInput
+                        placeholder={t('auth.passwordPlaceholder')}
+                        autoComplete="new-password"
+                        name="password"
+                        {...form.getInputProps('password')}
+                      />
+                    </div>
                   )}
                   {mode === 'register' && (
                     <PasswordInput

@@ -93,6 +93,8 @@
     "passwordsMismatch": "كلمتا المرور غير متطابقتين",
     "passwordAuthDisabled": "تسجيل الدخول بكلمة المرور معطّل. استخدم Passkey.",
     "forgotPassword": "نسيت كلمة المرور؟",
+    "generatePassword": "إنشاء كلمة مرور",
+    "passwordGenerated": "تم إنشاء كلمة مرور قوية",
     "resetPasswordTitle": "إعادة تعيين كلمة المرور",
     "resetPasswordDescription": "أدخل اسم المستخدم أو البريد الإلكتروني. سيتم إرسال رابط إعادة التعيين إلى بريدك الإلكتروني.",
     "loginOrEmail": "اسم المستخدم أو البريد الإلكتروني",

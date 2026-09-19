@@ -85,6 +85,8 @@
     "passwordsMismatch": "Passwords do not match",
     "passwordAuthDisabled": "Password login is disabled. Use Passkey.",
     "forgotPassword": "Forgot password?",
+    "generatePassword": "Generate password",
+    "passwordGenerated": "Strong password generated",
     "resetPasswordTitle": "Reset password",
     "resetPasswordDescription": "Enter your login or email. A password reset link will be sent to your email.",
     "loginOrEmail": "Login or Email",
