@@ -27,10 +27,16 @@ api.interceptors.response.use(
     return response;
   },
   (error) => {
-    const isAuthRequest = error.config?.url?.includes('/auth');
-    if (error.response?.status === 401 && !isAuthRequest) {
+    const requestPath = error.config?.url?.split('?')[0];
+    const requestMethod = error.config?.method?.toLowerCase();
+    const isAuthRequest = requestPath?.includes('/auth');
+    const isSessionProbe = requestPath === '/user' && requestMethod === 'get';
+    if (error.response?.status === 401 && !isAuthRequest && !isSessionProbe) {
       removeCookie();
-      window.location.href = '/';
+      const basePath = config.SHM_BASE_PATH && config.SHM_BASE_PATH !== '/'
+        ? `${config.SHM_BASE_PATH.replace(/\/$/, '')}/`
+        : '/';
+      window.location.assign(basePath);
     }
     return Promise.reject(error);
   }

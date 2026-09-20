@@ -10,7 +10,7 @@ import { useTranslation } from 'react-i18next';
 import { useStore } from './store/useStore';
 import { NAV_ITEMS } from './constants/navigation';
 import { auth } from './api/client';
-import { getCookie, removeCookie, parseAndSavePartnerId, parseAndSaveSessionId } from './api/cookie';
+import { removeCookie, parseAndSavePartnerId, parseAndSaveSessionId } from './api/cookie';
 import { config } from './config';
 import LanguageSwitcher from './components/LanguageSwitcher';
 import { hasTelegramWebAppAutoAuth, isTelegramWebApp } from './constants/webapp';
@@ -124,21 +124,24 @@ function AppContent() {
 
   useEffect(() => {
     if (hasAddToHomeScreen) { setIsLoading(false); return; }
+    let cancelled = false;
     const checkAuth = async () => {
-      const token = getCookie();
-      if (!token) { setIsLoading(false); return; }
       try {
         const response = await auth.getCurrentUser();
         const responseData = response.data.data;
-        const userData: any = Array.isArray(responseData) ? responseData[0] : responseData;
-        setUser(userData);
+        const userData = Array.isArray(responseData) ? responseData[0] : responseData;
+        if (!cancelled) setUser(userData || null);
       } catch {
-        removeCookie();
+        if (!cancelled) {
+          setUser(null);
+          removeCookie();
+        }
       } finally {
-        setIsLoading(false);
+        if (!cancelled) setIsLoading(false);
       }
     };
-    checkAuth();
+    void checkAuth();
+    return () => { cancelled = true; };
   }, [setUser, setIsLoading, hasAddToHomeScreen]);
 
   useEffect(() => {

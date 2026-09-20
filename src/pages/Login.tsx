@@ -892,8 +892,8 @@ export default function Login() {
                     </Center>
                   )}
 
-                  { registerEnabled   && (
-                  <Divider label={t('auth.noAccount')} labelPosition="center" />
+                  {mode === 'login' && registerEnabled && (
+                    <Divider label={t('auth.noAccount')} labelPosition="center" />
                   )}
 
                 </Stack>

@@ -37,7 +37,7 @@ interface AppState {
   setOpenVerifyModal: (open: boolean) => void;
   openEmailModal: boolean;
   setOpenEmailModal: (open: boolean) => void;
-  logout: () => void;
+  logout: () => Promise<void>;
 }
 
 export const useStore = create<AppState>((set) => ({
@@ -76,7 +76,14 @@ export const useStore = create<AppState>((set) => ({
   },
   setOpenVerifyModal: (open) => set({ openVerifyModal: open }),
   setOpenEmailModal: (open) => set({ openEmailModal: open }),
-  logout: () => {
+  logout: async () => {
+    try {
+      const response = await fetch('/shm/v1/user/logout', {
+        method: 'POST', credentials: 'same-origin', cache: 'no-store',
+      });
+      if (!response.ok) throw new Error(`Logout HTTP ${response.status}`);
+    } catch (error) {
+    }
     removeCookie();
     localStorage.removeItem('shm_telegram_photo');
     set({ user: null, isAuthenticated: false, telegramPhoto: null, hasNewTicketMessages: false, userEmail: null, userEmailVerified: null, isEmailLoaded: false });
