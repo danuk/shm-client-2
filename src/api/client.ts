@@ -2,12 +2,6 @@ import axios from 'axios';
 import { getCookie, setCookie, removeCookie, extendCookie, getPartnerCookie, removePartnerCookie } from './cookie';
 import { config } from '../config';
 
-declare module 'axios' {
-  export interface AxiosRequestConfig {
-    skipAuthRedirect?: boolean;
-  }
-}
-
 export const api = axios.create({
   baseURL: '/shm/v1',
   withCredentials: true,
@@ -34,7 +28,7 @@ api.interceptors.response.use(
   },
   (error) => {
     const isAuthRequest = error.config?.url?.includes('/auth');
-    if (error.response?.status === 401 && !isAuthRequest && !error.config?.skipAuthRedirect) {
+    if (error.response?.status === 401 && !isAuthRequest) {
       removeCookie();
       window.location.href = '/';
     }
@@ -61,7 +55,7 @@ export const auth = {
     return { otpRequired: false };
   },
 
-  getCurrentUser: (opts?: { skipAuthRedirect?: boolean }) => api.get('/user', { skipAuthRedirect: opts?.skipAuthRedirect }),
+  getCurrentUser: () => api.get('/user'),
 
   logout: () => {
     removeCookie();
@@ -155,7 +149,7 @@ export interface SystemAuthConfig {
   captcha: { enabled: boolean };
   oauth2: { providers: Record<string, { enabled: boolean }> };
   telegram: { enabled: boolean };
-  passkey: { enabled: boolean };
+  passkey?: { enabled: boolean };
 }
 
 export const systemApi = {

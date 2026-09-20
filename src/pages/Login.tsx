@@ -16,6 +16,8 @@ import DocumentModal from '../components/DocumentModal';
 import { hasTelegramWebAppAutoAuth, hasTelegramWidget, hasTelegramWebAppAuth, isTelegramWebApp } from '../constants/webapp';
 import generateStrongPassword from '../utils/PasswordGenerate.ts'
 
+const staticPasskeyAuth = config.PASSKEY_AUTH_DISABLED !== 'true';
+
 function isPdf(value: string) {
   return value.toLowerCase().endsWith('.pdf');
 }
@@ -146,8 +148,11 @@ export default function Login() {
 
   const captchaEnabled = systemAuth ? !!systemAuth.captcha.enabled : config.CAPTCHA_ENABLED === 'true';
   const registerEnabled = systemAuth ? !!systemAuth.register.enabled : true;
-  const passwordLoginEnabled = systemAuth ? !!systemAuth.auth.enabled : true;
-  const passkeyAuthEnabled = !!systemAuth?.passkey.enabled;
+  // Бэкенд пока не отдаёт auth.enabled/passkey надёжно (и passkey может
+  // вообще отсутствовать в ответе) — вход по паролю всегда включён,
+  // passkey берёт статичный env-фолбэк, если бэкенд поле не прислал.
+  const passwordLoginEnabled = true;
+  const passkeyAuthEnabled = systemAuth?.passkey?.enabled ?? staticPasskeyAuth;
   const hasGoogleAuth = !isTelegramWebApp && !!systemAuth?.oauth2.providers.google?.enabled;
   const hasYandexAuth = !isTelegramWebApp && !!systemAuth?.oauth2.providers.yandex?.enabled;
   const hasGithubAuth = !isTelegramWebApp && !!systemAuth?.oauth2.providers.github?.enabled;
