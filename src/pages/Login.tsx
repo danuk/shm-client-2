@@ -5,7 +5,7 @@ import { useForm, isEmail, hasLength } from '@mantine/form';
 import { IconLogin, IconUserPlus, IconHeadset, IconFingerprint, IconShieldLock, IconBrandTelegram, IconBrandGoogle, IconBrandYandex, IconBrandGithub, IconMailForward, IconLock, IconMoon, IconSun } from '@tabler/icons-react';
 import { notifications } from '@mantine/notifications';
 import { useTranslation } from 'react-i18next';
-import { auth, passkeyApi, userApi, oauth2Api } from '../api/client';
+import { auth, passkeyApi, userApi, oauth2Api, systemApi, SystemAuthConfig } from '../api/client';
 import { setCookie, getResetTokenCookie, removeResetTokenCookie, getResetLoginCookie, removeResetLoginCookie, parseAndSaveResetToken } from '../api/cookie';
 import { useStore } from '../store/useStore';
 import TelegramLoginButton, { TelegramUser } from '../components/TelegramLoginButton';
@@ -13,13 +13,8 @@ import { config } from '../config';
 import { useTelegramWebApp } from '../hooks/useTelegramWebApp';
 import LanguageSwitcher from '../components/LanguageSwitcher';
 import DocumentModal from '../components/DocumentModal';
-import { hasTelegramOidcAuth, hasTelegramWebAppAutoAuth, hasTelegramWidget, hasTelegramWebAppAuth, isTelegramWebApp } from '../constants/webapp';
+import { hasTelegramWebAppAutoAuth, hasTelegramWidget, hasTelegramWebAppAuth, isTelegramWebApp } from '../constants/webapp';
 import generateStrongPassword from '../utils/PasswordGenerate.ts'
-
-const hasGoogleAuth = !isTelegramWebApp && config.GOOGLE_AUTH_ENABLE === 'true';
-const hasYandexAuth = !isTelegramWebApp && config.YANDEX_AUTH_ENABLE === 'true';
-const hasGithubAuth = !isTelegramWebApp && config.GITHUB_AUTH_ENABLE === 'true';
-const oauth2ProvidersCount = [hasGoogleAuth, hasYandexAuth, hasGithubAuth].filter(Boolean).length;
 
 function isPdf(value: string) {
   return value.toLowerCase().endsWith('.pdf');
@@ -96,6 +91,7 @@ export default function Login() {
   const [verifyingToken, setVerifyingToken] = useState(false);
   const [docModalUrl, setDocModalUrl] = useState('');
   const [docModalTitle, setDocModalTitle] = useState('');
+  const [systemAuth, setSystemAuth] = useState<SystemAuthConfig | null>(null);
   const { setUser, setTelegramPhoto } = useStore();
   const { t } = useTranslation();
   const isMobile = useMediaQuery('(max-width: 768px)');
@@ -138,6 +134,27 @@ export default function Login() {
   ].filter((link) => Boolean(link.href));
   const hasLegalLinks = legalLinks.length > 0;
 
+  useEffect(() => {
+    systemApi.getAuthConfig()
+      .then((res) => {
+        const raw = res.data?.data;
+        const cfg = Array.isArray(raw) ? raw[0] : raw;
+        if (cfg) setSystemAuth(cfg);
+      })
+      .catch(() => { /* backend without /system/auth — keep static config */ });
+  }, []);
+
+  const captchaEnabled = systemAuth ? !!systemAuth.captcha.enabled : config.CAPTCHA_ENABLED === 'true';
+  const registerEnabled = systemAuth ? !!systemAuth.register.enabled : true;
+  const passwordLoginEnabled = systemAuth ? !!systemAuth.auth.enabled : true;
+  const passkeyAuthEnabled = !!systemAuth?.passkey.enabled;
+  const hasGoogleAuth = !isTelegramWebApp && !!systemAuth?.oauth2.providers.google?.enabled;
+  const hasYandexAuth = !isTelegramWebApp && !!systemAuth?.oauth2.providers.yandex?.enabled;
+  const hasGithubAuth = !isTelegramWebApp && !!systemAuth?.oauth2.providers.github?.enabled;
+  const hasTelegramOidcAuth = !isTelegramWebApp && !!systemAuth?.telegram.enabled;
+  const oauth2ProvidersCount = [hasGoogleAuth, hasYandexAuth, hasGithubAuth].filter(Boolean).length;
+  const hasPasskeyAuth = isWebAuthnSupported && passkeyAuthEnabled;
+
   const fetchCaptcha = async () => {
     try {
       const res = await auth.getCaptcha();
@@ -148,13 +165,13 @@ export default function Login() {
   };
 
   useEffect(() => {
-    if (mode === 'register' && config.CAPTCHA_ENABLED === 'true') {
+    if (mode === 'register' && captchaEnabled) {
       void fetchCaptcha();
     } else {
       setCaptcha(null);
       setCaptchaAnswer('');
     }
-  }, [mode]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [mode, captchaEnabled]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (mode !== 'register') {
@@ -317,7 +334,7 @@ export default function Login() {
       return;
     }
 
-    if (config.CAPTCHA_ENABLED === 'true' && (!captcha || !captchaAnswer.trim())) {
+    if (captchaEnabled && (!captcha || !captchaAnswer.trim())) {
       notifications.show({ title: t('common.error'), message: t('auth.captchaRequired'), color: 'red' });
       return;
     }
@@ -344,7 +361,7 @@ export default function Login() {
       } else {
         notifications.show({ title: t('common.error'), message: t('auth.registerError'), color: 'red' });
       }
-      if (config.CAPTCHA_ENABLED === 'true') void fetchCaptcha();
+      if (captchaEnabled) void fetchCaptcha();
     } finally {
       setLoading(false);
     }
@@ -606,39 +623,43 @@ export default function Login() {
             <>
               <form onSubmit={handleSubmit}>
                 <Stack gap="sm">
-                  {mode === 'register' && requireEmailRegister ? (
-                    <TextInput
-                      label={t('auth.emailLabel')}
-                      placeholder={t('auth.emailPlaceholder')}
-                      autoComplete="email"
-                      name="email"
-                      type="email"
-                      {...form.getInputProps('login')}
-                    />
-                  ) : (
-                    <TextInput
-                      label={t('auth.loginLabel')}
-                      placeholder={t('auth.loginPlaceholder')}
-                      autoComplete="username"
-                      name="username"
-                      {...form.getInputProps('login')}
-                    />
+                  {(mode === 'register' || passwordLoginEnabled) && (
+                    mode === 'register' && requireEmailRegister ? (
+                      <TextInput
+                        label={t('auth.emailLabel')}
+                        placeholder={t('auth.emailPlaceholder')}
+                        autoComplete="email"
+                        name="email"
+                        type="email"
+                        {...form.getInputProps('login')}
+                      />
+                    ) : (
+                      <TextInput
+                        label={t('auth.loginLabel')}
+                        placeholder={t('auth.loginPlaceholder')}
+                        autoComplete="username"
+                        name="username"
+                        {...form.getInputProps('login')}
+                      />
+                    )
                   )}
                   {mode === 'login' ? (
-                    <div>
-                      <Group justify="space-between" mb={4}>
-                        <Text component="label" size="sm" fw={500}>{t('auth.passwordLabel')}</Text>
-                        <Text size="sm" c="blue" style={{ cursor: 'pointer' }} onClick={() => setShowResetPassword(true)}>
-                          {t('auth.forgotPassword')}
-                        </Text>
-                      </Group>
-                      <PasswordInput
-                        placeholder={t('auth.passwordPlaceholder')}
-                        autoComplete="current-password"
-                        name="password"
-                        {...form.getInputProps('password')}
-                      />
-                    </div>
+                    passwordLoginEnabled && (
+                      <div>
+                        <Group justify="space-between" mb={4}>
+                          <Text component="label" size="sm" fw={500}>{t('auth.passwordLabel')}</Text>
+                          <Text size="sm" c="blue" style={{ cursor: 'pointer' }} onClick={() => setShowResetPassword(true)}>
+                            {t('auth.forgotPassword')}
+                          </Text>
+                        </Group>
+                        <PasswordInput
+                          placeholder={t('auth.passwordPlaceholder')}
+                          autoComplete="current-password"
+                          name="password"
+                          {...form.getInputProps('password')}
+                        />
+                      </div>
+                    )
                   ) : (
                     <div>
                       <Group justify="space-between" mb={4}>
@@ -664,7 +685,7 @@ export default function Login() {
                       {...form.getInputProps('confirmPassword')}
                     />
                   )}
-                  {mode === 'register' && config.CAPTCHA_ENABLED === 'true' && (
+                  {mode === 'register' && captchaEnabled && (
                     <Group gap="xs" align="center">
                       {captcha?.image ? (
                         <img
@@ -747,51 +768,52 @@ export default function Login() {
                       />
                     </>
                   )}
-                  <Button
-                    type="submit"
-                    leftSection={mode === 'login' ? <IconLogin size={18} /> : <IconUserPlus size={18} />}
-                    loading={loading}
-                    disabled={mode === 'register' && hasLegalLinks && !acceptedLegal}
-                  >
-                    {mode === 'login' ? t('auth.login') : t('auth.register')}
-                  </Button>
-
-                  {(
-                    (mode === 'login' && isWebAuthnSupported && config.PASSKEY_AUTH_DISABLED === 'false')
-                    || hasTelegramOidcAuth || hasTelegramWidget || hasGoogleAuth || hasYandexAuth || hasGithubAuth
+                  {(mode === 'register' || passwordLoginEnabled) && (
+                    <Button
+                      type="submit"
+                      leftSection={mode === 'login' ? <IconLogin size={18} /> : <IconUserPlus size={18} />}
+                      loading={loading}
+                      disabled={mode === 'register' && hasLegalLinks && !acceptedLegal}
+                    >
+                      {mode === 'login' ? t('auth.login') : t('auth.register')}
+                    </Button>
                   )}
 
                   {(
-                    (mode === 'login' && isWebAuthnSupported && config.PASSKEY_AUTH_DISABLED === 'false')
+                    (mode === 'login' && hasPasskeyAuth)
+                    || hasTelegramOidcAuth || hasTelegramWidget || hasGoogleAuth || hasYandexAuth || hasGithubAuth
+                  ) && (
+                    <Divider label={t('common.or')} labelPosition="center" />
+                  )}
+
+                  {(
+                    (mode === 'login' && hasPasskeyAuth)
                     || hasTelegramOidcAuth
                   ) && (
-                      <>
-                        <Divider label={t('common.or')} labelPosition="center" />
-                        <Group grow>
-                          {mode === 'login' && isWebAuthnSupported && config.PASSKEY_AUTH_DISABLED === 'false' && (
-                            <Button
-                              variant="light"
-                              leftSection={<IconFingerprint size={18} />}
-                              loading={passkeyLoading}
-                              onClick={handlePasskeyAuth}
-                            >
-                              {t('passkey.loginWithPasskey')}
-                            </Button>
-                          )}
+                    <Group grow>
+                      {mode === 'login' && hasPasskeyAuth && (
+                        <Button
+                          variant="light"
+                          leftSection={<IconFingerprint size={18} />}
+                          loading={passkeyLoading}
+                          onClick={handlePasskeyAuth}
+                        >
+                          {t('passkey.loginWithPasskey')}
+                        </Button>
+                      )}
 
-                          {hasTelegramOidcAuth && (
-                            <Button
-                              color="blue"
-                              leftSection={<IconBrandTelegram size={18} />}
-                              onClick={handleTelegramOidcAuth}
-                              loading={loading}
-                            >
-                              {t('auth.loginWithTelegram')}
-                            </Button>
-                          )}
-                        </Group>
-                      </>
-                    )}
+                      {hasTelegramOidcAuth && (
+                        <Button
+                          color="blue"
+                          leftSection={<IconBrandTelegram size={18} />}
+                          onClick={handleTelegramOidcAuth}
+                          loading={loading}
+                        >
+                          {t('auth.loginWithTelegram')}
+                        </Button>
+                      )}
+                    </Group>
+                  )}
 
                   {(hasGoogleAuth || hasYandexAuth || hasGithubAuth) && (
                     <Group grow>
@@ -855,31 +877,32 @@ export default function Login() {
                   )}
 
                   {hasTelegramWidget && (
-                    <>
-                      <Divider label={t('common.or')} labelPosition="center" />
-                      <Center>
-                        <TelegramLoginButton
-                          botName={config.TELEGRAM_BOT_NAME}
-                          onAuth={handleTelegramWidgetAuth}
-                          buttonSize="large"
-                          requestAccess="write"
-                        />
-                      </Center>
-                    </>
+                    <Center>
+                      <TelegramLoginButton
+                        botName={config.TELEGRAM_BOT_NAME}
+                        onAuth={handleTelegramWidgetAuth}
+                        buttonSize="large"
+                        requestAccess="write"
+                      />
+                    </Center>
                   )}
 
+                  { registerEnabled   && (
                   <Divider label={t('auth.noAccount')} labelPosition="center" />
+                  )}
 
                 </Stack>
               </form>
 
               <Text size="sm" ta="center">
                 {mode === 'login' ? (
-                  <>
-                    <Text component="span" c="blue" style={{ cursor: 'pointer' }} onClick={() => { setMode('register'); form.clearErrors(); }}>
-                      {t('auth.register')}
-                    </Text>
-                  </>
+                  registerEnabled && (
+                    <>
+                      <Text component="span" c="blue" style={{ cursor: 'pointer' }} onClick={() => { setMode('register'); form.clearErrors(); }}>
+                        {t('auth.register')}
+                      </Text>
+                    </>
+                  )
                 ) : (
                   <>
                     {t('auth.hasAccount')}{' '}

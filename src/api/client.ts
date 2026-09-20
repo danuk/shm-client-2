@@ -2,6 +2,12 @@ import axios from 'axios';
 import { getCookie, setCookie, removeCookie, extendCookie, getPartnerCookie, removePartnerCookie } from './cookie';
 import { config } from '../config';
 
+declare module 'axios' {
+  export interface AxiosRequestConfig {
+    skipAuthRedirect?: boolean;
+  }
+}
+
 export const api = axios.create({
   baseURL: '/shm/v1',
   withCredentials: true,
@@ -28,7 +34,7 @@ api.interceptors.response.use(
   },
   (error) => {
     const isAuthRequest = error.config?.url?.includes('/auth');
-    if (error.response?.status === 401 && !isAuthRequest) {
+    if (error.response?.status === 401 && !isAuthRequest && !error.config?.skipAuthRedirect) {
       removeCookie();
       window.location.href = '/';
     }
@@ -55,7 +61,7 @@ export const auth = {
     return { otpRequired: false };
   },
 
-  getCurrentUser: () => api.get('/user'),
+  getCurrentUser: (opts?: { skipAuthRedirect?: boolean }) => api.get('/user', { skipAuthRedirect: opts?.skipAuthRedirect }),
 
   logout: () => {
     removeCookie();
@@ -143,6 +149,19 @@ export const auth = {
   },
 };
 
+export interface SystemAuthConfig {
+  auth: { enabled: boolean };
+  register: { enabled: boolean };
+  captcha: { enabled: boolean };
+  oauth2: { providers: Record<string, { enabled: boolean }> };
+  telegram: { enabled: boolean };
+  passkey: { enabled: boolean };
+}
+
+export const systemApi = {
+  getAuthConfig: () => api.get<{ data: SystemAuthConfig[] }>('/system/auth'),
+};
+
 export const userApi = {
   getProfile: () => api.get('/user'),
   updateProfile: (data: Record<string, unknown>) => api.post('/user', data),
@@ -152,6 +171,10 @@ export const userApi = {
   resetPasswordWithToken: (token: string, login: string, password: string) => api.post('/user/passwd/reset/verify', { token, login, password }),
   getServices: () => api.get('/user/service', { params: { limit: 1000 } }),
   stopService: (userServiceId: number) => api.post('/user/service/stop', { user_service_id: userServiceId }),
+  updateServiceDescription: (userServiceId: number, description: string) => api.post('/user/service', {
+    user_service_id: userServiceId,
+    description,
+  }),
   changeService: (userServiceId: number, serviceId: number, finish_active: number, partial_renew: number) => api.post('/user/service/change', {
     user_service_id: userServiceId,
     service_id: serviceId,
@@ -226,11 +249,11 @@ export const ticketApi = {
 };
 
 export const userEmailApi = {
-  getEmail: () => api.get<{ data: { email: string, email_verified: number } }>('/user/email'),
+  getEmail: () => api.get<{ data: { email: string, email_verified: number }[] }>('/user/email'),
   setEmail: (email: string) => api.put('/user/email', { email: email }),
   sendVerifyCode: (email: string) => api.post('/user/email', { email: email }),
-  confirmEmail: (code: string) => api.post('/user/email', { code: code }),
-  deleteEmail: () => api.delete('/user/email'),
+  confirmEmail: (email: string, code: string) => api.post('/user/email', { email: email, code: code }),
+  deleteEmail: (email: string) => api.delete('/user/email', { params: { email } }),
 };
 
 export const referralsApi = {

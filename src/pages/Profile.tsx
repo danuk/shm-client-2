@@ -390,9 +390,10 @@ export default function Profile() {
   };
 
   const handleDeleteEmail = async () => {
+    if (!profileEmail) return;
     setEmailSaving(true);
     try {
-      await userEmailApi.deleteEmail();
+      await userEmailApi.deleteEmail(profileEmail);
       setProfileEmail(null);
       if (setUserEmail) {
         setUserEmail(null);
@@ -454,11 +455,11 @@ export default function Profile() {
   };
 
   const handleConfirmEmail = async () => {
-    if (!verifyCode.trim()) return;
+    if (!verifyCode.trim() || !profileEmail) return;
 
     setVerifyConfirming(true);
     try {
-      const response = await userEmailApi.confirmEmail(verifyCode.trim());
+      const response = await userEmailApi.confirmEmail(profileEmail, verifyCode.trim());
       const data = response.data?.data;
 
       if (Array.isArray(data) && data[0]?.msg && data[0].msg !== 'Email verified successfully') {

@@ -10,7 +10,7 @@ import { useTranslation } from 'react-i18next';
 import { useStore } from './store/useStore';
 import { NAV_ITEMS } from './constants/navigation';
 import { auth } from './api/client';
-import { getCookie, removeCookie, parseAndSavePartnerId, parseAndSaveSessionId } from './api/cookie';
+import { removeCookie, parseAndSavePartnerId, parseAndSaveSessionId } from './api/cookie';
 import { config } from './config';
 import LanguageSwitcher from './components/LanguageSwitcher';
 import { hasTelegramWebAppAutoAuth, isTelegramWebApp } from './constants/webapp';
@@ -125,10 +125,11 @@ function AppContent() {
   useEffect(() => {
     if (hasAddToHomeScreen) { setIsLoading(false); return; }
     const checkAuth = async () => {
-      const token = getCookie();
-      if (!token) { setIsLoading(false); return; }
+      // Session may live in an HttpOnly cookie (OAuth2/Telegram OIDC redirect
+      // flow), invisible to document.cookie/getCookie() — always attempt the
+      // request and let the browser attach it via withCredentials.
       try {
-        const response = await auth.getCurrentUser();
+        const response = await auth.getCurrentUser({ skipAuthRedirect: true });
         const responseData = response.data.data;
         const userData: any = Array.isArray(responseData) ? responseData[0] : responseData;
         setUser(userData);

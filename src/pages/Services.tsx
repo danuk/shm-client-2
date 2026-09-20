@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Card, Timeline, Text, Stack, Group, Badge, Button, Divider, Modal, ActionIcon, Loader, Center, Paper, Title, Tabs, Code, Tooltip, Accordion, Box, Select, NumberInput, Pagination } from '@mantine/core';
-import { IconQrcode, IconCopy, IconCheck, IconDownload, IconRefresh, IconTrash, IconPlus, IconPlayerStop, IconExchange, IconCreditCard, IconWallet, IconDeviceMobileCog } from '@tabler/icons-react';
+import { Card, Timeline, Text, Stack, Group, Badge, Button, Divider, Modal, ActionIcon, Loader, Center, Paper, Title, Tabs, Code, Tooltip, Accordion, Box, Select, NumberInput, Pagination, TextInput } from '@mantine/core';
+import { IconQrcode, IconCopy, IconCheck, IconDownload, IconRefresh, IconTrash, IconPlus, IconPlayerStop, IconExchange, IconCreditCard, IconWallet, IconDeviceMobileCog, IconPencil, IconX } from '@tabler/icons-react';
 import { useDisclosure, useClipboard } from '@mantine/hooks';
 import { useTranslation } from 'react-i18next';
 import { api, servicesApi, userApi } from '../api/client';
@@ -47,6 +47,7 @@ interface UserService {
   next: number | null;
   created: string;
   parent: number | null;
+  description?: string | null;
   settings?: Record<string, unknown>;
   children?: UserService[];
 }
@@ -87,9 +88,10 @@ interface ServiceDetailProps {
   service: UserService;
   onDelete?: () => void;
   onChangeTariff?: (service: UserService) => void;
+  onDescriptionUpdated?: (userServiceId: number, description: string) => void;
 }
 
-function ServiceDetail({ service, onDelete, onChangeTariff }: ServiceDetailProps) {
+function ServiceDetail({ service, onDelete, onChangeTariff, onDescriptionUpdated }: ServiceDetailProps) {
   const [storageData, setStorageData] = useState<string | null>(null);
   const [subscriptionUrl, setSubscriptionUrl] = useState<string | null>(null);
   const [nextServiceInfo, setNextServiceInfo] = useState<{ name: string; cost: number } | null>(null);
@@ -102,6 +104,9 @@ function ServiceDetail({ service, onDelete, onChangeTariff }: ServiceDetailProps
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [confirmStop, setConfirmStop] = useState(false);
   const [downloading, setDownloading] = useState(false);
+  const [editingDescription, setEditingDescription] = useState(false);
+  const [descriptionInput, setDescriptionInput] = useState(service.description || '');
+  const [savingDescription, setSavingDescription] = useState(false);
   const { t, i18n } = useTranslation();
   const clipboard = useClipboard({ timeout: 1000 });
 
@@ -136,6 +141,25 @@ function ServiceDetail({ service, onDelete, onChangeTariff }: ServiceDetailProps
   const canStop = config.ALLOW_SERVICE_BLOCKED === 'true' && service.status === 'ACTIVE';
   const canChange = config.ALLOW_SERVICE_CHANGE === 'true' && ['BLOCK', 'ACTIVE'].includes(service.status);
   const isNotPaid = service.status === 'NOT PAID';
+
+  useEffect(() => {
+    setDescriptionInput(service.description || '');
+    setEditingDescription(false);
+  }, [service.user_service_id, service.description]);
+
+  const handleSaveDescription = async () => {
+    setSavingDescription(true);
+    try {
+      await userApi.updateServiceDescription(service.user_service_id, descriptionInput.trim());
+      onDescriptionUpdated?.(service.user_service_id, descriptionInput.trim());
+      setEditingDescription(false);
+      notifications.show({ title: t('common.success'), message: t('services.descriptionSaved'), color: 'green' });
+    } catch {
+      notifications.show({ title: t('common.error'), message: t('services.descriptionSaveError'), color: 'red' });
+    } finally {
+      setSavingDescription(false);
+    }
+  };
 
   useEffect(() => {
     if (!isNotPaid) return;
@@ -398,7 +422,10 @@ function ServiceDetail({ service, onDelete, onChangeTariff }: ServiceDetailProps
     <Stack gap="md">
       <Group justify="space-between">
         <div>
-          <Text fw={700} size="lg">#{service.user_service_id} - {service.service.name}</Text>
+          <Text fw={700} size="lg">
+            #{service.user_service_id} - {service.service.name}
+            {service.description && ` (${service.description})`}
+          </Text>
           <Badge color={statusColor} variant="light">
             {statusLabel}
           </Badge>
@@ -420,6 +447,44 @@ function ServiceDetail({ service, onDelete, onChangeTariff }: ServiceDetailProps
             <Group justify="space-between">
               <Text size="sm" c="dimmed">{t('services.cost')}:</Text>
               <Text size="sm">{service.service.cost} {t('common.currency')}</Text>
+            </Group>
+            <Group justify="space-between" align="flex-start" wrap="nowrap">
+              <Text size="sm" c="dimmed" style={{ flexShrink: 0 }}>{t('services.description')}:</Text>
+              {editingDescription ? (
+                <Group gap={4} wrap="nowrap" style={{ flex: 1, justifyContent: 'flex-end' }}>
+                  <TextInput
+                    size="xs"
+                    value={descriptionInput}
+                    onChange={(e) => setDescriptionInput(e.currentTarget.value)}
+                    maxLength={254}
+                    autoFocus
+                    style={{ flex: 1 }}
+                  />
+                  <ActionIcon color="teal" variant="subtle" loading={savingDescription} onClick={handleSaveDescription}>
+                    <IconCheck size={16} />
+                  </ActionIcon>
+                  <ActionIcon
+                    color="gray"
+                    variant="subtle"
+                    disabled={savingDescription}
+                    onClick={() => {
+                      setDescriptionInput(service.description || '');
+                      setEditingDescription(false);
+                    }}
+                  >
+                    <IconX size={16} />
+                  </ActionIcon>
+                </Group>
+              ) : (
+                <Group gap={4} wrap="nowrap">
+                  <Text size="sm" c={service.description ? undefined : 'dimmed'} style={{ wordBreak: 'break-word', textAlign: 'right' }}>
+                    {service.description || t('services.descriptionEmpty')}
+                  </Text>
+                  <ActionIcon variant="subtle" size="sm" onClick={() => setEditingDescription(true)}>
+                    <IconPencil size={14} />
+                  </ActionIcon>
+                </Group>
+              )}
             </Group>
             {service.expire && (
               <Group justify="space-between">
@@ -758,7 +823,10 @@ function ServiceCard({ service, onClick, isChild = false, isLastChild = false }:
         >
           <Group justify="space-between">
             <div>
-              <Text fw={500} size="sm">#{service.user_service_id} - {service.service.name}</Text>
+              <Text fw={500} size="sm">
+                #{service.user_service_id} - {service.service.name}
+                {service.description && ` (${service.description})`}
+              </Text>
               {service.expire && (
                 <Text size="xs" c="dimmed">
                   {new Date(service.expire as string).toLocaleDateString(i18n.language === 'ru' ? 'ru-RU' : 'en-US')}
@@ -789,7 +857,10 @@ function ServiceCard({ service, onClick, isChild = false, isLastChild = false }:
     >
       <Group justify="space-between">
         <div>
-          <Text fw={500}>#{service.user_service_id} - {service.service.name}</Text>
+          <Text fw={500}>
+            #{service.user_service_id} - {service.service.name}
+            {service.description && ` (${service.description})`}
+          </Text>
           {service.expire && (
             <Text size="xs" c="dimmed">
               {new Date(service.expire as string).toLocaleDateString(i18n.language === 'ru' ? 'ru-RU' : 'en-US')}
@@ -932,6 +1003,16 @@ export default function Services() {
     openChangeModal();
   };
 
+  const handleDescriptionUpdated = (userServiceId: number, description: string) => {
+    const applyToTree = (item: UserService): UserService => ({
+      ...item,
+      description: item.user_service_id === userServiceId ? description : item.description,
+      children: item.children?.map(applyToTree),
+    });
+    setServices((prev) => prev.map(applyToTree));
+    setSelectedService((prev) => (prev && prev.user_service_id === userServiceId ? { ...prev, description } : prev));
+  };
+
   const groupedServices = services.reduce((acc, service) => {
     const category = normalizeCategory(service.service.category);
 
@@ -1053,6 +1134,7 @@ export default function Services() {
               fetchServices();
             }}
             onChangeTariff={handleChangeTariff}
+            onDescriptionUpdated={handleDescriptionUpdated}
           />
         )}
       </Modal>

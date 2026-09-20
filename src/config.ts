@@ -4,14 +4,10 @@ interface AppConfig {
   LOGO_URL: string;
   TELEGRAM_BOT_NAME: string;
   TELEGRAM_BOT_AUTH_ENABLE: string;
-  TELEGRAM_OIDC_AUTH_ENABLE: string;
   TELEGRAM_BOT_AUTH_PROFILE: string;
   TELEGRAM_WEBAPP_AUTH_ENABLE: string;
   TELEGRAM_WEBAPP_AUTO_AUTH_ENABLE: string;
   TELEGRAM_WEBAPP_PROFILE: string;
-  GOOGLE_AUTH_ENABLE: string;
-  YANDEX_AUTH_ENABLE: string;
-  GITHUB_AUTH_ENABLE: string;
   SUPPORT_LINK: string;
   PRIVACY_POLICY_URL: string;
   RETURN_POLICY_URL: string;
@@ -101,14 +97,10 @@ function getConfig(): AppConfig {
     LOGO_URL: runtimeConfig?.LOGO_URL || import.meta.env.VITE_LOGO_URL || `${import.meta.env.BASE_URL}favicon.jpg`,
     TELEGRAM_BOT_NAME: runtimeConfig?.TELEGRAM_BOT_NAME || import.meta.env.VITE_TELEGRAM_BOT_NAME || undefined,
     TELEGRAM_BOT_AUTH_ENABLE: runtimeConfig?.TELEGRAM_BOT_AUTH_ENABLE || import.meta.env.VITE_TELEGRAM_BOT_AUTH_ENABLE || 'false',
-    TELEGRAM_OIDC_AUTH_ENABLE: runtimeConfig?.TELEGRAM_OIDC_AUTH_ENABLE || import.meta.env.VITE_TELEGRAM_OIDC_AUTH_ENABLE || 'false',
     TELEGRAM_BOT_AUTH_PROFILE: runtimeConfig?.TELEGRAM_BOT_AUTH_PROFILE || import.meta.env.VITE_TELEGRAM_BOT_AUTH_PROFILE || 'telegram_bot',
     TELEGRAM_WEBAPP_AUTH_ENABLE: runtimeConfig?.TELEGRAM_WEBAPP_AUTH_ENABLE || import.meta.env.VITE_TELEGRAM_WEBAPP_AUTH_ENABLE || 'false',
     TELEGRAM_WEBAPP_AUTO_AUTH_ENABLE: runtimeConfig?.TELEGRAM_WEBAPP_AUTO_AUTH_ENABLE || import.meta.env.VITE_TELEGRAM_WEBAPP_AUTO_AUTH_ENABLE || 'false',
     TELEGRAM_WEBAPP_PROFILE: runtimeConfig?.TELEGRAM_WEBAPP_PROFILE || import.meta.env.VITE_TELEGRAM_WEBAPP_PROFILE || undefined,
-    GOOGLE_AUTH_ENABLE: runtimeConfig?.GOOGLE_AUTH_ENABLE || import.meta.env.VITE_GOOGLE_AUTH_ENABLE || 'false',
-    YANDEX_AUTH_ENABLE: runtimeConfig?.YANDEX_AUTH_ENABLE || import.meta.env.VITE_YANDEX_AUTH_ENABLE || 'false',
-    GITHUB_AUTH_ENABLE: runtimeConfig?.GITHUB_AUTH_ENABLE || import.meta.env.VITE_GITHUB_AUTH_ENABLE || 'false',
     SUPPORT_LINK: runtimeConfig?.SUPPORT_LINK || import.meta.env.VITE_SUPPORT_LINK || undefined,
     PRIVACY_POLICY_URL: runtimeConfig?.PRIVACY_POLICY_URL || import.meta.env.VITE_PRIVACY_POLICY_URL || undefined,
     RETURN_POLICY_URL: runtimeConfig?.RETURN_POLICY_URL || import.meta.env.VITE_RETURN_POLICY_URL || undefined,
