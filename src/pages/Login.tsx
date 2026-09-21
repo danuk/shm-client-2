@@ -8,12 +8,11 @@ import { useTranslation } from 'react-i18next';
 import { auth, passkeyApi, userApi, oauth2Api, systemApi, SystemAuthConfig } from '../api/client';
 import { setCookie, getResetTokenCookie, removeResetTokenCookie, getResetLoginCookie, removeResetLoginCookie, parseAndSaveResetToken } from '../api/cookie';
 import { useStore } from '../store/useStore';
-import TelegramLoginButton, { TelegramUser } from '../components/TelegramLoginButton';
 import { config } from '../config';
 import { useTelegramWebApp } from '../hooks/useTelegramWebApp';
 import LanguageSwitcher from '../components/LanguageSwitcher';
 import DocumentModal from '../components/DocumentModal';
-import { hasTelegramWebAppAutoAuth, hasTelegramWidget, hasTelegramWebAppAuth, isTelegramWebApp } from '../constants/webapp';
+import { hasTelegramWebAppAutoAuth, hasTelegramWebAppAuth, isTelegramWebApp } from '../constants/webapp';
 import generateStrongPassword from '../utils/PasswordGenerate.ts'
 
 const staticPasskeyAuth = config.PASSKEY_AUTH_DISABLED !== 'true';
@@ -416,30 +415,6 @@ export default function Login() {
     }
   };
 
-  const handleTelegramWidgetAuth = async (telegramUser: TelegramUser) => {
-    setLoading(true);
-    try {
-      await auth.telegramWidgetAuth({
-        ...telegramUser,
-        register_if_not_exists: 1,
-      });
-      const userResponse = await auth.getCurrentUser();
-      const responseData = userResponse.data.data;
-      const userData = Array.isArray(responseData) ? responseData[0] : responseData;
-      setUser(userData);
-
-      if (telegramUser.photo_url) {
-        setTelegramPhoto(telegramUser.photo_url);
-      }
-
-      notifications.show({ title: t('common.success'), message: t('auth.telegramAuth'), color: 'green' });
-    } catch {
-      notifications.show({ title: t('common.error'), message: t('auth.telegramAuthError'), color: 'red' });
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const handleTelegramWebAppAuth = async () => {
     if (!telegramWebApp?.initData) {
       notifications.show({ title: t('common.error'), message: t('auth.telegramAuthError'), color: 'red' });
@@ -786,7 +761,7 @@ export default function Login() {
 
                   {(
                     (mode === 'login' && hasPasskeyAuth)
-                    || hasTelegramOidcAuth || hasTelegramWidget || hasGoogleAuth || hasYandexAuth || hasGithubAuth
+                    || hasTelegramOidcAuth || hasGoogleAuth || hasYandexAuth || hasGithubAuth
                   ) && (
                     <Divider label={t('common.or')} labelPosition="center" />
                   )}
@@ -879,17 +854,6 @@ export default function Login() {
                         )
                       )}
                     </Group>
-                  )}
-
-                  {hasTelegramWidget && (
-                    <Center>
-                      <TelegramLoginButton
-                        botName={config.TELEGRAM_BOT_NAME}
-                        onAuth={handleTelegramWidgetAuth}
-                        buttonSize="large"
-                        requestAccess="write"
-                      />
-                    </Center>
                   )}
 
                   {mode === 'login' && registerEnabled && (

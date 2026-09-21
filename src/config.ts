@@ -2,8 +2,6 @@ interface AppConfig {
   APP_NAME: string;
   APP_DESCRIPTION: string;
   LOGO_URL: string;
-  TELEGRAM_BOT_NAME: string;
-  TELEGRAM_BOT_AUTH_ENABLE: string;
   TELEGRAM_BOT_AUTH_PROFILE: string;
   TELEGRAM_WEBAPP_AUTH_ENABLE: string;
   TELEGRAM_WEBAPP_AUTO_AUTH_ENABLE: string;
@@ -95,8 +93,6 @@ function getConfig(): AppConfig {
     APP_NAME: runtimeConfig?.APP_NAME || import.meta.env.VITE_APP_NAME || 'SHM Client',
     APP_DESCRIPTION: runtimeConfig?.APP_DESCRIPTION || import.meta.env.VITE_APP_DESCRIPTION || undefined,
     LOGO_URL: runtimeConfig?.LOGO_URL || import.meta.env.VITE_LOGO_URL || `${import.meta.env.BASE_URL}favicon.jpg`,
-    TELEGRAM_BOT_NAME: runtimeConfig?.TELEGRAM_BOT_NAME || import.meta.env.VITE_TELEGRAM_BOT_NAME || undefined,
-    TELEGRAM_BOT_AUTH_ENABLE: runtimeConfig?.TELEGRAM_BOT_AUTH_ENABLE || import.meta.env.VITE_TELEGRAM_BOT_AUTH_ENABLE || 'false',
     TELEGRAM_BOT_AUTH_PROFILE: runtimeConfig?.TELEGRAM_BOT_AUTH_PROFILE || import.meta.env.VITE_TELEGRAM_BOT_AUTH_PROFILE || 'telegram_bot',
     TELEGRAM_WEBAPP_AUTH_ENABLE: runtimeConfig?.TELEGRAM_WEBAPP_AUTH_ENABLE || import.meta.env.VITE_TELEGRAM_WEBAPP_AUTH_ENABLE || 'false',
     TELEGRAM_WEBAPP_AUTO_AUTH_ENABLE: runtimeConfig?.TELEGRAM_WEBAPP_AUTO_AUTH_ENABLE || import.meta.env.VITE_TELEGRAM_WEBAPP_AUTO_AUTH_ENABLE || 'false',

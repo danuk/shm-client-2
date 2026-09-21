@@ -68,37 +68,6 @@ export const auth = {
     window.location.href = '/login';
   },
 
-  telegramWidgetAuth: async (userData: {
-    id: number;
-    first_name?: string;
-    last_name?: string;
-    username?: string;
-    photo_url?: string;
-    auth_date: number;
-    hash: string;
-    bind_to_profile?: number;
-    uid?: number;
-    register_if_not_exists?: number;
-  }) => {
-    const partnerId = getPartnerCookie();
-    const response = await api.post('/telegram/web/auth', {
-      ...userData,
-      profile: config.TELEGRAM_BOT_AUTH_PROFILE,
-      ...(partnerId && { partner_id: partnerId }),
-      ...(userData.bind_to_profile && { bind_to_profile: userData.bind_to_profile }),
-      ...(userData.uid && { uid: userData.uid }),
-      ...(userData.register_if_not_exists && { register_if_not_exists: userData.register_if_not_exists }),
-    });
-    const sessionId = response.data?.session_id || response.data?.id;
-    if (sessionId) {
-      setCookie(sessionId);
-      if (partnerId) {
-        removePartnerCookie();
-      }
-    }
-    return response;
-  },
-
   register: async (username: string, password: string, captchaToken?: string, captchaAnswer?: string) => {
     const partnerId = getPartnerCookie();
     const data: Record<string, string> = { login: username, password };

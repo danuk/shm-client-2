@@ -11,7 +11,6 @@ import PromoModal from '../components/PromoModal';
 import SecuritySettings from '../components/security/SecuritySettings';
 import { useStore } from '../store/useStore';
 import { config } from '../config';
-import { hasTelegramWidget } from '../constants/webapp';
 
 const RESEND_COOLDOWN_MS = 3 * 60 * 1000;
 const RESEND_STORAGE_KEY = 'email_verify_last_sent';
@@ -188,7 +187,7 @@ export default function Profile() {
         message: t('auth.telegramBind'),
         color: 'green',
       });
-      if (config.ALLOW_TELEGRAM_PIN === 'true' || hasTelegramWidget) {
+      if (config.ALLOW_TELEGRAM_PIN === 'true') {
         loadTelegramSettings();
       }
       return;
@@ -214,7 +213,7 @@ export default function Profile() {
     if (!profile) return;
 
     const loadExtras = async () => {
-      if (config.ALLOW_TELEGRAM_PIN === 'true' || hasTelegramWidget) {
+      if (config.ALLOW_TELEGRAM_PIN === 'true') {
         await loadTelegramSettings();
       }
 
@@ -766,7 +765,7 @@ export default function Profile() {
         </Card>
       )}
 
-      {(config.ALLOW_TELEGRAM_PIN === 'true' || hasTelegramWidget) && (
+      {config.ALLOW_TELEGRAM_PIN === 'true' && (
         <Card withBorder radius="md" p="lg">
           <Group justify="space-between" mb="md">
             <Text fw={500}>{t('profile.telegram')}</Text>

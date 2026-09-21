@@ -75,8 +75,6 @@ services:
 
 | Переменная | Описание | По умолчанию |
 | ------------ | ---------- | -------------- |
-| `TELEGRAM_BOT_NAME` | Username Telegram бота (без @) s | - |
-| `TELEGRAM_BOT_AUTH_ENABLE` | Включить авторизацию через Telegram виджет | `false` |
 | `TELEGRAM_OIDC_AUTH_ENABLE` | Включить авторизацию через Telegram OIDC | `false` |
 | `TELEGRAM_BOT_AUTH_PROFILE` | Название бота (профиля) в SHM | `telegram_bot` |
 | `TELEGRAM_WEBAPP_AUTH_ENABLE` | Авторизация через телеграмм вебапп | `false` |
