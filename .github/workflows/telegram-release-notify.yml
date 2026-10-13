@@ -1,5 +1,8 @@
 name: 'Telegram Release Notification'
 
+env:
+  IMAGE_NAME: danuk/shm
+
 on:
   workflow_call:
   workflow_dispatch:
@@ -38,6 +41,7 @@ jobs:
             echo "is_manual=true" >> $GITHUB_OUTPUT
             echo "✅ Ручной запуск - отправим уведомление"
           else
+            # Получаем тег из GITHUB_REF (refs/tags/3.0.1-rc → 3.0.1-rc)
             TAG_NAME="${GITHUB_REF##*/}"
 
             if [ -z "$TAG_NAME" ]; then
@@ -47,18 +51,26 @@ jobs:
               exit 0
             fi
 
-            # Теги с суффиксом (-rc, -beta, -alpha) создаются из не-main веток → пропускаем
-            if [[ "$TAG_NAME" =~ -[a-zA-Z]+ ]]; then
+            # Извлекаем суффикс тега (например, 'beta' из '2.10.1-beta')
+            TAG_SUFFIX=""
+            if [[ "$TAG_NAME" =~ -([a-zA-Z]+)$ ]]; then
+              TAG_SUFFIX="${BASH_REMATCH[1]}"
+            fi
+            TAG_SUFFIX_LOWER=$(echo "$TAG_SUFFIX" | tr '[:upper:]' '[:lower:]')
+
+            # Суффикс 'latest' считается релизом, остальные суффиксы (-rc, -beta, -alpha) - пререлизы → пропускаем
+            if [ -n "$TAG_SUFFIX" ] && [ "$TAG_SUFFIX_LOWER" != "latest" ]; then
               echo "should_notify=false" >> $GITHUB_OUTPUT
               echo "is_manual=false" >> $GITHUB_OUTPUT
-              echo "⏭️ Тег ${TAG_NAME} имеет суффикс (не-main ветка) - пропускаем уведомление"
+              echo "⏭️ Тег ${TAG_NAME} имеет суффикс (пререлиз) - пропускаем уведомление"
               exit 0
             fi
 
+            # Теги без суффикса или с суффиксом 'latest' считаются полноценным релизом
             echo "should_notify=true" >> $GITHUB_OUTPUT
             echo "is_manual=false" >> $GITHUB_OUTPUT
             echo "tag_name=${TAG_NAME}" >> $GITHUB_OUTPUT
-            echo "✅ Тег ${TAG_NAME} без суффикса (main ветка) - отправим уведомление"
+            echo "✅ Тег ${TAG_NAME} без суффикса или с суффиксом 'latest' (релиз) - отправим уведомление"
           fi
 
       - name: Получение информации о релизе
@@ -66,15 +78,50 @@ jobs:
         if: steps.check_conditions.outputs.should_notify == 'true'
         run: |
           if [ "${{ steps.check_conditions.outputs.is_manual }}" = "true" ]; then
-            echo "tag_name=${{ github.event.inputs.tag_name }}" >> $GITHUB_OUTPUT
+            TAG_NAME="${{ github.event.inputs.tag_name }}"
             echo "name=${{ github.event.inputs.release_name }}" >> $GITHUB_OUTPUT
             echo "prerelease=false" >> $GITHUB_OUTPUT
           else
             TAG_NAME="${GITHUB_REF##*/}"
-            echo "tag_name=$TAG_NAME" >> $GITHUB_OUTPUT
             echo "name=Release $TAG_NAME" >> $GITHUB_OUTPUT
             echo "prerelease=false" >> $GITHUB_OUTPUT
           fi
+          echo "tag_name=$TAG_NAME" >> $GITHUB_OUTPUT
+
+          # Вычисляем Docker-теги той же логикой, что и release.yml,
+          # чтобы список в уведомлении совпадал с реально запушенными тегами
+
+          # Извлекаем суффикс тега (например, 'beta' из '2.10.1-beta')
+          TAG_SUFFIX=""
+          if [[ "$TAG_NAME" =~ -([a-zA-Z]+)$ ]]; then
+            TAG_SUFFIX="${BASH_REMATCH[1]}"
+          fi
+          TAG_SUFFIX_LOWER=$(echo "$TAG_SUFFIX" | tr '[:upper:]' '[:lower:]')
+
+          # Суффикс 'latest' отрезается от точного Docker-тега (как в release.yml)
+          if [ "$TAG_SUFFIX_LOWER" = "latest" ]; then
+            DOCKER_TAG="${TAG_NAME%-$TAG_SUFFIX}"
+          else
+            DOCKER_TAG="$TAG_NAME"
+          fi
+          echo "docker_tag=${DOCKER_TAG}" >> $GITHUB_OUTPUT
+
+          # Минорная версия (1.2 из 1.2.3)
+          VERSION_MINOR=$(echo "$DOCKER_TAG" | cut -d '.' -f 1,2)
+          echo "minor=${VERSION_MINOR}" >> $GITHUB_OUTPUT
+
+          # Мажорная версия (1 из 1.2.3)
+          VERSION_MAJOR=$(echo "$DOCKER_TAG" | cut -d '.' -f 1)
+          echo "major=${VERSION_MAJOR}" >> $GITHUB_OUTPUT
+
+          # Комбинированный тег минор+суффикс (например, '3.0-rc'); не создаётся для 'latest'
+          if [ -n "$TAG_SUFFIX" ] && [ "$TAG_SUFFIX_LOWER" != "latest" ]; then
+            MINOR_WITH_SUFFIX="${VERSION_MINOR}-${TAG_SUFFIX}"
+          else
+            MINOR_WITH_SUFFIX=""
+          fi
+          echo "minor_with_suffix=${MINOR_WITH_SUFFIX}" >> $GITHUB_OUTPUT
+          echo "tag_suffix=${TAG_SUFFIX}" >> $GITHUB_OUTPUT
 
       - name: Форматирование сообщения для Telegram
         id: format_message
@@ -84,6 +131,12 @@ jobs:
           PRERELEASE="${{ steps.release_info.outputs.prerelease }}"
           REPO_NAME="${{ github.repository }}"
           REPO_URL="https://github.com/${{ github.repository }}"
+          IMAGE_NAME="${{ env.IMAGE_NAME }}"
+          DOCKER_TAG="${{ steps.release_info.outputs.docker_tag }}"
+          MINOR="${{ steps.release_info.outputs.minor }}"
+          MAJOR="${{ steps.release_info.outputs.major }}"
+          MINOR_WITH_SUFFIX="${{ steps.release_info.outputs.minor_with_suffix }}"
+          TAG_SUFFIX="${{ steps.release_info.outputs.tag_suffix }}"
 
           if [ "$PRERELEASE" = "true" ]; then
             EMOJI="🧪"
@@ -93,8 +146,22 @@ jobs:
             RELEASE_TYPE="Релиз"
           fi
 
+          # Собираем список Docker-тегов для client-2-образа
+          DOCKER_TAGS_FILE=$(mktemp)
+          echo "• ${IMAGE_NAME}-client-2:${DOCKER_TAG}" >> "$DOCKER_TAGS_FILE"
+          echo "• ${IMAGE_NAME}-client-2:${MINOR}" >> "$DOCKER_TAGS_FILE"
+          echo "• ${IMAGE_NAME}-client-2:${MAJOR}" >> "$DOCKER_TAGS_FILE"
+          if [ -n "$MINOR_WITH_SUFFIX" ]; then
+            echo "• ${IMAGE_NAME}-client-2:${MINOR_WITH_SUFFIX}" >> "$DOCKER_TAGS_FILE"
+          fi
+          if [ -n "$TAG_SUFFIX" ]; then
+            echo "• ${IMAGE_NAME}-client-2:${TAG_SUFFIX}" >> "$DOCKER_TAGS_FILE"
+          fi
+
+          # Получаем предыдущий тег
           PREVIOUS_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo "")
 
+          # Сохраняем коммиты в файл, чтобы избежать проблем с кавычками и спецсимволами
           COMMITS_FILE=$(mktemp)
           if [ -n "$PREVIOUS_TAG" ]; then
             git log --pretty=format:"• %s" "${PREVIOUS_TAG}..HEAD" 2>/dev/null \
@@ -106,10 +173,14 @@ jobs:
               | head -100 > "$COMMITS_FILE"
           fi
 
+          # Формируем сообщение напрямую в файл (не через printf/переменную)
           {
             echo "${EMOJI} ${RELEASE_TYPE} ${TAG_NAME}"
             echo ""
             echo "📦 Репозиторий: ${REPO_NAME}"
+            echo ""
+            echo "🐳 Docker-теги:"
+            cat "$DOCKER_TAGS_FILE"
             echo ""
             echo "📋 Changelog:"
             if [ -s "$COMMITS_FILE" ]; then
@@ -121,6 +192,7 @@ jobs:
             echo "🔗 Посмотреть релиз: ${REPO_URL}/releases/tag/${TAG_NAME}"
           } > /tmp/telegram_message.txt
 
+          rm -f "$DOCKER_TAGS_FILE"
           rm -f "$COMMITS_FILE"
           echo "message_file=/tmp/telegram_message.txt" >> $GITHUB_OUTPUT
 
@@ -143,6 +215,7 @@ jobs:
 
           MESSAGE_FILE="${{ steps.format_message.outputs.message_file }}"
 
+          # Используем jq для безопасного построения JSON (обрабатывает все спецсимволы)
           PAYLOAD=$(jq -n \
             --arg chat_id "${TELEGRAM_CHAT_ID}" \
             --arg thread_id "${TELEGRAM_THREAD_ID}" \
@@ -177,4 +250,5 @@ jobs:
         if: steps.check_conditions.outputs.should_notify == 'false'
         run: |
           echo "⏭️ Уведомление пропущено"
-          echo "Уведомления отправляются только для тегов без суффикса (main ветка)"
+          echo "Уведомления отправляются только для тегов без суффикса или с суффиксом 'latest'"
+          echo "Теги с прочими суффиксами (-rc, -beta, -alpha и т.д.) — пререлизы, уведомления не отправляются"
